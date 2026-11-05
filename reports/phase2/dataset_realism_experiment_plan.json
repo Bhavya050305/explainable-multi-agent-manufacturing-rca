@@ -1,0 +1,419 @@
+{
+  "metadata": {
+    "project": "ManuMind AI — Explainable Multi-Agent AI System for Manufacturing Anomaly Detection and Root Cause Analysis",
+    "phase": "Phase 2 — Sensor Telemetry Robustness Framework",
+    "document_type": "Controlled Noise Experiment Plan & Frozen-Model Evaluation Protocol",
+    "version": "1.1.0",
+    "generated_at": "2026-11-05T22:00:00+05:30",
+    "status": "APPROVED_DESIGN_ONLY (EXECUTION PENDING USER APPROVAL)",
+    "execution_prohibition": "DO NOT execute without explicit user approval. All models, weights, scalers, thresholds, and data remain frozen.",
+    "baseline_model_thresholds": {
+      "isolation_forest": 0.0269,
+      "lstm_autoencoder": 0.901464
+    },
+    "healthy_train_reference_std": {
+      "vibration_mm_per_s": 0.2235,
+      "temperature_celsius": 2.2030,
+      "pressure_bar": 0.1211,
+      "current_ampere": 0.7094,
+      "rpm": 7.4553
+    },
+    "approved_fault_stages_step3_2": {
+      "baseline": {
+        "step_range": [0, 2599],
+        "reading_count": 2600,
+        "progression_range": [0.0, 0.0]
+      },
+      "incipient": {
+        "step_range": [2600, 3199],
+        "reading_count": 600,
+        "progression_range": [0.0, 0.4286]
+      },
+      "moderate": {
+        "step_range": [3200, 3599],
+        "reading_count": 400,
+        "progression_range": [0.4286, 0.7143]
+      },
+      "severe": {
+        "step_range": [3600, 3999],
+        "reading_count": 400,
+        "progression_range": [0.7143, 1.0]
+      }
+    },
+    "reconciled_test_window_counts": {
+      "total_test_readings": 6000,
+      "test_readings_per_machine": 600,
+      "machine_count": 10,
+      "overlapping_window_configuration": {
+        "window_size": 30,
+        "stride": 10,
+        "formula": "floor((N_test - W) / S) + 1 = floor((600 - 30) / 10) + 1 = 57 + 1 = 58 windows per machine",
+        "windows_per_machine": 58,
+        "total_test_sequences": 580,
+        "corroboration": "Matches exact shape (580, 30, 5) in data/processed/sequences_test.npz and clean_sensor_windows.csv (test partition = 580)"
+      },
+      "non_overlapping_window_configuration": {
+        "window_size": 30,
+        "stride": 30,
+        "formula": "floor(N_test / W) = floor(600 / 30) = 20 windows per machine",
+        "windows_per_machine": 20,
+        "total_independent_windows": 200
+      }
+    }
+  },
+  "preservation_constraints": {
+    "generator_code": "IMMUTABLE (ml/data_generator/generate_sensor_data.py must not be modified)",
+    "raw_csv_files": "IMMUTABLE (data/raw/sensor_readings.csv, maintenance_history.csv must not be overwritten)",
+    "processed_csv_files": "IMMUTABLE (data/processed/sensor_train.csv, sensor_val.csv, sensor_test.csv must not be overwritten)",
+    "preprocessed_sequences": "IMMUTABLE (data/processed/sequences_train.npz, sequences_val.npz, sequences_test.npz must not be overwritten)",
+    "scaler_artifact": "IMMUTABLE (ml/models_store/sensor_scaler.joblib must not be refitted)",
+    "model_weights": "IMMUTABLE (isolation_forest.joblib and lstm_autoencoder.keras must not be retrained)",
+    "thresholds": "IMMUTABLE (calibrated thresholds 0.0269 and 0.901464 must not be recalibrated)",
+    "database_state": "IMMUTABLE (SQLite manumind.db and Supabase cloud 40,416 rows must remain untouched)"
+  },
+  "experimental_separation_boundary": {
+    "experiment_a_frozen_model_robustness": {
+      "purpose": "Evaluate current production models on synthetic noisy sensor copies without modifying models or thresholds.",
+      "operational_mode": "In-memory evaluation only on synthetic validation/test evaluation copies.",
+      "models": "FROZEN (IF and LSTM Autoencoder trained in Steps 2 & 3).",
+      "thresholds": "FROZEN (tau_IF = 0.0269, tau_LSTM = 0.901464)."
+    },
+    "experiment_b_noise_augmented_training": {
+      "purpose": "Investigate whether retraining models on noise-injected data improves robustness and generalization.",
+      "operational_mode": "SEPARATELY APPROVED FUTURE TASK. Strictly prohibited during Phase 2 Step 4/Step 4 review."
+    }
+  },
+  "experiments": [
+    {
+      "experiment_id": "E0",
+      "name": "Original Dataset Baseline",
+      "description": "Baseline performance benchmark using unaltered test telemetry under frozen model thresholds.",
+      "mathematical_formula": "x'_{t,c} = x_{t,c}",
+      "noise_type": "None (Original Telemetry)",
+      "perturbation_level_label": "Zero perturbation (Ground truth reference)",
+      "parameters": {
+        "alpha": 0.0,
+        "seed": 42
+      },
+      "sensor_specific_noise_std": {
+        "vibration": 0.0,
+        "temperature": 0.0,
+        "pressure": 0.0,
+        "current": 0.0,
+        "rpm": 0.0
+      },
+      "data_scope": "Full test partition (6,000 readings; 200 non-overlapping windows; 580 overlapping sequences).",
+      "affects_healthy": false,
+      "affects_faulty": false,
+      "expected_outcomes": {
+        "isolation_forest_f1": 0.9522,
+        "lstm_autoencoder_f1": 0.9915,
+        "false_positive_rate": "IF: 6.69%, LSTM: 0.86%"
+      },
+      "limitations": "Does not test model robustness against unexpected industrial sensor jitter or degradation."
+    },
+    {
+      "experiment_id": "E1",
+      "name": "Low Independent Gaussian Noise",
+      "description": "Adds independent Gaussian white noise scaled to 5% of healthy training standard deviation (alpha = 0.05).",
+      "mathematical_formula": "x'_{t,c} = x_{t,c} + \\epsilon_{t,c}, \\quad \\epsilon_{t,c} \\sim \\mathcal{N}(0, (0.05 \\cdot \\sigma_c)^2)",
+      "noise_type": "Additive White Gaussian Noise (AWGN)",
+      "perturbation_level_label": "Experimental synthetic perturbation level: 5% of healthy training sigma (Not an industrial tolerance standard)",
+      "parameters": {
+        "alpha": 0.05,
+        "distribution": "Normal",
+        "mean": 0.0,
+        "seed": 42001
+      },
+      "sensor_specific_noise_std": {
+        "vibration_mm_per_s": 0.0112,
+        "temperature_celsius": 0.1102,
+        "pressure_bar": 0.0061,
+        "current_ampere": 0.0355,
+        "rpm": 0.3728
+      },
+      "data_scope": "In-memory test evaluation copy (both healthy and faulty readings perturbed).",
+      "affects_healthy": true,
+      "affects_faulty": true,
+      "expected_outcomes": {
+        "isolation_forest_impact": "Negligible impact (<0.5% F1 degradation); score boundary marginally perturbed.",
+        "lstm_autoencoder_impact": "Mean reconstruction error increases by ~0.002–0.005 MSE; negligible false positive increase.",
+        "attribution_stability": ">98% rank-order consistency of top attributable sensor."
+      },
+      "limitations": "Assumes zero temporal autocorrelation; high-frequency white noise is easily smoothed by LSTM filters."
+    },
+    {
+      "experiment_id": "E2",
+      "name": "Moderate Independent Gaussian Noise",
+      "description": "Adds independent Gaussian white noise scaled to 10% of healthy training standard deviation (alpha = 0.10).",
+      "mathematical_formula": "x'_{t,c} = x_{t,c} + \\epsilon_{t,c}, \\quad \\epsilon_{t,c} \\sim \\mathcal{N}(0, (0.10 \\cdot \\sigma_c)^2)",
+      "noise_type": "Additive White Gaussian Noise (AWGN)",
+      "perturbation_level_label": "Experimental synthetic perturbation level: 10% of healthy training sigma (Not an industrial tolerance standard)",
+      "parameters": {
+        "alpha": 0.10,
+        "distribution": "Normal",
+        "mean": 0.0,
+        "seed": 42002
+      },
+      "sensor_specific_noise_std": {
+        "vibration_mm_per_s": 0.0224,
+        "temperature_celsius": 0.2203,
+        "pressure_bar": 0.0121,
+        "current_ampere": 0.0709,
+        "rpm": 0.7455
+      },
+      "data_scope": "In-memory test evaluation copy (both healthy and faulty readings perturbed).",
+      "affects_healthy": true,
+      "affects_faulty": true,
+      "expected_outcomes": {
+        "isolation_forest_impact": "False positive rate increases from 6.69% to ~8.5–10.0%; F1 drops ~2–3%.",
+        "lstm_autoencoder_impact": "Reconstruction error baseline shifts up by ~0.010–0.025 MSE; F1 remains >96%.",
+        "early_warning_impact": "Incipient fault recall decreases by 5–10% as signal-to-noise ratio degrades at onset."
+      },
+      "limitations": "Does not account for correlated physical inertia or thermal thermal masses."
+    },
+    {
+      "experiment_id": "E3",
+      "name": "High Independent Gaussian Noise",
+      "description": "Adds heavy Gaussian white noise scaled to 20% of healthy training standard deviation (alpha = 0.20).",
+      "mathematical_formula": "x'_{t,c} = x_{t,c} + \\epsilon_{t,c}, \\quad \\epsilon_{t,c} \\sim \\mathcal{N}(0, (0.20 \\cdot \\sigma_c)^2)",
+      "noise_type": "Additive White Gaussian Noise (AWGN)",
+      "perturbation_level_label": "Experimental synthetic perturbation level: 20% of healthy training sigma (Severe stress test; not a vendor tolerance standard)",
+      "parameters": {
+        "alpha": 0.20,
+        "distribution": "Normal",
+        "mean": 0.0,
+        "seed": 42003
+      },
+      "sensor_specific_noise_std": {
+        "vibration_mm_per_s": 0.0447,
+        "temperature_celsius": 0.4406,
+        "pressure_bar": 0.0242,
+        "current_ampere": 0.1419,
+        "rpm": 1.4911
+      },
+      "data_scope": "In-memory test evaluation copy (both healthy and faulty readings perturbed).",
+      "affects_healthy": true,
+      "affects_faulty": true,
+      "expected_outcomes": {
+        "isolation_forest_impact": "Severe FPR escalation (>15%); precision drops significantly as healthy tails breach partition walls.",
+        "lstm_autoencoder_impact": "Test FPR increases from 0.86% to ~4–6%; incipient detection delay increases by 20–40 timesteps.",
+        "attribution_stability": "Feature attribution entropy increases; non-faulted sensors gain 5–10% residual attribution."
+      },
+      "limitations": "Severe white noise at 20% sigma represents harsh electromagnetic interference rather than normal telemetry."
+    },
+    {
+      "experiment_id": "E4",
+      "name": "Temporally Correlated Noise via AR(1) Process",
+      "description": "Simulates sensor inertia and sluggishness via a first-order autoregressive AR(1) colored noise process with stationary standard deviation sigma_stat = 0.10 * sigma_c and rho = 0.65.",
+      "mathematical_formula": "x'_{t,c} = x_{t,c} + \\epsilon_{t,c}, \\quad \\epsilon_{t,c} = \\rho \\cdot \\epsilon_{t-1,c} + \\eta_{t,c}, \\quad \\eta_{t,c} \\sim \\mathcal{N}(0, \\sigma_\\eta^2)",
+      "noise_type": "First-Order Autoregressive Colored Noise (Pink/Red Noise)",
+      "perturbation_level_label": "Experimental synthetic perturbation level: 10% stationary sigma with rho = 0.65",
+      "variance_and_innovation_derivation": {
+        "theoretical_relationship": "Var(\\epsilon_t) = \\sigma_\\eta^2 / (1 - \\rho^2) \\implies \\sigma_\\text{stat} = \\sigma_\\eta / \\sqrt{1 - \\rho^2}",
+        "desired_stationary_std": "\\sigma_\\text{stat} = 0.10 \\cdot \\sigma_c",
+        "required_innovation_std_formula": "\\sigma_\\eta = \\sigma_\\text{stat} \\cdot \\sqrt{1 - \\rho^2} = 0.10 \\cdot \\sigma_c \\cdot \\sqrt{1 - 0.65^2} = 0.10 \\cdot \\sigma_c \\cdot \\sqrt{0.5775} \\approx 0.0759934 \\cdot \\sigma_c",
+        "distinction_definition": {
+          "stationary_noise_std": "sigma_stat: Long-run marginal dispersion of the noise process across time (0.10 * sigma_c).",
+          "innovation_noise_std": "sigma_eta: Dispersion of the independent random shock injected at each discrete timestep (0.07599 * sigma_c)."
+        }
+      },
+      "initialization_procedure": {
+        "method": "Direct stationary sampling or 100-step burn-in",
+        "direct_sampling_rule": "\\epsilon_{0,c} \\sim \\mathcal{N}(0, \\sigma_\\text{stat}^2)",
+        "burn_in_steps": 100,
+        "burn_in_rule": "Generate 100 preliminary recursive steps starting from 0 and discard them prior to coupling with telemetry to guarantee strict stationarity from t=1."
+      },
+      "parameters": {
+        "rho": 0.65,
+        "stationary_std_factor": 0.10,
+        "innovation_std_factor": 0.0759934,
+        "burn_in_steps": 100,
+        "seed": 42004
+      },
+      "sensor_specific_noise_scales": {
+        "vibration_mm_per_s": {
+          "stationary_std_sigma_stat": 0.02235,
+          "innovation_std_sigma_eta": 0.01698
+        },
+        "temperature_celsius": {
+          "stationary_std_sigma_stat": 0.22030,
+          "innovation_std_sigma_eta": 0.16741
+        },
+        "pressure_bar": {
+          "stationary_std_sigma_stat": 0.01211,
+          "innovation_std_sigma_eta": 0.00920
+        },
+        "current_ampere": {
+          "stationary_std_sigma_stat": 0.07094,
+          "innovation_std_sigma_eta": 0.05391
+        },
+        "rpm": {
+          "stationary_std_sigma_stat": 0.74553,
+          "innovation_std_sigma_eta": 0.56655
+        }
+      },
+      "data_scope": "In-memory test evaluation copy.",
+      "affects_healthy": true,
+      "affects_faulty": true,
+      "expected_outcomes": {
+        "isolation_forest_impact": "Tabular point detector experiences bursty false alarms during sustained excursions.",
+        "lstm_autoencoder_impact": "Evaluates sequence reconstruction response to smooth low-frequency colored noise.",
+        "attribution_stability": "Maintains physical root cause ranking while tracking correlated drift."
+      },
+      "limitations": "Fixed rho = 0.65 across all sensors ignores differing physical time constants (e.g. thermal vs mechanical)."
+    },
+    {
+      "experiment_id": "E5",
+      "name": "Gradual Sensor Calibration Drift",
+      "description": "Simulates sensor aging, fouling, or zero-point calibration drift as a linear offset over the final 600 steps.",
+      "mathematical_formula": "x'_{t,c} = x_{t,c} + \\beta_c \\cdot \\frac{t - t_0}{600}, \\quad \\text{where } \\beta_c = 1.0 \\cdot \\sigma_c",
+      "noise_type": "Deterministic Linear Drift",
+      "perturbation_level_label": "Experimental synthetic perturbation assumption (Requires empirical validation for specific transducer models)",
+      "parameters": {
+        "drift_scale_factor": 1.0,
+        "drift_duration_steps": 600,
+        "sensors_affected": ["temperature", "pressure", "vibration"],
+        "seed": 42005
+      },
+      "sensor_specific_noise_std": {
+        "vibration_terminal_drift_mm_per_s": 0.2235,
+        "temperature_terminal_drift_celsius": 2.2030,
+        "pressure_terminal_drift_bar": -0.1211,
+        "current_terminal_drift_ampere": 0.0,
+        "rpm_terminal_drift_rpm": 0.0
+      },
+      "data_scope": "In-memory test evaluation copy (applied during final 600 test steps).",
+      "affects_healthy": true,
+      "affects_faulty": true,
+      "expected_outcomes": {
+        "isolation_forest_impact": "Healthy machine false positive rate escalates significantly towards test sequence end.",
+        "lstm_autoencoder_impact": "Reconstruction error gradually surpasses threshold tau_LSTM, inducing false alarms on healthy machines.",
+        "attribution_stability": "Drifting sensor erroneously absorbs attribution percentage on healthy assets."
+      },
+      "limitations": "Linear drift is an idealized approximation; actual industrial sensor fouling often shows non-linear saturation."
+    },
+    {
+      "experiment_id": "E6",
+      "name": "Occasional Transient Spikes",
+      "description": "Simulates sparse electromagnetic interference, switching transients, or telemetry glitches as 2-step pulses.",
+      "mathematical_formula": "x'_{t,c} = x_{t,c} + S_{t,c} \\cdot A_{t,c}, \\quad S_{t,c} \\sim \\text{Bernoulli}(p = 0.002), \\quad A_{t,c} \\sim \\mathcal{U}(3.0 \\cdot \\sigma_c, 5.0 \\cdot \\sigma_c) \\cdot \\text{Rademacher}(\\pm 1)",
+      "noise_type": "Sparse Impulsive Disturbance (Salt-and-Pepper Glitch Noise)",
+      "perturbation_level_label": "Experimental synthetic perturbation assumption (Requires validation against specific edge gateway telemetry logs)",
+      "parameters": {
+        "probability_per_step": 0.002,
+        "pulse_duration_steps": 2,
+        "min_amplitude_factor": 3.0,
+        "max_amplitude_factor": 5.0,
+        "seed": 42006
+      },
+      "sensor_specific_noise_std": {
+        "vibration_spike_amplitude_range": [0.6705, 1.1175],
+        "temperature_spike_amplitude_range": [6.6090, 11.0150],
+        "pressure_spike_amplitude_range": [0.3633, 0.6055],
+        "current_spike_amplitude_range": [2.1282, 3.5470],
+        "rpm_spike_amplitude_range": [22.3659, 37.2765]
+      },
+      "data_scope": "In-memory test evaluation copy.",
+      "affects_healthy": true,
+      "affects_faulty": true,
+      "expected_outcomes": {
+        "isolation_forest_impact": "Produces isolated 1-to-2 step tabular false alarms.",
+        "lstm_autoencoder_impact": "Produces elevated reconstruction errors spanning 30 consecutive windows as pulse traverses sequence buffer.",
+        "attribution_stability": "Transiently spikes attribution for perturbed feature, recovering immediately after pulse exits."
+      },
+      "limitations": "Real hardware often applies median filtering in firmware that rejects isolated single-sample spikes."
+    },
+    {
+      "experiment_id": "E7",
+      "name": "Combined Realistic Disturbance Scenario",
+      "description": "Composite realistic manufacturing factory environment combining 10% stationary AR(1) colored noise (rho=0.50), subtle calibration drift (0.5 * sigma_c over test partition), and rare transient electrical spikes (p=0.001).",
+      "mathematical_formula": "x'_{t,c} = x_{t,c} + \\epsilon_{t,c}^{\\text{AR(1)}} + \\text{Drift}_{t,c} + \\text{Spike}_{t,c}",
+      "noise_type": "Composite Multi-Modal Industrial Disturbance",
+      "perturbation_level_label": "Experimental synthetic composite scenario (Multi-stress exploratory testing)",
+      "parameters": {
+        "ar1_rho": 0.50,
+        "ar1_stationary_std_factor": 0.10,
+        "ar1_innovation_std_factor": 0.0866025,
+        "drift_scale_factor": 0.50,
+        "spike_probability": 0.001,
+        "seed": 42007
+      },
+      "sensor_specific_noise_std": {
+        "vibration": 0.0224,
+        "temperature": 0.2203,
+        "pressure": 0.0121,
+        "current": 0.0709,
+        "rpm": 0.7455
+      },
+      "data_scope": "Full test evaluation copy under frozen models (580 overlapping sequences; 200 non-overlapping windows).",
+      "affects_healthy": true,
+      "affects_faulty": true,
+      "expected_outcomes": {
+        "isolation_forest_impact": "F1 expected to drop from 95.22% to ~88–91%; FPR ~10–12%.",
+        "lstm_autoencoder_impact": "F1 expected to drop from 99.15% to ~93–95%; FPR ~2.5–4.0%.",
+        "early_warning_impact": "Incipient detection delay increases by ~15–25 timesteps (1.25–2.0 hours).",
+        "attribution_stability": "Maintains physical root cause ranking on severe faults, but incipient stage attribution shows increased noise floor."
+      },
+      "limitations": "Multi-parameter interactions between drift and AR(1) autocorrelation may produce compound effects."
+    }
+  ],
+  "frozen_model_evaluation_protocol": {
+    "target_models": [
+      {
+        "name": "Isolation Forest",
+        "type": "Tabular Point Anomaly Detector",
+        "artifact_path": "ml/models_store/isolation_forest.joblib",
+        "calibrated_threshold": 0.0269,
+        "feature_input_dim": 5
+      },
+      {
+        "name": "LSTM Autoencoder",
+        "type": "Multivariate Sequence Reconstruction Anomaly Detector",
+        "artifact_path": "ml/models_store/lstm_autoencoder.keras",
+        "calibrated_threshold": 0.901464,
+        "sequence_shape": [30, 5]
+      }
+    ],
+    "scaler_transform_rule": "StandardScaler (ml/models_store/sensor_scaler.joblib) MUST NOT be refitted. Apply scaler.transform(X_noisy) directly using original mean_ and scale_ parameters.",
+    "evaluation_metrics": {
+      "detection_performance": [
+        "Accuracy",
+        "Precision",
+        "Recall",
+        "F1-Score",
+        "ROC-AUC",
+        "PR-AUC",
+        "False Positive Rate (FPR)",
+        "False Discovery Rate (FDR)"
+      ],
+      "window_level_differentiation": {
+        "overlapping_windows": "Stride=10 evaluation (exactly 580 test sequences; 58 per machine) matching Step 3 LSTM evaluation protocol.",
+        "non_overlapping_windows": "Stride=30 evaluation (exactly 200 test windows; 20 per machine) for independent window benchmarking.",
+        "point_level_metrics": "6,000 tabular time steps (600 per machine) for Isolation Forest baseline."
+      },
+      "explainability_metrics": [
+        "Top-1 Attribution Feature Agreement (% match with ground-truth fault driver)",
+        "Mean Absolute Percentage Error (MAPE) of attribution distribution vs. E0 baseline",
+        "Attribution Entropy (measuring dispersion and noise-induced dilution)",
+        "Signed Residual Concordance (directionality preservation in standardized space)"
+      ],
+      "early_warning_metrics": {
+        "approved_step3_2_stages": {
+          "baseline": "Steps 0–2599",
+          "incipient": "Steps 2600–3199",
+          "moderate": "Steps 3200–3599",
+          "severe": "Steps 3600–3999"
+        },
+        "target_metrics": [
+          "First Anomaly Detection Time (Step index of first alarm)",
+          "Detection Delay (Timesteps elapsed after fault onset t=2600)",
+          "Incipient Stage Recall (Steps 2600–3199)",
+          "Moderate Stage Recall (Steps 3200–3599)",
+          "Severe Stage Recall (Steps 3600–3999)",
+          "False Alarm Rate on Healthy Machines (M101, M103, M105, M106, M108, M110)"
+        ]
+      }
+    }
+  }
+}

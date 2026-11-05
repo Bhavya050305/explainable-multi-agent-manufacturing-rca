@@ -1,0 +1,281 @@
+{
+  "M102": {
+    "machine_name": "Hydraulic Stamping Press 02",
+    "synthetic_fault": "overheating",
+    "primary_expected_sensor": "temperature",
+    "secondary_expected_sensor": "pressure",
+    "mechanism_description": "Hydraulic oil radiator clogging and cooling fan failure causes severe temperature runaway (+37.5\u03c3) and moderate hydraulic pressure rise (+15.8\u03c3).",
+    "expected_directions": {
+      "temperature": "positive",
+      "pressure": "positive"
+    },
+    "lstm": {
+      "sample_count": 58,
+      "dominant_sensor_mode": "temperature",
+      "primary_match_rate_pct": 100.0,
+      "top2_inclusion_rate_pct": 100.0,
+      "dominant_value_counts": {
+        "temperature": 58
+      },
+      "mean_attribution_pct": {
+        "vibration": 0.44,
+        "temperature": 61.98,
+        "pressure": 36.67,
+        "current": 0.5,
+        "rpm": 0.42
+      },
+      "std_attribution_pct": {
+        "vibration": 0.23,
+        "temperature": 4.01,
+        "pressure": 4.32,
+        "current": 0.2,
+        "rpm": 0.24
+      },
+      "mean_signed_residuals": {
+        "vibration": -0.1794,
+        "temperature": 13.3451,
+        "pressure": 10.2897,
+        "current": -0.4325,
+        "rpm": -0.0601
+      }
+    },
+    "isolation_forest": {
+      "sample_count": 58,
+      "dominant_sensor_mode": "pressure",
+      "primary_match_rate_pct": 0.0,
+      "top2_inclusion_rate_pct": 100.0,
+      "dominant_value_counts": {
+        "pressure": 58
+      },
+      "mean_contribution_pct": {
+        "vibration": 4.59,
+        "temperature": 38.68,
+        "pressure": 45.46,
+        "current": 5.37,
+        "rpm": 5.89
+      },
+      "mean_ablation_delta": {
+        "vibration": 0.007882,
+        "temperature": 0.06627,
+        "pressure": 0.077884,
+        "current": 0.009225,
+        "rpm": 0.010107
+      }
+    },
+    "attribution_notes": {
+      "signed_residuals_space": "standardized_z_score",
+      "lstm_reconstruction_role": "mathematical_representation_not_physical_ground_truth",
+      "if_ablation_nature": "model_agnostic_perturbation_diagnostic_not_additive"
+    }
+  },
+  "M104": {
+    "machine_name": "High-Speed Spindle Center 04",
+    "synthetic_fault": "bearing_wear",
+    "primary_expected_sensor": "vibration",
+    "secondary_expected_sensor": "temperature",
+    "mechanism_description": "Inner race fatigue spalling triggers severe vibration surge (+39.0\u03c3) and cage chatter, accompanied by friction heating (+7.5\u03c3) and spindle drag.",
+    "expected_directions": {
+      "vibration": "positive",
+      "temperature": "positive",
+      "rpm": "negative"
+    },
+    "lstm": {
+      "sample_count": 58,
+      "dominant_sensor_mode": "vibration",
+      "primary_match_rate_pct": 100.0,
+      "top2_inclusion_rate_pct": 100.0,
+      "dominant_value_counts": {
+        "vibration": 58
+      },
+      "mean_attribution_pct": {
+        "vibration": 88.0,
+        "temperature": 5.9,
+        "pressure": 0.39,
+        "current": 1.67,
+        "rpm": 4.04
+      },
+      "std_attribution_pct": {
+        "vibration": 3.44,
+        "temperature": 2.46,
+        "pressure": 0.32,
+        "current": 0.48,
+        "rpm": 0.64
+      },
+      "mean_signed_residuals": {
+        "vibration": 23.3672,
+        "temperature": 5.6753,
+        "pressure": 0.5328,
+        "current": 2.8259,
+        "rpm": -4.5601
+      }
+    },
+    "isolation_forest": {
+      "sample_count": 58,
+      "dominant_sensor_mode": "vibration",
+      "primary_match_rate_pct": 100.0,
+      "top2_inclusion_rate_pct": 100.0,
+      "dominant_value_counts": {
+        "vibration": 58
+      },
+      "mean_contribution_pct": {
+        "vibration": 38.66,
+        "temperature": 19.18,
+        "pressure": 3.79,
+        "current": 15.97,
+        "rpm": 22.4
+      },
+      "mean_ablation_delta": {
+        "vibration": 0.076566,
+        "temperature": 0.037988,
+        "pressure": 0.00751,
+        "current": 0.031567,
+        "rpm": 0.044346
+      }
+    },
+    "attribution_notes": {
+      "signed_residuals_space": "standardized_z_score",
+      "lstm_reconstruction_role": "mathematical_representation_not_physical_ground_truth",
+      "if_ablation_nature": "model_agnostic_perturbation_diagnostic_not_additive"
+    }
+  },
+  "M107": {
+    "machine_name": "Centrifugal Compressor 07",
+    "synthetic_fault": "pressure_drop",
+    "primary_expected_sensor": "pressure",
+    "secondary_expected_sensor": "current",
+    "mechanism_description": "Pneumatic manifold seal rupture causes severe delivery pressure drop (-31.7\u03c3, negative residual), with motor current ramping (+9.3\u03c3) to maintain head.",
+    "expected_directions": {
+      "pressure": "negative",
+      "current": "positive"
+    },
+    "lstm": {
+      "sample_count": 58,
+      "dominant_sensor_mode": "pressure",
+      "primary_match_rate_pct": 100.0,
+      "top2_inclusion_rate_pct": 100.0,
+      "dominant_value_counts": {
+        "pressure": 58
+      },
+      "mean_attribution_pct": {
+        "vibration": 0.22,
+        "temperature": 0.23,
+        "pressure": 91.34,
+        "current": 7.9,
+        "rpm": 0.31
+      },
+      "std_attribution_pct": {
+        "vibration": 0.13,
+        "temperature": 0.16,
+        "pressure": 0.68,
+        "current": 0.58,
+        "rpm": 0.11
+      },
+      "mean_signed_residuals": {
+        "vibration": -0.1835,
+        "temperature": 0.1384,
+        "pressure": -21.4989,
+        "current": 6.1649,
+        "rpm": 0.4303
+      }
+    },
+    "isolation_forest": {
+      "sample_count": 58,
+      "dominant_sensor_mode": "current",
+      "primary_match_rate_pct": 5.17,
+      "top2_inclusion_rate_pct": 100.0,
+      "dominant_value_counts": {
+        "current": 55,
+        "pressure": 3
+      },
+      "mean_contribution_pct": {
+        "vibration": 5.91,
+        "temperature": 4.92,
+        "pressure": 40.21,
+        "current": 43.94,
+        "rpm": 5.02
+      },
+      "mean_ablation_delta": {
+        "vibration": 0.011878,
+        "temperature": 0.009901,
+        "pressure": 0.080775,
+        "current": 0.088248,
+        "rpm": 0.010094
+      }
+    },
+    "attribution_notes": {
+      "signed_residuals_space": "standardized_z_score",
+      "lstm_reconstruction_role": "mathematical_representation_not_physical_ground_truth",
+      "if_ablation_nature": "model_agnostic_perturbation_diagnostic_not_additive"
+    }
+  },
+  "M109": {
+    "machine_name": "Heavy Industrial Gearbox 09",
+    "synthetic_fault": "lubrication_failure",
+    "primary_expected_sensor": "current",
+    "secondary_expected_sensor": "vibration",
+    "mechanism_description": "Boundary dry friction induces motor stator torque surge (+21.8\u03c3, primary), gear tooth chatter vibration (+18.5\u03c3, secondary), and housing thermal heating (+14.6\u03c3, tertiary).",
+    "expected_directions": {
+      "current": "positive",
+      "vibration": "positive",
+      "temperature": "positive"
+    },
+    "lstm": {
+      "sample_count": 58,
+      "dominant_sensor_mode": "current",
+      "primary_match_rate_pct": 100.0,
+      "top2_inclusion_rate_pct": 100.0,
+      "dominant_value_counts": {
+        "current": 58
+      },
+      "mean_attribution_pct": {
+        "vibration": 31.34,
+        "temperature": 23.17,
+        "pressure": 0.34,
+        "current": 44.69,
+        "rpm": 0.47
+      },
+      "std_attribution_pct": {
+        "vibration": 2.93,
+        "temperature": 3.28,
+        "pressure": 0.17,
+        "current": 1.76,
+        "rpm": 0.23
+      },
+      "mean_signed_residuals": {
+        "vibration": 11.8966,
+        "temperature": 10.1269,
+        "pressure": -0.2685,
+        "current": 14.1534,
+        "rpm": 0.0351
+      }
+    },
+    "isolation_forest": {
+      "sample_count": 58,
+      "dominant_sensor_mode": "vibration",
+      "primary_match_rate_pct": 0.0,
+      "top2_inclusion_rate_pct": 100.0,
+      "dominant_value_counts": {
+        "vibration": 58
+      },
+      "mean_contribution_pct": {
+        "vibration": 35.58,
+        "temperature": 24.13,
+        "pressure": 4.13,
+        "current": 32.02,
+        "rpm": 4.14
+      },
+      "mean_ablation_delta": {
+        "vibration": 0.06912,
+        "temperature": 0.04686,
+        "pressure": 0.008024,
+        "current": 0.062191,
+        "rpm": 0.008046
+      }
+    },
+    "attribution_notes": {
+      "signed_residuals_space": "standardized_z_score",
+      "lstm_reconstruction_role": "mathematical_representation_not_physical_ground_truth",
+      "if_ablation_nature": "model_agnostic_perturbation_diagnostic_not_additive"
+    }
+  }
+}

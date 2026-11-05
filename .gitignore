@@ -1,0 +1,69 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment & Secrets
+.env
+.env.*
+*.env
+**/.env
+**/.env.*
+.env.local
+.env.*.local
+*.key
+*.pem
+
+# ML Models and Indices
+ml/models_store/*
+!ml/models_store/.gitkeep
+knowledge_base/index/*
+!knowledge_base/index/.gitkeep
+
+# Large Generated Datasets
+data/raw/*.csv
+data/processed/*
+!data/processed/.gitkeep
+data/defect_images/*.bmp
+!data/defect_images/.gitkeep
+
+# Node / Next.js
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+
+# Reports and generated charts
+reports/*.png
+reports/*.json
+!reports/.gitkeep
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

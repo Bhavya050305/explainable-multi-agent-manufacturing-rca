@@ -1,0 +1,87 @@
+{
+  "partitions": {
+    "train": {
+      "readings": 28000,
+      "sequences": 2780,
+      "machines": [
+        "M101",
+        "M102",
+        "M103",
+        "M104",
+        "M105",
+        "M106",
+        "M107",
+        "M108",
+        "M109",
+        "M110"
+      ]
+    },
+    "validation": {
+      "readings": 6000,
+      "sequences": 580,
+      "machines": [
+        "M101",
+        "M102",
+        "M103",
+        "M104",
+        "M105",
+        "M106",
+        "M107",
+        "M108",
+        "M109",
+        "M110"
+      ]
+    },
+    "test": {
+      "readings": 6000,
+      "sequences": 580,
+      "machines": [
+        "M101",
+        "M102",
+        "M103",
+        "M104",
+        "M105",
+        "M106",
+        "M107",
+        "M108",
+        "M109",
+        "M110"
+      ]
+    }
+  },
+  "timestamp_overlap": {
+    "train_val_overlap": 0,
+    "val_test_overlap": 0,
+    "train_test_overlap": 0,
+    "verdict": "ZERO_TIMESTAMP_OVERLAP (Strict chronological partitioning)"
+  },
+  "sequence_hash_overlap": {
+    "train_val_identical_count": 0,
+    "val_test_identical_count": 0,
+    "train_test_identical_count": 0,
+    "verdict": "ZERO_IDENTICAL_SEQUENCES"
+  },
+  "straddling_windows_elimination": {
+    "original_unsegmented_windows": 3980,
+    "clean_segmented_windows": 3940,
+    "straddling_windows_eliminated": 40,
+    "straddling_windows_remaining": 0,
+    "verdict": "COMPLETELY_ELIMINATED"
+  },
+  "machine_partition_nature": {
+    "shared_machine_ids": [
+      "M101",
+      "M102",
+      "M103",
+      "M104",
+      "M105",
+      "M106",
+      "M107",
+      "M108",
+      "M109",
+      "M110"
+    ],
+    "independence_type": "CHRONOLOGICAL_INDEPENDENCE_NOT_FLEET_HOLDOUT",
+    "explanation": "All 10 machines appear in all 3 splits across consecutive time windows. This rigorously tests temporal generalization on monitored assets, but does not test fleet-level generalization to brand new unseen machines."
+  }
+}

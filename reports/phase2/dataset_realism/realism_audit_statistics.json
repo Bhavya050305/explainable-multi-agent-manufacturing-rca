@@ -1,0 +1,850 @@
+{
+  "task_b_healthy_realism": {
+    "vibration": {
+      "mean": 1.8034,
+      "std": 0.2235,
+      "median": 1.802,
+      "min": 0.897,
+      "max": 3.181,
+      "iqr": 0.297,
+      "mad": 0.148,
+      "first_diff": {
+        "mean": -2e-05,
+        "std": 0.3153,
+        "skewness": 0.0026,
+        "kurtosis": 0.1964
+      },
+      "autocorrelation": {
+        "lag_1": 0.0034,
+        "lag_5": 0.0113,
+        "lag_10": -0.0058
+      },
+      "repeated_consecutive_pct": 0.1434,
+      "outlier_pct_3sigma": 0.4301,
+      "trend_slope_per_step": -5e-07,
+      "machine_variation": {
+        "anova_f": 0.46,
+        "anova_p": 0.9000000962278567,
+        "kruskal_h": 5.42,
+        "kruskal_p": 0.7967015955593866,
+        "machine_mean_cv_pct": 0.15
+      }
+    },
+    "temperature": {
+      "mean": 47.9984,
+      "std": 2.203,
+      "median": 47.98,
+      "min": 41.03,
+      "max": 55.06,
+      "iqr": 3.46,
+      "mad": 1.73,
+      "first_diff": {
+        "mean": -0.00042,
+        "std": 1.696,
+        "skewness": 0.0224,
+        "kurtosis": 0.0272
+      },
+      "autocorrelation": {
+        "lag_1": 0.7035,
+        "lag_5": 0.6968,
+        "lag_10": 0.6897
+      },
+      "repeated_consecutive_pct": 0.1949,
+      "outlier_pct_3sigma": 0.011,
+      "trend_slope_per_step": -4.69e-05,
+      "machine_variation": {
+        "anova_f": 0.64,
+        "anova_p": 0.764439120687864,
+        "kruskal_h": 6.48,
+        "kruskal_p": 0.690811676899034,
+        "machine_mean_cv_pct": 0.07
+      }
+    },
+    "pressure": {
+      "mean": 6.2023,
+      "std": 0.1211,
+      "median": 6.2,
+      "min": 5.71,
+      "max": 6.67,
+      "iqr": 0.16,
+      "mad": 0.08,
+      "first_diff": {
+        "mean": 1e-05,
+        "std": 0.1708,
+        "skewness": -0.0121,
+        "kurtosis": 0.0216
+      },
+      "autocorrelation": {
+        "lag_1": 0.006,
+        "lag_5": -0.0016,
+        "lag_10": 0.0122
+      },
+      "repeated_consecutive_pct": 2.1478,
+      "outlier_pct_3sigma": 0.2316,
+      "trend_slope_per_step": -0.0,
+      "machine_variation": {
+        "anova_f": 0.93,
+        "anova_p": 0.4981339490281276,
+        "kruskal_h": 7.46,
+        "kruskal_p": 0.5890709659555691,
+        "machine_mean_cv_pct": 0.03
+      }
+    },
+    "current": {
+      "mean": 14.523,
+      "std": 0.7094,
+      "median": 14.53,
+      "min": 11.69,
+      "max": 17.57,
+      "iqr": 0.95,
+      "mad": 0.48,
+      "first_diff": {
+        "mean": 0.0,
+        "std": 0.9996,
+        "skewness": 0.0142,
+        "kurtosis": 0.0555
+      },
+      "autocorrelation": {
+        "lag_1": 0.007,
+        "lag_5": 0.0079,
+        "lag_10": 0.0176
+      },
+      "repeated_consecutive_pct": 0.3715,
+      "outlier_pct_3sigma": 0.25,
+      "trend_slope_per_step": 1.3e-06,
+      "machine_variation": {
+        "anova_f": 0.71,
+        "anova_p": 0.6962931691263774,
+        "kruskal_h": 5.54,
+        "kruskal_p": 0.7845541506232285,
+        "machine_mean_cv_pct": 0.08
+      }
+    },
+    "rpm": {
+      "mean": 1799.9556,
+      "std": 7.4553,
+      "median": 1800.0,
+      "min": 1767.1,
+      "max": 1828.6,
+      "iqr": 10.1,
+      "mad": 5.0,
+      "first_diff": {
+        "mean": -0.0021,
+        "std": 10.5189,
+        "skewness": -0.0063,
+        "kurtosis": 0.0087
+      },
+      "autocorrelation": {
+        "lag_1": 0.0043,
+        "lag_5": 0.0049,
+        "lag_10": -0.0086
+      },
+      "repeated_consecutive_pct": 0.4303,
+      "outlier_pct_3sigma": 0.2831,
+      "trend_slope_per_step": -1.51e-05,
+      "machine_variation": {
+        "anova_f": 0.76,
+        "anova_p": 0.653217399313698,
+        "kruskal_h": 5.87,
+        "kruskal_p": 0.753200664053462,
+        "machine_mean_cv_pct": 0.01
+      }
+    }
+  },
+  "task_c_fault_separability": {
+    "M102": {
+      "fault_name": "Overheating",
+      "stages": {
+        "healthy_baseline": {
+          "count": 2600,
+          "mean_mahalanobis_dist": 2.126,
+          "max_mahalanobis_dist": 4.454,
+          "sensors": {
+            "vibration": {
+              "mean": 1.808,
+              "std": 0.218,
+              "cohens_d": 0.0,
+              "separability_auc": 0.5
+            },
+            "temperature": {
+              "mean": 48.044,
+              "std": 2.17,
+              "cohens_d": 0.0,
+              "separability_auc": 0.5
+            },
+            "pressure": {
+              "mean": 6.202,
+              "std": 0.122,
+              "cohens_d": 0.0,
+              "separability_auc": 0.5
+            },
+            "current": {
+              "mean": 14.517,
+              "std": 0.725,
+              "cohens_d": 0.0,
+              "separability_auc": 0.5
+            },
+            "rpm": {
+              "mean": 1800.036,
+              "std": 7.406,
+              "cohens_d": 0.0,
+              "separability_auc": 0.5
+            }
+          }
+        },
+        "incipient": {
+          "count": 400,
+          "mean_mahalanobis_dist": 3.097,
+          "max_mahalanobis_dist": 6.622,
+          "sensors": {
+            "vibration": {
+              "mean": 1.794,
+              "std": 0.215,
+              "cohens_d": -0.062,
+              "separability_auc": 0.5204
+            },
+            "temperature": {
+              "mean": 51.877,
+              "std": 3.527,
+              "cohens_d": 1.31,
+              "separability_auc": 0.7986
+            },
+            "pressure": {
+              "mean": 6.31,
+              "std": 0.166,
+              "cohens_d": 0.739,
+              "separability_auc": 0.6921
+            },
+            "current": {
+              "mean": 14.477,
+              "std": 0.677,
+              "cohens_d": -0.057,
+              "separability_auc": 0.5192
+            },
+            "rpm": {
+              "mean": 1799.61,
+              "std": 7.668,
+              "cohens_d": -0.057,
+              "separability_auc": 0.5174
+            }
+          }
+        },
+        "moderate": {
+          "count": 500,
+          "mean_mahalanobis_dist": 9.103,
+          "max_mahalanobis_dist": 16.144,
+          "sensors": {
+            "vibration": {
+              "mean": 1.799,
+              "std": 0.233,
+              "cohens_d": -0.04,
+              "separability_auc": 0.51
+            },
+            "temperature": {
+              "mean": 64.879,
+              "std": 5.827,
+              "cohens_d": 3.832,
+              "separability_auc": 0.9999
+            },
+            "pressure": {
+              "mean": 6.76,
+              "std": 0.247,
+              "cohens_d": 2.863,
+              "separability_auc": 0.9855
+            },
+            "current": {
+              "mean": 14.5,
+              "std": 0.702,
+              "cohens_d": -0.025,
+              "separability_auc": 0.5078
+            },
+            "rpm": {
+              "mean": 1799.765,
+              "std": 7.717,
+              "cohens_d": -0.036,
+              "separability_auc": 0.5114
+            }
+          }
+        },
+        "severe": {
+          "count": 500,
+          "mean_mahalanobis_dist": 19.348,
+          "max_mahalanobis_dist": 27.481,
+          "sensors": {
+            "vibration": {
+              "mean": 1.781,
+              "std": 0.221,
+              "cohens_d": -0.12,
+              "separability_auc": 0.5313
+            },
+            "temperature": {
+              "mean": 82.627,
+              "std": 6.272,
+              "cohens_d": 7.376,
+              "separability_auc": 1.0
+            },
+            "pressure": {
+              "mean": 7.608,
+              "std": 0.308,
+              "cohens_d": 6.004,
+              "separability_auc": 1.0
+            },
+            "current": {
+              "mean": 14.538,
+              "std": 0.733,
+              "cohens_d": 0.029,
+              "separability_auc": 0.5114
+            },
+            "rpm": {
+              "mean": 1799.76,
+              "std": 7.327,
+              "cohens_d": -0.037,
+              "separability_auc": 0.5125
+            }
+          }
+        }
+      }
+    },
+    "M104": {
+      "fault_name": "Bearing wear",
+      "stages": {
+        "healthy_baseline": {
+          "count": 2600,
+          "mean_mahalanobis_dist": 2.115,
+          "max_mahalanobis_dist": 4.698,
+          "sensors": {
+            "vibration": {
+              "mean": 1.804,
+              "std": 0.216,
+              "cohens_d": 0.0,
+              "separability_auc": 0.5
+            },
+            "temperature": {
+              "mean": 48.053,
+              "std": 2.181,
+              "cohens_d": 0.0,
+              "separability_auc": 0.5
+            },
+            "pressure": {
+              "mean": 6.202,
+              "std": 0.122,
+              "cohens_d": 0.0,
+              "separability_auc": 0.5
+            },
+            "current": {
+              "mean": 14.526,
+              "std": 0.717,
+              "cohens_d": 0.0,
+              "separability_auc": 0.5
+            },
+            "rpm": {
+              "mean": 1799.893,
+              "std": 7.324,
+              "cohens_d": 0.0,
+              "separability_auc": 0.5
+            }
+          }
+        },
+        "incipient": {
+          "count": 400,
+          "mean_mahalanobis_dist": 3.31,
+          "max_mahalanobis_dist": 7.751,
+          "sensors": {
+            "vibration": {
+              "mean": 2.124,
+              "std": 0.47,
+              "cohens_d": 0.875,
+              "separability_auc": 0.7295
+            },
+            "temperature": {
+              "mean": 49.15,
+              "std": 2.349,
+              "cohens_d": 0.484,
+              "separability_auc": 0.6324
+            },
+            "pressure": {
+              "mean": 6.207,
+              "std": 0.118,
+              "cohens_d": 0.039,
+              "separability_auc": 0.5092
+            },
+            "current": {
+              "mean": 14.593,
+              "std": 0.705,
+              "cohens_d": 0.094,
+              "separability_auc": 0.5278
+            },
+            "rpm": {
+              "mean": 1798.785,
+              "std": 12.458,
+              "cohens_d": -0.108,
+              "separability_auc": 0.5265
+            }
+          }
+        },
+        "moderate": {
+          "count": 500,
+          "mean_mahalanobis_dist": 9.962,
+          "max_mahalanobis_dist": 20.089,
+          "sensors": {
+            "vibration": {
+              "mean": 3.845,
+              "std": 0.903,
+              "cohens_d": 3.113,
+              "separability_auc": 0.9965
+            },
+            "temperature": {
+              "mean": 53.492,
+              "std": 3.17,
+              "cohens_d": 2.001,
+              "separability_auc": 0.9186
+            },
+            "pressure": {
+              "mean": 6.211,
+              "std": 0.122,
+              "cohens_d": 0.069,
+              "separability_auc": 0.5188
+            },
+            "current": {
+              "mean": 15.159,
+              "std": 0.739,
+              "cohens_d": 0.87,
+              "separability_auc": 0.731
+            },
+            "rpm": {
+              "mean": 1787.505,
+              "std": 14.037,
+              "cohens_d": -1.107,
+              "separability_auc": 0.7786
+            }
+          }
+        },
+        "severe": {
+          "count": 500,
+          "mean_mahalanobis_dist": 27.911,
+          "max_mahalanobis_dist": 43.026,
+          "sensors": {
+            "vibration": {
+              "mean": 7.795,
+              "std": 1.51,
+              "cohens_d": 5.559,
+              "separability_auc": 1.0
+            },
+            "temperature": {
+              "mean": 59.98,
+              "std": 3.195,
+              "cohens_d": 4.363,
+              "separability_auc": 0.9999
+            },
+            "pressure": {
+              "mean": 6.199,
+              "std": 0.117,
+              "cohens_d": -0.031,
+              "separability_auc": 0.5069
+            },
+            "current": {
+              "mean": 16.332,
+              "std": 0.789,
+              "cohens_d": 2.397,
+              "separability_auc": 0.9533
+            },
+            "rpm": {
+              "mean": 1761.731,
+              "std": 15.846,
+              "cohens_d": -3.094,
+              "separability_auc": 0.9912
+            }
+          }
+        }
+      }
+    },
+    "M107": {
+      "fault_name": "Pressure drop",
+      "stages": {
+        "healthy_baseline": {
+          "count": 2600,
+          "mean_mahalanobis_dist": 2.163,
+          "max_mahalanobis_dist": 4.682,
+          "sensors": {
+            "vibration": {
+              "mean": 1.804,
+              "std": 0.223,
+              "cohens_d": 0.0,
+              "separability_auc": 0.5
+            },
+            "temperature": {
+              "mean": 48.03,
+              "std": 2.221,
+              "cohens_d": 0.0,
+              "separability_auc": 0.5
+            },
+            "pressure": {
+              "mean": 6.204,
+              "std": 0.119,
+              "cohens_d": 0.0,
+              "separability_auc": 0.5
+            },
+            "current": {
+              "mean": 14.53,
+              "std": 0.744,
+              "cohens_d": 0.0,
+              "separability_auc": 0.5
+            },
+            "rpm": {
+              "mean": 1799.743,
+              "std": 7.593,
+              "cohens_d": 0.0,
+              "separability_auc": 0.5
+            }
+          }
+        },
+        "incipient": {
+          "count": 400,
+          "mean_mahalanobis_dist": 3.558,
+          "max_mahalanobis_dist": 8.446,
+          "sensors": {
+            "vibration": {
+              "mean": 1.813,
+              "std": 0.224,
+              "cohens_d": 0.038,
+              "separability_auc": 0.5125
+            },
+            "temperature": {
+              "mean": 48.025,
+              "std": 2.098,
+              "cohens_d": -0.003,
+              "separability_auc": 0.502
+            },
+            "pressure": {
+              "mean": 5.918,
+              "std": 0.25,
+              "cohens_d": -1.463,
+              "separability_auc": 0.8498
+            },
+            "current": {
+              "mean": 15.19,
+              "std": 0.907,
+              "cohens_d": 0.796,
+              "separability_auc": 0.7085
+            },
+            "rpm": {
+              "mean": 1799.656,
+              "std": 7.43,
+              "cohens_d": -0.012,
+              "separability_auc": 0.5048
+            }
+          }
+        },
+        "moderate": {
+          "count": 500,
+          "mean_mahalanobis_dist": 11.74,
+          "max_mahalanobis_dist": 19.288,
+          "sensors": {
+            "vibration": {
+              "mean": 1.801,
+              "std": 0.214,
+              "cohens_d": -0.013,
+              "separability_auc": 0.5049
+            },
+            "temperature": {
+              "mean": 48.187,
+              "std": 2.249,
+              "cohens_d": 0.07,
+              "separability_auc": 0.5175
+            },
+            "pressure": {
+              "mean": 4.882,
+              "std": 0.426,
+              "cohens_d": -4.234,
+              "separability_auc": 1.0
+            },
+            "current": {
+              "mean": 17.166,
+              "std": 1.016,
+              "cohens_d": 2.963,
+              "separability_auc": 0.9855
+            },
+            "rpm": {
+              "mean": 1799.873,
+              "std": 7.125,
+              "cohens_d": 0.018,
+              "separability_auc": 0.5049
+            }
+          }
+        },
+        "severe": {
+          "count": 500,
+          "mean_mahalanobis_dist": 25.228,
+          "max_mahalanobis_dist": 34.399,
+          "sensors": {
+            "vibration": {
+              "mean": 1.777,
+              "std": 0.21,
+              "cohens_d": -0.125,
+              "separability_auc": 0.5375
+            },
+            "temperature": {
+              "mean": 47.658,
+              "std": 2.076,
+              "cohens_d": -0.173,
+              "separability_auc": 0.5494
+            },
+            "pressure": {
+              "mean": 3.292,
+              "std": 0.528,
+              "cohens_d": -7.612,
+              "separability_auc": 1.0
+            },
+            "current": {
+              "mean": 19.65,
+              "std": 1.099,
+              "cohens_d": 5.459,
+              "separability_auc": 1.0
+            },
+            "rpm": {
+              "mean": 1799.798,
+              "std": 7.063,
+              "cohens_d": 0.007,
+              "separability_auc": 0.502
+            }
+          }
+        }
+      }
+    },
+    "M109": {
+      "fault_name": "Lubrication failure",
+      "stages": {
+        "healthy_baseline": {
+          "count": 2600,
+          "mean_mahalanobis_dist": 2.112,
+          "max_mahalanobis_dist": 5.063,
+          "sensors": {
+            "vibration": {
+              "mean": 1.803,
+              "std": 0.215,
+              "cohens_d": 0.0,
+              "separability_auc": 0.5
+            },
+            "temperature": {
+              "mean": 48.014,
+              "std": 2.206,
+              "cohens_d": 0.0,
+              "separability_auc": 0.5
+            },
+            "pressure": {
+              "mean": 6.205,
+              "std": 0.122,
+              "cohens_d": 0.0,
+              "separability_auc": 0.5
+            },
+            "current": {
+              "mean": 14.544,
+              "std": 0.692,
+              "cohens_d": 0.0,
+              "separability_auc": 0.5
+            },
+            "rpm": {
+              "mean": 1800.039,
+              "std": 7.504,
+              "cohens_d": 0.0,
+              "separability_auc": 0.5
+            }
+          }
+        },
+        "incipient": {
+          "count": 400,
+          "mean_mahalanobis_dist": 3.365,
+          "max_mahalanobis_dist": 7.535,
+          "sensors": {
+            "vibration": {
+              "mean": 2.018,
+              "std": 0.395,
+              "cohens_d": 0.678,
+              "separability_auc": 0.6778
+            },
+            "temperature": {
+              "mean": 50.419,
+              "std": 2.817,
+              "cohens_d": 0.952,
+              "separability_auc": 0.7405
+            },
+            "pressure": {
+              "mean": 6.197,
+              "std": 0.119,
+              "cohens_d": -0.066,
+              "separability_auc": 0.5174
+            },
+            "current": {
+              "mean": 15.463,
+              "std": 1.195,
+              "cohens_d": 0.941,
+              "separability_auc": 0.7381
+            },
+            "rpm": {
+              "mean": 1800.058,
+              "std": 7.618,
+              "cohens_d": 0.003,
+              "separability_auc": 0.4992
+            }
+          }
+        },
+        "moderate": {
+          "count": 500,
+          "mean_mahalanobis_dist": 10.242,
+          "max_mahalanobis_dist": 18.468,
+          "sensors": {
+            "vibration": {
+              "mean": 2.993,
+              "std": 0.57,
+              "cohens_d": 2.767,
+              "separability_auc": 0.9795
+            },
+            "temperature": {
+              "mean": 59.202,
+              "std": 4.549,
+              "cohens_d": 3.132,
+              "separability_auc": 0.9908
+            },
+            "pressure": {
+              "mean": 6.201,
+              "std": 0.122,
+              "cohens_d": -0.032,
+              "separability_auc": 0.5082
+            },
+            "current": {
+              "mean": 19.557,
+              "std": 1.892,
+              "cohens_d": 3.522,
+              "separability_auc": 0.9993
+            },
+            "rpm": {
+              "mean": 1799.9,
+              "std": 7.326,
+              "cohens_d": -0.019,
+              "separability_auc": 0.5044
+            }
+          }
+        },
+        "severe": {
+          "count": 500,
+          "mean_mahalanobis_dist": 23.307,
+          "max_mahalanobis_dist": 33.644,
+          "sensors": {
+            "vibration": {
+              "mean": 4.813,
+              "std": 0.766,
+              "cohens_d": 5.358,
+              "separability_auc": 1.0
+            },
+            "temperature": {
+              "mean": 72.129,
+              "std": 4.975,
+              "cohens_d": 6.272,
+              "separability_auc": 1.0
+            },
+            "pressure": {
+              "mean": 6.193,
+              "std": 0.125,
+              "cohens_d": -0.095,
+              "separability_auc": 0.5254
+            },
+            "current": {
+              "mean": 26.131,
+              "std": 2.366,
+              "cohens_d": 6.653,
+              "separability_auc": 1.0
+            },
+            "rpm": {
+              "mean": 1799.813,
+              "std": 7.395,
+              "cohens_d": -0.03,
+              "separability_auc": 0.5058
+            }
+          }
+        }
+      }
+    }
+  },
+  "machine_confounding": {
+    "vibration": {
+      "machine_means": {
+        "M101": 1.804,
+        "M102": 1.808,
+        "M103": 1.8,
+        "M104": 1.804,
+        "M105": 1.805,
+        "M106": 1.806,
+        "M107": 1.804,
+        "M108": 1.807,
+        "M109": 1.803,
+        "M110": 1.802
+      },
+      "range": 0.008,
+      "cv_pct": 0.13
+    },
+    "temperature": {
+      "machine_means": {
+        "M101": 48.021,
+        "M102": 48.044,
+        "M103": 48.02,
+        "M104": 48.053,
+        "M105": 48.009,
+        "M106": 47.989,
+        "M107": 48.03,
+        "M108": 48.014,
+        "M109": 48.014,
+        "M110": 47.991
+      },
+      "range": 0.063,
+      "cv_pct": 0.04
+    },
+    "pressure": {
+      "machine_means": {
+        "M101": 6.204,
+        "M102": 6.202,
+        "M103": 6.203,
+        "M104": 6.202,
+        "M105": 6.2,
+        "M106": 6.204,
+        "M107": 6.204,
+        "M108": 6.198,
+        "M109": 6.205,
+        "M110": 6.203
+      },
+      "range": 0.007,
+      "cv_pct": 0.03
+    },
+    "current": {
+      "machine_means": {
+        "M101": 14.525,
+        "M102": 14.517,
+        "M103": 14.532,
+        "M104": 14.526,
+        "M105": 14.539,
+        "M106": 14.513,
+        "M107": 14.53,
+        "M108": 14.524,
+        "M109": 14.544,
+        "M110": 14.522
+      },
+      "range": 0.031,
+      "cv_pct": 0.06
+    },
+    "rpm": {
+      "machine_means": {
+        "M101": 1799.929,
+        "M102": 1800.036,
+        "M103": 1799.778,
+        "M104": 1799.893,
+        "M105": 1800.115,
+        "M106": 1800.115,
+        "M107": 1799.743,
+        "M108": 1800.187,
+        "M109": 1800.039,
+        "M110": 1799.897
+      },
+      "range": 0.444,
+      "cv_pct": 0.01
+    }
+  }
+}

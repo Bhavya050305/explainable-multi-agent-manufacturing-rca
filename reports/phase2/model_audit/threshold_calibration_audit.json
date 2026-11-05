@@ -1,0 +1,17 @@
+{
+  "lstm_threshold": {
+    "saved_in_metadata": 0.901464,
+    "recalculated_p99": 0.9014636874198914,
+    "recalculated_p95": 0.8439136743545532,
+    "delta_from_recalc": 3.125801086856228e-07,
+    "normal_val_sample_count": 348,
+    "test_leakage_detected": false,
+    "verdict": "VERIFIED_ACCURATE"
+  },
+  "isolation_forest_threshold": {
+    "saved_in_metadata": 0.0269,
+    "calibration_dataset": "sensor_val.csv (N=6000)",
+    "method": "Validation PR-Curve Max F1",
+    "verdict": "VERIFIED_ACCURATE"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "isolation_forest": {
+    "verified_metrics": {
+      "accuracy": 0.9598333333333333,
+      "precision": 0.9087466868610374,
+      "recall": 1.0,
+      "f1_score": 0.9521920253917874,
+      "specificity": 0.9330555555555555,
+      "false_positive_rate": 0.06694444444444445,
+      "roc_auc": 0.9979276620370371,
+      "pr_auc": 0.9965101548905992,
+      "confusion_matrix": {
+        "tn": 3359,
+        "fp": 241,
+        "fn": 0,
+        "tp": 2400
+      }
+    },
+    "discrepancy_with_reported": false
+  },
+  "lstm_autoencoder": {
+    "verified_metrics": {
+      "accuracy": 0.993103448275862,
+      "precision": 0.9830508474576272,
+      "recall": 1.0,
+      "f1_score": 0.9914529914529915,
+      "specificity": 0.9885057471264368,
+      "false_positive_rate": 0.011494252873563218,
+      "roc_auc": 1.0,
+      "pr_auc": 1.0,
+      "confusion_matrix": {
+        "tn": 344,
+        "fp": 4,
+        "fn": 0,
+        "tp": 232
+      }
+    },
+    "discrepancy_with_reported": false,
+    "roc_auc_mathematical_consistency": {
+      "max_normal_reconstruction_error": 0.96086276,
+      "min_anomalous_reconstruction_error": 24.762423,
+      "separation_gap": 23.801560239999997,
+      "mathematical_explanation": "The minimum anomalous sequence error (24.7624) is strictly greater than the maximum normal sequence error (0.9609). ROC-AUC evaluates the ranking capability of continuous scores across all possible cutoffs. Because every anomaly has an error strictly higher than every normal sample, the ranking is mathematically perfect, yielding ROC-AUC = 1.0000. The 4 false positives occur because the fixed operational threshold (0.9015) was set at the 99th percentile of normal VALIDATION errors, causing exactly 4 normal test sequences (with errors between 0.9015 and 0.9609) to be classified positive. This is 100% mathematically consistent and reflects the distinction between rank order (AUC) and a fixed decision threshold (Confusion Matrix)."
+    }
+  }
+}

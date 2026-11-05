@@ -1,0 +1,114 @@
+{
+  "pipeline_version": "1.0.0",
+  "feature_columns": [
+    "vibration",
+    "temperature",
+    "pressure",
+    "current",
+    "rpm"
+  ],
+  "window_size": 30,
+  "stride": 10,
+  "raw_counts": {
+    "train_rows": 28000,
+    "val_rows": 6000,
+    "test_rows": 6000,
+    "total_rows": 40000
+  },
+  "sequence_counts": {
+    "train_sequences": 2780,
+    "val_sequences": 580,
+    "test_sequences": 580,
+    "total_clean_sequences": 3940,
+    "raw_windows_before_fix": 3980,
+    "straddling_windows_eliminated": 40
+  },
+  "sequence_shapes": {
+    "train": [
+      2780,
+      30,
+      5
+    ],
+    "val": [
+      580,
+      30,
+      5
+    ],
+    "test": [
+      580,
+      30,
+      5
+    ]
+  },
+  "scaler_parameters": {
+    "vibration": {
+      "mean": 1.8045957857142858,
+      "std": 0.2266475086610038,
+      "var": 0.0513690931822398,
+      "n_samples": 28000
+    },
+    "temperature": {
+      "mean": 47.998050357142866,
+      "std": 2.1957484964373797,
+      "var": 4.821311459607014,
+      "n_samples": 28000
+    },
+    "pressure": {
+      "mean": 6.201729285714285,
+      "std": 0.12222275740655349,
+      "var": 0.014938402428061224,
+      "n_samples": 28000
+    },
+    "current": {
+      "mean": 14.525172142857144,
+      "std": 0.7111345304278487,
+      "var": 0.5057123203668368,
+      "n_samples": 28000
+    },
+    "rpm": {
+      "mean": 1799.94745,
+      "std": 7.495044596098144,
+      "var": 56.1756934975,
+      "n_samples": 28000
+    }
+  },
+  "anomaly_distribution_sequences": {
+    "train": {
+      "normal": 2700,
+      "anomaly": 80,
+      "anomaly_percentage": 2.88
+    },
+    "val": {
+      "normal": 348,
+      "anomaly": 232,
+      "anomaly_percentage": 40.0
+    },
+    "test": {
+      "normal": 348,
+      "anomaly": 232,
+      "anomaly_percentage": 40.0
+    },
+    "total": {
+      "normal": 3396,
+      "anomaly": 544,
+      "anomaly_percentage": 13.81
+    }
+  },
+  "validation_results": {
+    "zero_missing_values": true,
+    "zero_duplicates": true,
+    "zero_boundary_crossing_windows": true,
+    "eliminated_straddling_windows_count": 40,
+    "exact_40_straddling_eliminated": true,
+    "zero_cross_machine_windows": true,
+    "train_shape_valid": true,
+    "val_shape_valid": true,
+    "test_shape_valid": true,
+    "dtype_is_float32": true,
+    "scaler_train_zero_mean": true,
+    "scaler_train_unit_variance": true,
+    "timestamps_preserved": true,
+    "labels_preserved": true,
+    "all_validation_checks_passed": true
+  }
+}

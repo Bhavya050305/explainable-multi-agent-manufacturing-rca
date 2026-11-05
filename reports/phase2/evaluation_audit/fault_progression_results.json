@@ -1,0 +1,486 @@
+{
+  "M102": {
+    "fault_type": "overheating",
+    "fault_onset_step": 2600,
+    "fault_onset_timestamp": "2026-10-31 15:20:00",
+    "severe_failure_step": 3600,
+    "severe_failure_timestamp": "2026-11-04 02:40:00",
+    "isolation_forest_early_warning": {
+      "earliest_detection_step": 2611,
+      "earliest_detection_timestamp": "2026-10-31 16:15:00",
+      "detection_delay_minutes": 55,
+      "warning_lead_time_hours": 82.41666666666667
+    },
+    "lstm_early_warning": {
+      "earliest_detection_window_end_step": 2869,
+      "earliest_detection_timestamp": "2026-11-01 13:45:00",
+      "detection_delay_minutes": 1345,
+      "warning_lead_time_hours": 60.916666666666664
+    },
+    "stages": {
+      "Stage 0 (Normal Baseline)": {
+        "step_range": [
+          0,
+          2599
+        ],
+        "duration_hours": 216.66666666666666,
+        "point_level_isolation_forest": {
+          "total_readings": 2600,
+          "actual_anomalies": 0,
+          "detected_anomalies": 177,
+          "recall": 0.0,
+          "precision": 0.0,
+          "f1_score": 0.0,
+          "mean_anomaly_score": -0.046866364777088165
+        },
+        "sequence_level_lstm": {
+          "total_windows": 258,
+          "actual_anomalies": 0,
+          "detected_anomalies": 3,
+          "recall": 0.0,
+          "precision": 0.0,
+          "f1_score": 0.0,
+          "mean_reconstruction_error": 0.7003677487373352
+        }
+      },
+      "Stage 1 (Incipient Degradation)": {
+        "step_range": [
+          2600,
+          3199
+        ],
+        "duration_hours": 50.0,
+        "point_level_isolation_forest": {
+          "total_readings": 600,
+          "actual_anomalies": 600,
+          "detected_anomalies": 310,
+          "recall": 0.5166666666666667,
+          "precision": 1.0,
+          "f1_score": 0.6813186813186813,
+          "mean_anomaly_score": 0.023073049262166023
+        },
+        "sequence_level_lstm": {
+          "total_windows": 60,
+          "actual_anomalies": 60,
+          "detected_anomalies": 34,
+          "recall": 0.5666666666666667,
+          "precision": 1.0,
+          "f1_score": 0.723404255319149,
+          "mean_reconstruction_error": 1.8361412286758423
+        }
+      },
+      "Stage 2 (Moderate Degradation)": {
+        "step_range": [
+          3200,
+          3599
+        ],
+        "duration_hours": 33.333333333333336,
+        "point_level_isolation_forest": {
+          "total_readings": 400,
+          "actual_anomalies": 400,
+          "detected_anomalies": 400,
+          "recall": 1.0,
+          "precision": 1.0,
+          "f1_score": 1.0,
+          "mean_anomaly_score": 0.0876203179359436
+        },
+        "sequence_level_lstm": {
+          "total_windows": 40,
+          "actual_anomalies": 40,
+          "detected_anomalies": 40,
+          "recall": 1.0,
+          "precision": 1.0,
+          "f1_score": 1.0,
+          "mean_reconstruction_error": 20.72640037536621
+        }
+      },
+      "Stage 3 (Severe Failure)": {
+        "step_range": [
+          3600,
+          3999
+        ],
+        "duration_hours": 33.333333333333336,
+        "point_level_isolation_forest": {
+          "total_readings": 400,
+          "actual_anomalies": 400,
+          "detected_anomalies": 400,
+          "recall": 1.0,
+          "precision": 1.0,
+          "f1_score": 1.0,
+          "mean_anomaly_score": 0.08778142929077148
+        },
+        "sequence_level_lstm": {
+          "total_windows": 40,
+          "actual_anomalies": 40,
+          "detected_anomalies": 40,
+          "recall": 1.0,
+          "precision": 1.0,
+          "f1_score": 1.0,
+          "mean_reconstruction_error": 73.99641418457031
+        }
+      }
+    }
+  },
+  "M104": {
+    "fault_type": "bearing_wear",
+    "fault_onset_step": 2600,
+    "fault_onset_timestamp": "2026-10-31 15:20:00",
+    "severe_failure_step": 3600,
+    "severe_failure_timestamp": "2026-11-04 02:40:00",
+    "isolation_forest_early_warning": {
+      "earliest_detection_step": 2600,
+      "earliest_detection_timestamp": "2026-10-31 15:20:00",
+      "detection_delay_minutes": 0,
+      "warning_lead_time_hours": 83.33333333333333
+    },
+    "lstm_early_warning": {
+      "earliest_detection_window_end_step": 2609,
+      "earliest_detection_timestamp": "2026-10-31 16:05:00",
+      "detection_delay_minutes": 45,
+      "warning_lead_time_hours": 82.58333333333333
+    },
+    "stages": {
+      "Stage 0 (Normal Baseline)": {
+        "step_range": [
+          0,
+          2599
+        ],
+        "duration_hours": 216.66666666666666,
+        "point_level_isolation_forest": {
+          "total_readings": 2600,
+          "actual_anomalies": 0,
+          "detected_anomalies": 184,
+          "recall": 0.0,
+          "precision": 0.0,
+          "f1_score": 0.0,
+          "mean_anomaly_score": -0.04734623804688454
+        },
+        "sequence_level_lstm": {
+          "total_windows": 258,
+          "actual_anomalies": 0,
+          "detected_anomalies": 4,
+          "recall": 0.0,
+          "precision": 0.0,
+          "f1_score": 0.0,
+          "mean_reconstruction_error": 0.6961647272109985
+        }
+      },
+      "Stage 1 (Incipient Degradation)": {
+        "step_range": [
+          2600,
+          3199
+        ],
+        "duration_hours": 50.0,
+        "point_level_isolation_forest": {
+          "total_readings": 600,
+          "actual_anomalies": 600,
+          "detected_anomalies": 383,
+          "recall": 0.6383333333333333,
+          "precision": 1.0,
+          "f1_score": 0.7792472024415056,
+          "mean_anomaly_score": 0.04462707042694092
+        },
+        "sequence_level_lstm": {
+          "total_windows": 60,
+          "actual_anomalies": 60,
+          "detected_anomalies": 59,
+          "recall": 0.9833333333333333,
+          "precision": 1.0,
+          "f1_score": 0.9915966386554622,
+          "mean_reconstruction_error": 2.7612125873565674
+        }
+      },
+      "Stage 2 (Moderate Degradation)": {
+        "step_range": [
+          3200,
+          3599
+        ],
+        "duration_hours": 33.333333333333336,
+        "point_level_isolation_forest": {
+          "total_readings": 400,
+          "actual_anomalies": 400,
+          "detected_anomalies": 400,
+          "recall": 1.0,
+          "precision": 1.0,
+          "f1_score": 1.0,
+          "mean_anomaly_score": 0.14975965023040771
+        },
+        "sequence_level_lstm": {
+          "total_windows": 40,
+          "actual_anomalies": 40,
+          "detected_anomalies": 40,
+          "recall": 1.0,
+          "precision": 1.0,
+          "f1_score": 1.0,
+          "mean_reconstruction_error": 35.44635772705078
+        }
+      },
+      "Stage 3 (Severe Failure)": {
+        "step_range": [
+          3600,
+          3999
+        ],
+        "duration_hours": 33.333333333333336,
+        "point_level_isolation_forest": {
+          "total_readings": 400,
+          "actual_anomalies": 400,
+          "detected_anomalies": 400,
+          "recall": 1.0,
+          "precision": 1.0,
+          "f1_score": 1.0,
+          "mean_anomaly_score": 0.18881557881832123
+        },
+        "sequence_level_lstm": {
+          "total_windows": 40,
+          "actual_anomalies": 40,
+          "detected_anomalies": 40,
+          "recall": 1.0,
+          "precision": 1.0,
+          "f1_score": 1.0,
+          "mean_reconstruction_error": 171.79733276367188
+        }
+      }
+    }
+  },
+  "M107": {
+    "fault_type": "pressure_drop",
+    "fault_onset_step": 2600,
+    "fault_onset_timestamp": "2026-10-31 15:20:00",
+    "severe_failure_step": 3600,
+    "severe_failure_timestamp": "2026-11-04 02:40:00",
+    "isolation_forest_early_warning": {
+      "earliest_detection_step": 2602,
+      "earliest_detection_timestamp": "2026-10-31 15:30:00",
+      "detection_delay_minutes": 10,
+      "warning_lead_time_hours": 83.16666666666667
+    },
+    "lstm_early_warning": {
+      "earliest_detection_window_end_step": 2629,
+      "earliest_detection_timestamp": "2026-10-31 17:45:00",
+      "detection_delay_minutes": 145,
+      "warning_lead_time_hours": 80.91666666666667
+    },
+    "stages": {
+      "Stage 0 (Normal Baseline)": {
+        "step_range": [
+          0,
+          2599
+        ],
+        "duration_hours": 216.66666666666666,
+        "point_level_isolation_forest": {
+          "total_readings": 2600,
+          "actual_anomalies": 0,
+          "detected_anomalies": 175,
+          "recall": 0.0,
+          "precision": 0.0,
+          "f1_score": 0.0,
+          "mean_anomaly_score": -0.044586312025785446
+        },
+        "sequence_level_lstm": {
+          "total_windows": 258,
+          "actual_anomalies": 0,
+          "detected_anomalies": 16,
+          "recall": 0.0,
+          "precision": 0.0,
+          "f1_score": 0.0,
+          "mean_reconstruction_error": 0.7237403988838196
+        }
+      },
+      "Stage 1 (Incipient Degradation)": {
+        "step_range": [
+          2600,
+          3199
+        ],
+        "duration_hours": 50.0,
+        "point_level_isolation_forest": {
+          "total_readings": 600,
+          "actual_anomalies": 600,
+          "detected_anomalies": 375,
+          "recall": 0.625,
+          "precision": 1.0,
+          "f1_score": 0.7692307692307693,
+          "mean_anomaly_score": 0.04188235104084015
+        },
+        "sequence_level_lstm": {
+          "total_windows": 60,
+          "actual_anomalies": 60,
+          "detected_anomalies": 37,
+          "recall": 0.6166666666666667,
+          "precision": 1.0,
+          "f1_score": 0.7628865979381443,
+          "mean_reconstruction_error": 3.3464691638946533
+        }
+      },
+      "Stage 2 (Moderate Degradation)": {
+        "step_range": [
+          3200,
+          3599
+        ],
+        "duration_hours": 33.333333333333336,
+        "point_level_isolation_forest": {
+          "total_readings": 400,
+          "actual_anomalies": 400,
+          "detected_anomalies": 400,
+          "recall": 1.0,
+          "precision": 1.0,
+          "f1_score": 1.0,
+          "mean_anomaly_score": 0.11087457835674286
+        },
+        "sequence_level_lstm": {
+          "total_windows": 40,
+          "actual_anomalies": 40,
+          "detected_anomalies": 40,
+          "recall": 1.0,
+          "precision": 1.0,
+          "f1_score": 1.0,
+          "mean_reconstruction_error": 41.35041427612305
+        }
+      },
+      "Stage 3 (Severe Failure)": {
+        "step_range": [
+          3600,
+          3999
+        ],
+        "duration_hours": 33.333333333333336,
+        "point_level_isolation_forest": {
+          "total_readings": 400,
+          "actual_anomalies": 400,
+          "detected_anomalies": 400,
+          "recall": 1.0,
+          "precision": 1.0,
+          "f1_score": 1.0,
+          "mean_anomaly_score": 0.11142471432685852
+        },
+        "sequence_level_lstm": {
+          "total_windows": 40,
+          "actual_anomalies": 40,
+          "detected_anomalies": 40,
+          "recall": 1.0,
+          "precision": 1.0,
+          "f1_score": 1.0,
+          "mean_reconstruction_error": 128.3308868408203
+        }
+      }
+    }
+  },
+  "M109": {
+    "fault_type": "lubrication_failure",
+    "fault_onset_step": 2600,
+    "fault_onset_timestamp": "2026-10-31 15:20:00",
+    "severe_failure_step": 3600,
+    "severe_failure_timestamp": "2026-11-04 02:40:00",
+    "isolation_forest_early_warning": {
+      "earliest_detection_step": 2605,
+      "earliest_detection_timestamp": "2026-10-31 15:45:00",
+      "detection_delay_minutes": 25,
+      "warning_lead_time_hours": 82.91666666666667
+    },
+    "lstm_early_warning": {
+      "earliest_detection_window_end_step": 2619,
+      "earliest_detection_timestamp": "2026-10-31 16:55:00",
+      "detection_delay_minutes": 95,
+      "warning_lead_time_hours": 81.75
+    },
+    "stages": {
+      "Stage 0 (Normal Baseline)": {
+        "step_range": [
+          0,
+          2599
+        ],
+        "duration_hours": 216.66666666666666,
+        "point_level_isolation_forest": {
+          "total_readings": 2600,
+          "actual_anomalies": 0,
+          "detected_anomalies": 171,
+          "recall": 0.0,
+          "precision": 0.0,
+          "f1_score": 0.0,
+          "mean_anomaly_score": -0.047377731651067734
+        },
+        "sequence_level_lstm": {
+          "total_windows": 258,
+          "actual_anomalies": 0,
+          "detected_anomalies": 2,
+          "recall": 0.0,
+          "precision": 0.0,
+          "f1_score": 0.0,
+          "mean_reconstruction_error": 0.6836896538734436
+        }
+      },
+      "Stage 1 (Incipient Degradation)": {
+        "step_range": [
+          2600,
+          3199
+        ],
+        "duration_hours": 50.0,
+        "point_level_isolation_forest": {
+          "total_readings": 600,
+          "actual_anomalies": 600,
+          "detected_anomalies": 389,
+          "recall": 0.6483333333333333,
+          "precision": 1.0,
+          "f1_score": 0.7866531850353893,
+          "mean_anomaly_score": 0.06524252146482468
+        },
+        "sequence_level_lstm": {
+          "total_windows": 60,
+          "actual_anomalies": 60,
+          "detected_anomalies": 55,
+          "recall": 0.9166666666666666,
+          "precision": 1.0,
+          "f1_score": 0.9565217391304348,
+          "mean_reconstruction_error": 2.8413004875183105
+        }
+      },
+      "Stage 2 (Moderate Degradation)": {
+        "step_range": [
+          3200,
+          3599
+        ],
+        "duration_hours": 33.333333333333336,
+        "point_level_isolation_forest": {
+          "total_readings": 400,
+          "actual_anomalies": 400,
+          "detected_anomalies": 400,
+          "recall": 1.0,
+          "precision": 1.0,
+          "f1_score": 1.0,
+          "mean_anomaly_score": 0.16608989238739014
+        },
+        "sequence_level_lstm": {
+          "total_windows": 40,
+          "actual_anomalies": 40,
+          "detected_anomalies": 40,
+          "recall": 1.0,
+          "precision": 1.0,
+          "f1_score": 1.0,
+          "mean_reconstruction_error": 32.8443603515625
+        }
+      },
+      "Stage 3 (Severe Failure)": {
+        "step_range": [
+          3600,
+          3999
+        ],
+        "duration_hours": 33.333333333333336,
+        "point_level_isolation_forest": {
+          "total_readings": 400,
+          "actual_anomalies": 400,
+          "detected_anomalies": 400,
+          "recall": 1.0,
+          "precision": 1.0,
+          "f1_score": 1.0,
+          "mean_anomaly_score": 0.16903918981552124
+        },
+        "sequence_level_lstm": {
+          "total_windows": 40,
+          "actual_anomalies": 40,
+          "detected_anomalies": 40,
+          "recall": 1.0,
+          "precision": 1.0,
+          "f1_score": 1.0,
+          "mean_reconstruction_error": 117.5645523071289
+        }
+      }
+    }
+  }
+}
