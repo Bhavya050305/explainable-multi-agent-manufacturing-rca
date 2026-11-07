@@ -1,41 +1,48 @@
-.PHONY: setup seed train index dev test build clean help
+.PHONY: setup data seed preprocess train evaluate test clean help
+
+# Phase 1-2 targets only. The agents, MCP server and frontend are Phase 3 and
+# do not exist in the repository yet, so no target refers to them.
 
 help:
 	@echo "ManuMind AI - Available Make Targets:"
-	@echo "  make setup   - Install dependencies for backend and frontend"
-	@echo "  make seed    - Generate synthetic data and seed database"
-	@echo "  make train   - Train ML models (Isolation Forest, Autoencoder, Failure Classifier)"
-	@echo "  make index   - Build RAG vector index over SOPs and incident reports"
-	@echo "  make dev     - Run backend and frontend concurrently"
-	@echo "  make test    - Run all pytest test suites"
-	@echo "  make build   - Build backend and frontend artifacts"
-	@echo "  make clean   - Clean cache and temp files"
+	@echo "  make setup       - Install backend dependencies"
+	@echo "  make data        - Generate synthetic sensors, maintenance records and defect images"
+	@echo "  make seed        - Load generated data into the database"
+	@echo "  make preprocess  - Scale sensor data and build sequence windows"
+	@echo "  make train       - Train Isolation Forest, LSTM autoencoder and ResNet defect classifier"
+	@echo "  make evaluate    - Evaluate trained models and regenerate reports"
+	@echo "  make test        - Run the pytest suite in backend/tests"
+	@echo "  make clean       - Remove Python cache folders"
 
 setup:
 	python -m pip install -r backend/requirements.txt
-	cd frontend && npm install
+
+data:
+	python ml/data_generator/generate_sensor_data.py
+	python ml/data_generator/generate_maintenance.py
+	python ml/data_generator/generate_defect_images.py
+	python ml/data_generator/generate_stats_report.py
 
 seed:
 	python data/seed.py
 
+preprocess:
+	python -m backend.app.ml.preprocessing.sensor_preprocessing
+
 train:
-	python ml/training/train_isolation_forest.py
-	python ml/training/train_lstm_autoencoder.py
-	python ml/training/train_failure_classifier.py
-	python ml/training/train_defect_classifier.py
-	python ml/evaluate.py
+	python -m backend.app.ml.isolation_forest.train
+	python -m backend.app.ml.lstm_autoencoder.train
+	python -m backend.app.ml.defect_classifier.train
 
-index:
-	python knowledge_base/build_index.py
-
-dev:
-	python -m uvicorn backend.app.main:app --reload --port 8000 & cd frontend && npm run dev
+evaluate:
+	python -m backend.app.ml.isolation_forest.evaluate
+	python -m backend.app.ml.lstm_autoencoder.evaluate
+	python -m backend.app.ml.sensor_attribution.evaluate
+	python -m backend.app.ml.shap_explainability.evaluate
+	python -m backend.app.ml.defect_classifier.evaluate
 
 test:
-	pytest backend/tests agents/tests mcp_server/tests -v
-
-build:
-	cd frontend && npm run build
+	python -m pytest backend/tests -v
 
 clean:
 	find . -type d -name "__pycache__" -exec rm -r {} +
