@@ -1,0 +1,376 @@
+{
+  "model_path": "ml/models_store/resnet_defect_classifier.keras",
+  "evaluation_timestamp": "2026-11-07T11:08:00Z",
+  "validation_metrics": {
+    "sample_count": 88,
+    "accuracy": 1.0,
+    "macro_f1": 1.0,
+    "macro_precision": 1.0,
+    "macro_recall": 1.0,
+    "weighted_f1": 1.0,
+    "macro_roc_auc": 1.0,
+    "per_class": {
+      "surface_crack": {
+        "class_index": 0,
+        "support": 22,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "specificity": 1.0,
+        "true_positives": 22,
+        "false_positives": 0,
+        "true_negatives": 66,
+        "false_negatives": 0
+      },
+      "spalling": {
+        "class_index": 1,
+        "support": 22,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "specificity": 1.0,
+        "true_positives": 22,
+        "false_positives": 0,
+        "true_negatives": 66,
+        "false_negatives": 0
+      },
+      "dent": {
+        "class_index": 2,
+        "support": 22,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "specificity": 1.0,
+        "true_positives": 22,
+        "false_positives": 0,
+        "true_negatives": 66,
+        "false_negatives": 0
+      },
+      "normal_surface": {
+        "class_index": 3,
+        "support": 22,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "specificity": 1.0,
+        "true_positives": 22,
+        "false_positives": 0,
+        "true_negatives": 66,
+        "false_negatives": 0
+      }
+    },
+    "confusion_matrix": {
+      "classes": [
+        "surface_crack",
+        "spalling",
+        "dent",
+        "normal_surface"
+      ],
+      "raw_counts": [
+        [
+          22,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          22,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          22,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          22
+        ]
+      ],
+      "normalized_percentages": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ]
+    },
+    "roc_curves": {
+      "surface_crack": {
+        "auc": 1.0,
+        "fpr": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "tpr": [
+          0.0,
+          0.04545,
+          1.0,
+          1.0
+        ]
+      },
+      "spalling": {
+        "auc": 1.0,
+        "fpr": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "tpr": [
+          0.0,
+          0.04545,
+          1.0,
+          1.0
+        ]
+      },
+      "dent": {
+        "auc": 1.0,
+        "fpr": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "tpr": [
+          0.0,
+          0.04545,
+          1.0,
+          1.0
+        ]
+      },
+      "normal_surface": {
+        "auc": 1.0,
+        "fpr": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "tpr": [
+          0.0,
+          0.04545,
+          1.0,
+          1.0
+        ]
+      }
+    }
+  },
+  "latency_benchmark": {
+    "mean_latency_ms": 156.57,
+    "median_latency_ms": 159.39,
+    "p95_latency_ms": 214.09,
+    "min_latency_ms": 101.89,
+    "max_latency_ms": 259.64,
+    "throughput_images_per_sec": 6.4,
+    "iterations": 100
+  },
+  "frozen_test_evaluated": true,
+  "test_metrics": {
+    "sample_count": 92,
+    "accuracy": 1.0,
+    "macro_f1": 1.0,
+    "macro_precision": 1.0,
+    "macro_recall": 1.0,
+    "weighted_f1": 1.0,
+    "macro_roc_auc": 1.0,
+    "per_class": {
+      "surface_crack": {
+        "class_index": 0,
+        "support": 23,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "specificity": 1.0,
+        "true_positives": 23,
+        "false_positives": 0,
+        "true_negatives": 69,
+        "false_negatives": 0
+      },
+      "spalling": {
+        "class_index": 1,
+        "support": 23,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "specificity": 1.0,
+        "true_positives": 23,
+        "false_positives": 0,
+        "true_negatives": 69,
+        "false_negatives": 0
+      },
+      "dent": {
+        "class_index": 2,
+        "support": 23,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "specificity": 1.0,
+        "true_positives": 23,
+        "false_positives": 0,
+        "true_negatives": 69,
+        "false_negatives": 0
+      },
+      "normal_surface": {
+        "class_index": 3,
+        "support": 23,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "specificity": 1.0,
+        "true_positives": 23,
+        "false_positives": 0,
+        "true_negatives": 69,
+        "false_negatives": 0
+      }
+    },
+    "confusion_matrix": {
+      "classes": [
+        "surface_crack",
+        "spalling",
+        "dent",
+        "normal_surface"
+      ],
+      "raw_counts": [
+        [
+          23,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          23,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          23,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          23
+        ]
+      ],
+      "normalized_percentages": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ]
+    },
+    "roc_curves": {
+      "surface_crack": {
+        "auc": 1.0,
+        "fpr": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "tpr": [
+          0.0,
+          0.04348,
+          1.0,
+          1.0
+        ]
+      },
+      "spalling": {
+        "auc": 1.0,
+        "fpr": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "tpr": [
+          0.0,
+          0.04348,
+          1.0,
+          1.0
+        ]
+      },
+      "dent": {
+        "auc": 1.0,
+        "fpr": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "tpr": [
+          0.0,
+          0.04348,
+          1.0,
+          1.0
+        ]
+      },
+      "normal_surface": {
+        "auc": 1.0,
+        "fpr": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "tpr": [
+          0.0,
+          0.04348,
+          1.0,
+          1.0
+        ]
+      }
+    }
+  }
+}
