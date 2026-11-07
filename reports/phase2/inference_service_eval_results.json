@@ -1,0 +1,119 @@
+{
+  "evaluation_title": "ManuMind AI \u2014 Unified Inference Service Verification",
+  "timestamp": "2026-11-07T12:32:30Z",
+  "system_environment": {
+    "os": "Windows",
+    "os_release": "10",
+    "os_version": "10.0.26300",
+    "machine": "AMD64",
+    "processor": "Intel64 Family 6 Model 154 Stepping 4, GenuineIntel",
+    "python_version": "3.11.9",
+    "tensorflow_version": "2.21.0",
+    "sklearn_version": "1.9.0",
+    "shap_version": "0.51.0",
+    "numpy_version": "2.4.6"
+  },
+  "warmup_status": {
+    "scaler": "LOADED",
+    "isolation_forest": "WARMED",
+    "lstm_autoencoder": "WARMED",
+    "sensor_attribution": "WARMED",
+    "shap_explainer": "WARMED",
+    "defect_classifier": "WARMED"
+  },
+  "numerical_parity": {
+    "isolation_forest_parity": {
+      "direct_score": 0.19086815416812897,
+      "service_score": 0.190868,
+      "absolute_difference": 1.541681289574104e-07,
+      "parity_passed": true
+    },
+    "lstm_autoencoder_parity": {
+      "direct_reconstruction_error": 852.2367553710938,
+      "service_reconstruction_error": 852.236755,
+      "absolute_difference": 3.71093733519956e-07,
+      "parity_passed": true
+    },
+    "defect_classifier_parity": {
+      "direct_confidence": 0.8191,
+      "service_confidence": 0.8191,
+      "max_probability_difference": 0.0,
+      "parity_passed": true
+    },
+    "sensor_attribution_parity": {
+      "dominant_feature_match": true,
+      "max_pct_difference": 0.0,
+      "parity_passed": true
+    },
+    "shap_additivity": {
+      "base_value": -0.047782257284656585,
+      "model_output": 0.1908681550802398,
+      "additivity_error": 5.551115123125783e-17,
+      "additivity_passed": true
+    },
+    "all_parity_checks_passed": true
+  },
+  "latency_benchmarks": {
+    "benchmark_parameters": {
+      "warmup_iterations": 10,
+      "timed_iterations": 100,
+      "timer": "time.perf_counter",
+      "wrapper_overhead_target_ms": 5.0
+    },
+    "sensor_anomaly_isolation_forest": {
+      "direct_model": {
+        "mean_ms": 16.7829,
+        "median_ms": 15.977,
+        "p95_ms": 21.811,
+        "min_ms": 12.0133,
+        "max_ms": 39.0948
+      },
+      "unified_service": {
+        "mean_ms": 15.074,
+        "median_ms": 15.4955,
+        "p95_ms": 19.0923,
+        "min_ms": 10.9101,
+        "max_ms": 22.7847
+      },
+      "wrapper_overhead_mean_ms": -1.7089,
+      "meets_exploratory_target": true
+    },
+    "sequence_anomaly_lstm_autoencoder": {
+      "direct_model": {
+        "mean_ms": 104.0349,
+        "median_ms": 96.901,
+        "p95_ms": 135.8368,
+        "min_ms": 75.6413,
+        "max_ms": 284.6482
+      },
+      "unified_service": {
+        "mean_ms": 871.2862,
+        "median_ms": 108.6138,
+        "p95_ms": 375.3905,
+        "min_ms": 76.9833,
+        "max_ms": 72563.6963
+      },
+      "wrapper_overhead_mean_ms": 767.2513,
+      "meets_exploratory_target": false
+    },
+    "defect_classifier_compact_resnet": {
+      "direct_model": {
+        "mean_ms": 91.857,
+        "median_ms": 87.5402,
+        "p95_ms": 129.2082,
+        "min_ms": 67.2868,
+        "max_ms": 156.8008
+      },
+      "unified_service": {
+        "mean_ms": 95.8319,
+        "median_ms": 90.1619,
+        "p95_ms": 135.4578,
+        "min_ms": 69.6017,
+        "max_ms": 196.2241
+      },
+      "wrapper_overhead_mean_ms": 3.9749,
+      "meets_exploratory_target": true
+    }
+  },
+  "overall_status": "PASSED"
+}
