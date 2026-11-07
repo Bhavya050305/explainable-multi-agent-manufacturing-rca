@@ -14,8 +14,8 @@ class AlertBase(BaseModel):
     criticality: int = Field(..., ge=1, le=5)
     impact: int = Field(..., ge=1, le=5)
     priority_score: float
-    shap_json: Optional[Dict[str, float]] = None
-    sensor_contrib_json: Optional[Dict[str, float]] = None
+    shap_json: Optional[Dict[str, Any]] = None
+    sensor_contrib_json: Optional[Dict[str, Any]] = None
     status: str = "PENDING_APPROVAL"
 
 

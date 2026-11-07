@@ -1,0 +1,243 @@
+{
+  "pipeline_timestamp": "2026-11-06T17:57:02Z",
+  "benchmark": {
+    "environment": {
+      "os": "Windows-10-10.0.26300-SP0",
+      "python_version": "3.11.9",
+      "scikit_learn_version": "1.9.0",
+      "shap_version": "0.51.0",
+      "processor": "Intel64 Family 6 Model 154 Stepping 4, GenuineIntel"
+    },
+    "configuration": {
+      "background_samples": 50,
+      "shap_nsamples": 32,
+      "forward_pass_budget_per_sample": 1600,
+      "features_evaluated": 5,
+      "warmup_runs": 5,
+      "timed_runs": 25
+    },
+    "latency_metrics_ms": {
+      "mean": 76.99236800894141,
+      "std": 13.61691250493171,
+      "median": 70.43279998470098,
+      "p90": 101.43353997264059,
+      "p95": 107.57982006762177,
+      "min": 62.139199930243194,
+      "max": 109.45050010923296
+    }
+  },
+  "validation_archetypes": [
+    {
+      "status": "success",
+      "machine_id": "M101",
+      "step": 3000,
+      "timestamp": "2026-11-02 00:40:00",
+      "explained_model": "isolation_forest",
+      "explained_output": "anomaly_intensity",
+      "explainer_method": "kernel_shap",
+      "anomaly_score": -0.07493358523025506,
+      "base_value": -0.047782257284656585,
+      "attribution_units": "dimensionless_anomaly_score_delta",
+      "feature_attributions": {
+        "vibration": -0.006296938597170076,
+        "temperature": 0.0032802280877055057,
+        "pressure": -0.009412114458264387,
+        "current": -0.005569474198451486,
+        "rpm": -0.009153028779418034
+      },
+      "top_positive_contributor": "temperature",
+      "top_absolute_contributor": "pressure",
+      "share_of_positive_attribution_pct": 100.0,
+      "additivity_verified": true,
+      "additivity_error": 0.0,
+      "background_samples": 50,
+      "computation_time_ms": 86.31369995418936,
+      "error_message": null,
+      "archetype_label": "Normal 1 (M101 nominal)",
+      "fault_type": "normal"
+    },
+    {
+      "status": "success",
+      "machine_id": "M103",
+      "step": 3100,
+      "timestamp": "2026-11-02 09:00:00",
+      "explained_model": "isolation_forest",
+      "explained_output": "anomaly_intensity",
+      "explainer_method": "kernel_shap",
+      "anomaly_score": -0.0024680210987163553,
+      "base_value": -0.047782257284656585,
+      "attribution_units": "dimensionless_anomaly_score_delta",
+      "feature_attributions": {
+        "vibration": 0.027426348548069822,
+        "temperature": -0.012023320971038474,
+        "pressure": 0.012633348349002375,
+        "current": -0.011283938708822758,
+        "rpm": 0.028561798968729263
+      },
+      "top_positive_contributor": "rpm",
+      "top_absolute_contributor": "rpm",
+      "share_of_positive_attribution_pct": 41.6222331040199,
+      "additivity_verified": true,
+      "additivity_error": 0.0,
+      "background_samples": 50,
+      "computation_time_ms": 113.90900006517768,
+      "error_message": null,
+      "archetype_label": "Normal 2 (M103 nominal)",
+      "fault_type": "normal"
+    },
+    {
+      "status": "success",
+      "machine_id": "M105",
+      "step": 3200,
+      "timestamp": "2026-11-02 17:20:00",
+      "explained_model": "isolation_forest",
+      "explained_output": "anomaly_intensity",
+      "explainer_method": "kernel_shap",
+      "anomaly_score": -0.08810809416562415,
+      "base_value": -0.047782257284656585,
+      "attribution_units": "dimensionless_anomaly_score_delta",
+      "feature_attributions": {
+        "vibration": -0.010151905621999845,
+        "temperature": -0.0008327684778965463,
+        "pressure": -0.007537998571674301,
+        "current": -0.012611320038645003,
+        "rpm": -0.009191844170751865
+      },
+      "top_positive_contributor": null,
+      "top_absolute_contributor": "current",
+      "share_of_positive_attribution_pct": null,
+      "additivity_verified": true,
+      "additivity_error": 0.0,
+      "background_samples": 50,
+      "computation_time_ms": 88.2538000587374,
+      "error_message": null,
+      "archetype_label": "Normal 3 (M105 nominal)",
+      "fault_type": "normal"
+    },
+    {
+      "status": "success",
+      "machine_id": "M102",
+      "step": 3000,
+      "timestamp": "2026-11-02 00:40:00",
+      "explained_model": "isolation_forest",
+      "explained_output": "anomaly_intensity",
+      "explainer_method": "kernel_shap",
+      "anomaly_score": 0.019453693954108897,
+      "base_value": -0.047782257284656585,
+      "attribution_units": "dimensionless_anomaly_score_delta",
+      "feature_attributions": {
+        "vibration": -0.006267488501288801,
+        "temperature": 0.07116197432795408,
+        "pressure": 0.006822238066520462,
+        "current": -0.005993917627290404,
+        "rpm": 0.0015131449728701396
+      },
+      "top_positive_contributor": "temperature",
+      "top_absolute_contributor": "temperature",
+      "share_of_positive_attribution_pct": 89.51489292798234,
+      "additivity_verified": true,
+      "additivity_error": 0.0,
+      "background_samples": 50,
+      "computation_time_ms": 121.929100016132,
+      "error_message": null,
+      "archetype_label": "Anomalous 1 (M102 overheating)",
+      "fault_type": "overheating"
+    },
+    {
+      "status": "success",
+      "machine_id": "M104",
+      "step": 3100,
+      "timestamp": "2026-11-02 09:00:00",
+      "explained_model": "isolation_forest",
+      "explained_output": "anomaly_intensity",
+      "explainer_method": "kernel_shap",
+      "anomaly_score": 0.08656664266543157,
+      "base_value": -0.047782257284656585,
+      "attribution_units": "dimensionless_anomaly_score_delta",
+      "feature_attributions": {
+        "vibration": 0.11215114795604467,
+        "temperature": 0.05594183277814464,
+        "pressure": -0.012863527953964237,
+        "current": -0.009778670040191562,
+        "rpm": -0.01110188278994538
+      },
+      "top_positive_contributor": "vibration",
+      "top_absolute_contributor": "vibration",
+      "share_of_positive_attribution_pct": 66.71970921462376,
+      "additivity_verified": true,
+      "additivity_error": 1.3877787807814457e-17,
+      "background_samples": 50,
+      "computation_time_ms": 104.6455999603495,
+      "error_message": null,
+      "archetype_label": "Anomalous 2 (M104 bearing wear)",
+      "fault_type": "bearing_wear"
+    },
+    {
+      "status": "success",
+      "machine_id": "M107",
+      "step": 3200,
+      "timestamp": "2026-11-02 17:20:00",
+      "explained_model": "isolation_forest",
+      "explained_output": "anomaly_intensity",
+      "explainer_method": "kernel_shap",
+      "anomaly_score": 0.12497568776108503,
+      "base_value": -0.047782257284656585,
+      "attribution_units": "dimensionless_anomaly_score_delta",
+      "feature_attributions": {
+        "vibration": 0.03009500087162016,
+        "temperature": -0.007799936692946208,
+        "pressure": 0.07810181206090147,
+        "current": 0.08232926344256168,
+        "rpm": -0.009968194636395488
+      },
+      "top_positive_contributor": "current",
+      "top_absolute_contributor": "current",
+      "share_of_positive_attribution_pct": 43.21154616152509,
+      "additivity_verified": true,
+      "additivity_error": 1.3877787807814457e-17,
+      "background_samples": 50,
+      "computation_time_ms": 81.33910002652556,
+      "error_message": null,
+      "archetype_label": "Anomalous 3 (M107 pressure drop)",
+      "fault_type": "pressure_drop"
+    }
+  ],
+  "archetype_plots": {
+    "Normal 1 (M101 nominal)": "reports/phase2/shap_explainability/graphs\\waterfall_normal_m101.png",
+    "Normal 2 (M103 nominal)": "reports/phase2/shap_explainability/graphs\\waterfall_normal_m103.png",
+    "Normal 3 (M105 nominal)": "reports/phase2/shap_explainability/graphs\\waterfall_normal_m105.png",
+    "Anomalous 1 (M102 overheating)": "reports/phase2/shap_explainability/graphs\\waterfall_anomalous_m102.png",
+    "Anomalous 2 (M104 bearing wear)": "reports/phase2/shap_explainability/graphs\\waterfall_anomalous_m104.png",
+    "Anomalous 3 (M107 pressure drop)": "reports/phase2/shap_explainability/graphs\\waterfall_anomalous_m107.png"
+  },
+  "validation_cohort": {
+    "cohort_name": "validation_cohort",
+    "sample_count": 80,
+    "all_additive": true,
+    "max_additivity_error": 1.3877787807814457e-17,
+    "mean_abs_importance": {
+      "vibration": 0.012736735300817212,
+      "temperature": 0.012519972470564699,
+      "pressure": 0.01380850636743502,
+      "current": 0.013006179956215409,
+      "rpm": 0.015680419916427567
+    },
+    "importance_plot_path": "reports/phase2/shap_explainability/graphs\\validation_cohort_feature_importance.png",
+    "beeswarm_plot_path": "reports/phase2/shap_explainability/graphs\\validation_cohort_beeswarm.png"
+  },
+  "frozen_test_evaluation": {
+    "cohort_name": "frozen_test_cohort",
+    "sample_count": 70,
+    "all_additive": true,
+    "max_additivity_error": 5.551115123125783e-17,
+    "mean_abs_importance": {
+      "vibration": 0.033981560034830105,
+      "temperature": 0.03203964394561921,
+      "pressure": 0.029916445971917793,
+      "current": 0.0372363332254995,
+      "rpm": 0.019441368863837388
+    },
+    "importance_plot_path": "reports/phase2/shap_explainability/graphs/frozen_test_cohort_feature_importance.png",
+    "beeswarm_plot_path": "reports/phase2/shap_explainability/graphs/frozen_test_cohort_beeswarm.png"
+  }
+}
