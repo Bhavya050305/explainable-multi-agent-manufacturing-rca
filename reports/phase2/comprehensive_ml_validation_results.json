@@ -1,0 +1,278 @@
+{
+  "metadata": {
+    "project": "ManuMind AI — Explainable Multi-Agent AI System for Manufacturing Anomaly Detection and Root Cause Analysis",
+    "department": "Department of AI & Data Science, RMK Engineering College",
+    "milestone": "Phase 2 Step 9B: Comprehensive ML Testing and Validation",
+    "baseline_commit": "31fef2fd2b5c9d7e758d9584e4c0b110470599e6",
+    "branch": "main",
+    "execution_timestamp_utc": "2026-11-07T17:19:00Z",
+    "environment": {
+      "python_version": "3.11.9",
+      "pytest_version": "9.1.1",
+      "platform": "win32",
+      "os": "Windows"
+    }
+  },
+  "summary": {
+    "total_tests_collected": 118,
+    "total_tests_passed": 118,
+    "total_tests_failed": 0,
+    "total_tests_errored": 0,
+    "total_test_suites": 10,
+    "execution_duration_seconds": 61.53,
+    "overall_status": "PASSED",
+    "pass_rate_pct": 100.0,
+    "quarantine_status": "CLEAN_QUARANTINE_ENFORCED"
+  },
+  "test_suite_inventory": [
+    {
+      "suite": "backend/tests/test_inference_service.py",
+      "tests_passed": 25,
+      "tests_failed": 0,
+      "status": "PASSED"
+    },
+    {
+      "suite": "backend/tests/test_isolation_forest.py",
+      "tests_passed": 10,
+      "tests_failed": 0,
+      "status": "PASSED"
+    },
+    {
+      "suite": "backend/tests/test_lstm_autoencoder.py",
+      "tests_passed": 10,
+      "tests_failed": 0,
+      "status": "PASSED"
+    },
+    {
+      "suite": "backend/tests/test_ml_validation_comprehensive.py",
+      "tests_passed": 16,
+      "tests_failed": 0,
+      "status": "PASSED"
+    },
+    {
+      "suite": "backend/tests/test_phase1_audit_and_expansion.py",
+      "tests_passed": 9,
+      "tests_failed": 0,
+      "status": "PASSED"
+    },
+    {
+      "suite": "backend/tests/test_phase1_db_and_generator.py",
+      "tests_passed": 4,
+      "tests_failed": 0,
+      "status": "PASSED"
+    },
+    {
+      "suite": "backend/tests/test_resnet_defect_classifier.py",
+      "tests_passed": 11,
+      "tests_failed": 0,
+      "status": "PASSED"
+    },
+    {
+      "suite": "backend/tests/test_sensor_attribution.py",
+      "tests_passed": 10,
+      "tests_failed": 0,
+      "status": "PASSED"
+    },
+    {
+      "suite": "backend/tests/test_sensor_preprocessing.py",
+      "tests_passed": 8,
+      "tests_failed": 0,
+      "status": "PASSED"
+    },
+    {
+      "suite": "backend/tests/test_shap_explainability.py",
+      "tests_passed": 15,
+      "tests_failed": 0,
+      "status": "PASSED"
+    }
+  ],
+  "comprehensive_validation_categories": {
+    "category_a_multimodal_pairwise_orchestration": {
+      "status": "PASSED",
+      "tests_count": 4,
+      "test_cases": [
+        "test_multimodal_pairwise_sensor_and_sequence",
+        "test_multimodal_pairwise_sensor_and_vision",
+        "test_multimodal_pairwise_sequence_and_vision",
+        "test_multimodal_unrequested_modality_isolation"
+      ],
+      "verification_notes": "All pairwise multimodal permutations correctly populate active modality results and set unrequested modalities strictly to None without state leakage."
+    },
+    "category_b_keras_tf_lock_contention": {
+      "status": "PASSED",
+      "tests_count": 1,
+      "test_cases": [
+        "test_concurrent_keras_tf_lock_contention"
+      ],
+      "threads_executed": 8,
+      "workload": "4 concurrent LSTM sequence reconstruction threads + 4 concurrent ResNet-18 defect inspection threads",
+      "deadlocks_detected": 0,
+      "state_corruption_detected": false,
+      "output_consistency": "100% deterministic identical outputs across threads"
+    },
+    "category_c_shap_lock_contention": {
+      "status": "PASSED",
+      "tests_count": 1,
+      "test_cases": [
+        "test_concurrent_shap_lock_contention"
+      ],
+      "threads_executed": 4,
+      "workload": "4 concurrent Kernel SHAP explanation threads under serialized _shap_lock",
+      "deadlocks_detected": 0,
+      "max_additivity_error": 0.0,
+      "additivity_verified": true,
+      "shapley_value_consistency": "Identical Shapley values to machine precision"
+    },
+    "category_d_vision_format_fuzzing": {
+      "status": "PASSED",
+      "tests_count": 6,
+      "test_cases": [
+        "test_vision_non_square_image_resizing",
+        "test_vision_grayscale_image_conversion",
+        "test_vision_rgba_image_alpha_strip",
+        "test_vision_invalid_numpy_shape_rejection",
+        "test_vision_corrupted_image_buffer_rejection",
+        "test_vision_zero_byte_buffer_rejection"
+      ],
+      "fuzzing_outcomes": {
+        "non_square_256x128_rgb": "Accepted and bilinearly resized to (128, 128, 3)",
+        "grayscale_1_channel_L": "Accepted and converted to 3-channel RGB",
+        "rgba_4_channel": "Accepted and alpha channel stripped to 3-channel RGB",
+        "invalid_numpy_shape_64x64": "Rejected with ValueError",
+        "corrupted_buffer_bytes": "Rejected with ImageDecodingError",
+        "zero_byte_buffer": "Rejected with ImageDecodingError"
+      }
+    },
+    "category_e_sequence_timestamps_and_finding_l03": {
+      "status": "PASSED",
+      "tests_count": 1,
+      "test_cases": [
+        "test_sequence_partial_timestamp_handling"
+      ],
+      "findings": {
+        "finding_l03_defect01": {
+          "status": "DOCUMENTED_AND_SURFACED",
+          "component": "SequenceWindowInput.validate_sequence_structure",
+          "path": "backend/app/ml/inference/schemas.py:86-94",
+          "behavior": "When a sequence contains partial timestamps (e.g. 29 provided, 1 None), len(timestamps) != len(self.readings), bypassing the chronological monotonicity check without error."
+        }
+      },
+      "boundary_enforcement": {
+        "29_readings": "Rejected with validation error",
+        "31_readings": "Rejected with validation error",
+        "strictly_non_monotonic_all_timestamps": "Rejected with TimestampOrderingError"
+      }
+    },
+    "category_f_extreme_sensor_inputs": {
+      "status": "PASSED",
+      "tests_count": 1,
+      "test_cases": [
+        "test_extreme_physical_outlier_scoring"
+      ],
+      "test_conditions": {
+        "vibration_mm_s": 50.0,
+        "temperature_c": 150.0,
+        "pressure_bar": 0.1,
+        "current_a": 100.0,
+        "rpm": 0.0
+      },
+      "outcome": "Scored as positive anomaly (is_anomaly=True) with finite continuous anomaly score; zero NaNs generated; NaN/Inf inputs strictly rejected."
+    },
+    "category_g_sensor_attribution_pure_synthetic": {
+      "status": "PASSED",
+      "tests_count": 1,
+      "test_cases": [
+        "test_sensor_attribution_pure_synthetic_fixture"
+      ],
+      "synthetic_fixture": "50 windows of (30, 5) generated deterministically via RandomState(42)",
+      "frozen_partition_reads": 0,
+      "normalization_parity": "100.0% sum normalization across all 50 windows",
+      "residuals_signed": true,
+      "nan_or_inf_detected": false
+    },
+    "category_h_repeated_cycles_stability": {
+      "status": "PASSED",
+      "tests_count": 1,
+      "test_cases": [
+        "test_repeated_inference_memory_stability"
+      ],
+      "num_cycles": 100,
+      "deterministic_parity": "cycle_0 == cycle_99 strictly verified (anomaly_score, reconstruction_error, defect_class, confidence)",
+      "benchmark_metrics": {
+        "num_cycles": 100,
+        "total_wall_clock_seconds": 54.18,
+        "min_latency_ms": 387.06,
+        "max_latency_ms": 6041.57,
+        "mean_latency_ms": 541.77,
+        "median_latency_ms": 473.31,
+        "p90_latency_ms": 572.55,
+        "p95_latency_ms": 631.52,
+        "p99_latency_ms": 6041.57,
+        "tracemalloc_start_mb": 0.0,
+        "tracemalloc_peak_mb": 63.76,
+        "tracemalloc_end_mb": 29.89,
+        "tracemalloc_net_delta_mb": 29.89
+      }
+    }
+  },
+  "frozen_test_partition_quarantine_verification": {
+    "quarantined_files": [
+      "ml/models_store/sequences_test.npz",
+      "ml/models_store/val_features.npy"
+    ],
+    "decoupling_action": "Refactored backend/tests/test_sensor_attribution.py (synthetic_sequence_batch, seed 42) and backend/tests/test_lstm_autoencoder.py (synthetic_sequences, seed 42) to replace frozen test partition loading with deterministic synthetic fixtures. Verified zero calls to np.load on frozen test partitions during ordinary validation runs.",
+    "isolation_verified": true
+  },
+  "model_artifact_cryptographic_verification": [
+    {
+      "filename": "sensor_scaler.joblib",
+      "sha256": "f21f0899cd3af4d807e54f98b4627d5512650f08cad35ba17a6cd80268398faf",
+      "expected_sha256": "f21f0899cd3af4d807e54f98b4627d5512650f08cad35ba17a6cd80268398faf",
+      "match": true
+    },
+    {
+      "filename": "isolation_forest.joblib",
+      "sha256": "afdf397336f01cfe32c6d4660b3f0094bec01869ab3f8ec276a4d34ca8ac52a2",
+      "expected_sha256": "afdf397336f01cfe32c6d4660b3f0094bec01869ab3f8ec276a4d34ca8ac52a2",
+      "match": true
+    },
+    {
+      "filename": "isolation_forest_metadata.json",
+      "sha256": "bbb05f4447d52c5ae0f4444649e2e59bf5f282aceb1cfd028e6309b86e8ed3d5",
+      "expected_sha256": "bbb05f4447d52c5ae0f4444649e2e59bf5f282aceb1cfd028e6309b86e8ed3d5",
+      "match": true
+    },
+    {
+      "filename": "lstm_autoencoder.keras",
+      "sha256": "b1cae16de57b556f13b3f96e12a8c451d05f3bdd9887a65172817cd99e30e0b5",
+      "expected_sha256": "b1cae16de57b556f13b3f96e12a8c451d05f3bdd9887a65172817cd99e30e0b5",
+      "match": true
+    },
+    {
+      "filename": "lstm_autoencoder_metadata.json",
+      "sha256": "d679e55a2b9935c2e8820d5b117a7c8fc8f84b94cd6565252255168f82fda0c1",
+      "expected_sha256": "d679e55a2b9935c2e8820d5b117a7c8fc8f84b94cd6565252255168f82fda0c1",
+      "match": true
+    },
+    {
+      "filename": "resnet_defect_classifier.keras",
+      "sha256": "aac4b1c2d8c7ba47cef2e31b73d27ad6ff9b8be9352d6e3850c2e201e3195a98",
+      "expected_sha256": "aac4b1c2d8c7ba47cef2e31b73d27ad6ff9b8be9352d6e3850c2e201e3195a98",
+      "match": true
+    },
+    {
+      "filename": "resnet_defect_classifier_metadata.json",
+      "sha256": "e7e95b8037efceade0a8d19d0a14ecff86868d887e081ac306d1cb36573c8d73",
+      "expected_sha256": "e7e95b8037efceade0a8d19d0a14ecff86868d887e081ac306d1cb36573c8d73",
+      "match": true
+    }
+  ],
+  "governance_verdict": {
+    "status": "VALIDATION_COMPLETE",
+    "recommendation": "AUTHORIZED_FOR_INDEPENDENT_AUDIT",
+    "production_source_modified": false,
+    "model_artifacts_modified": false,
+    "datasets_modified": false,
+    "database_schema_modified": false
+  }
+}

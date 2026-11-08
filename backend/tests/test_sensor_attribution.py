@@ -66,6 +66,32 @@ def if_explainer(attribution_config):
     return IsolationForestAttributionExplainer(attribution_config)
 
 
+@pytest.fixture(scope="module")
+def synthetic_sequence_batch():
+    """
+    Deterministic synthetic sequence batch replacing frozen test partition loading.
+    Generates 50 synthetic (30, 5) sequences with controlled healthy and anomaly signals.
+    Guarantees strict isolation of the frozen test partition (sequences_test.npz).
+    """
+    rng = np.random.RandomState(42)
+    # Generate 50 synthetic sequence windows (50, 30, 5)
+    X = rng.normal(loc=0.0, scale=1.0, size=(50, 30, 5)).astype(np.float32)
+    # Inject anomalous deviations in subsets
+    X[10:15, :, 0] += 5.0
+    X[20:25, :, 2] -= 4.0
+    window_ids = np.array([f"W_SYN_{i:04d}" for i in range(50)])
+    machine_ids = np.array([f"M10{i % 4 + 1}" for i in range(50)])
+    is_anomaly = np.zeros(50, dtype=int)
+    is_anomaly[10:15] = 1
+    is_anomaly[20:25] = 1
+    return {
+        "X": X,
+        "window_ids": window_ids,
+        "machine_ids": machine_ids,
+        "is_anomaly": is_anomaly
+    }
+
+
 def test_feature_ordering_and_length(attribution_config):
     """Test 1: Confirms exact 5-feature ordering: vibration, temperature, pressure, current, rpm."""
     expected_features = ["vibration", "temperature", "pressure", "current", "rpm"]
@@ -94,10 +120,9 @@ def test_reconstruction_error_calculations(lstm_explainer):
     np.testing.assert_allclose(res.sequence_mean_mse, np.mean(res.feature_mse, axis=1), rtol=1e-5)
 
 
-def test_normalized_contribution_percentages_sum_to_100(lstm_explainer, attribution_config):
+def test_normalized_contribution_percentages_sum_to_100(lstm_explainer, synthetic_sequence_batch):
     """Test 3: Verifies that normalized feature contribution percentages sum to exactly 100.0%."""
-    test_npz = np.load(attribution_config.test_sequences_path, allow_pickle=True)
-    X_sample = test_npz["X"][:20]  # First 20 test sequences
+    X_sample = synthetic_sequence_batch["X"][:20]  # First 20 synthetic sequences
 
     res = lstm_explainer.explain_sequences(X_sample)
     pcts = res.feature_contribution_pct  # (20, 5)
@@ -147,10 +172,9 @@ def test_safe_zero_error_handling(lstm_explainer):
     np.testing.assert_allclose(res.feature_contribution_pct, 20.0, rtol=1e-5)
 
 
-def test_isolation_forest_ablation_calculations(if_explainer, attribution_config):
+def test_isolation_forest_ablation_calculations(if_explainer, synthetic_sequence_batch, attribution_config):
     """Test 6: Verifies model-agnostic feature ablation calculation (Original - Ablated)."""
-    test_npz = np.load(attribution_config.test_sequences_path, allow_pickle=True)
-    X_sample = test_npz["X"][:5]
+    X_sample = synthetic_sequence_batch["X"][:5]
 
     res = if_explainer.explain_sequences(X_sample)
 
@@ -168,10 +192,9 @@ def test_isolation_forest_ablation_calculations(if_explainer, attribution_config
     np.testing.assert_allclose(res.healthy_references, expected_ref, rtol=1e-5)
 
 
-def test_no_missing_or_non_finite_values(lstm_explainer, if_explainer, attribution_config):
+def test_no_missing_or_non_finite_values(lstm_explainer, if_explainer, synthetic_sequence_batch):
     """Test 7: Confirms that all generated attributions contain zero NaNs, nulls, or non-finite values."""
-    test_npz = np.load(attribution_config.test_sequences_path, allow_pickle=True)
-    X_test = test_npz["X"]
+    X_test = synthetic_sequence_batch["X"]
 
     lstm_res = lstm_explainer.explain_sequences(X_test)
     if_res = if_explainer.explain_sequences(X_test)
@@ -189,15 +212,14 @@ def test_no_missing_or_non_finite_values(lstm_explainer, if_explainer, attributi
     assert not if_res.dataframe.isnull().any().any()
 
 
-def test_machine_and_timestamp_mapping(lstm_explainer, attribution_config):
+def test_machine_and_timestamp_mapping(lstm_explainer, synthetic_sequence_batch):
     """Test 8: Confirms that window IDs, machine IDs, and anomaly labels are preserved accurately."""
-    test_npz = np.load(attribution_config.test_sequences_path, allow_pickle=True)
-    w_ids = test_npz["window_ids"][:50]
-    m_ids = test_npz["machine_ids"][:50]
-    labels = test_npz["is_anomaly"][:50]
+    w_ids = synthetic_sequence_batch["window_ids"][:50]
+    m_ids = synthetic_sequence_batch["machine_ids"][:50]
+    labels = synthetic_sequence_batch["is_anomaly"][:50]
 
     res = lstm_explainer.explain_sequences(
-        test_npz["X"][:50],
+        synthetic_sequence_batch["X"][:50],
         window_ids=w_ids,
         machine_ids=m_ids,
         labels=labels
@@ -224,10 +246,9 @@ def test_immutability_of_model_artifacts(attribution_config):
         assert os.path.getsize(f_path) > 0, f"Artifact empty: {f_path}"
 
 
-def test_deterministic_reproducibility(lstm_explainer, if_explainer, attribution_config):
+def test_deterministic_reproducibility(lstm_explainer, if_explainer, synthetic_sequence_batch):
     """Test 10: Confirms identical attribution outputs when re-running on the same sequence."""
-    test_npz = np.load(attribution_config.test_sequences_path, allow_pickle=True)
-    sample_seq = test_npz["X"][:3]
+    sample_seq = synthetic_sequence_batch["X"][:3]
 
     res_lstm_1 = lstm_explainer.explain_sequences(sample_seq)
     res_lstm_2 = lstm_explainer.explain_sequences(sample_seq)

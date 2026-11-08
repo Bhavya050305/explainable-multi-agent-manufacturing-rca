@@ -55,7 +55,9 @@ def lstm_artifacts():
         metadata_path=config.metadata_save_path
     )
 
-    test_data = np.load(config.test_sequences_path, allow_pickle=True)
+    # Deterministic synthetic sequences (seed 42) replacing frozen test partition loading
+    rng = np.random.RandomState(42)
+    synthetic_sequences = rng.normal(loc=0.0, scale=1.0, size=(580, 30, 5)).astype(np.float32)
 
     return {
         "config": config,
@@ -63,7 +65,7 @@ def lstm_artifacts():
         "results": results,
         "pred_df": pred_df,
         "predictor": predictor,
-        "test_data": test_data
+        "synthetic_sequences": synthetic_sequences
     }
 
 
@@ -108,12 +110,12 @@ def test_reuses_existing_standard_scaler(lstm_artifacts):
 
 
 def test_reconstruction_error_non_negative_and_finite(lstm_artifacts):
-    """Test 5: Verify reconstruction error on all 580 test sequences is finite and non-negative."""
+    """Test 5: Verify reconstruction error on synthetic sequences is finite and non-negative."""
     predictor = lstm_artifacts["predictor"]
-    X_test = lstm_artifacts["test_data"]["X"]
-    errors = predictor.compute_reconstruction_error(X_test)
+    X_synthetic = lstm_artifacts["synthetic_sequences"]
+    errors = predictor.compute_reconstruction_error(X_synthetic)
 
-    assert len(errors) == 580, f"Expected 580 test sequence errors, got {len(errors)}"
+    assert len(errors) == 580, f"Expected 580 sequence errors, got {len(errors)}"
     assert np.all(np.isfinite(errors)), "All reconstruction errors must be finite numbers."
     assert np.all(errors >= 0.0), "MSE reconstruction error must be strictly non-negative."
 
