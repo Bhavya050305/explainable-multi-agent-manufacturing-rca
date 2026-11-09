@@ -1,0 +1,512 @@
+{
+  "metadata": {
+    "project": "ManuMind AI — Explainable Multi-Agent AI System for Manufacturing Anomaly Detection and Root Cause Analysis",
+    "institution": "Department of AI & Data Science, RMK Engineering College",
+    "milestone": "Phase 2 Step 10A: Final ML Evaluation Evidence Audit",
+    "baseline_commit": "13fd0141a24c24e9e9267881e0f37672f0b114ca",
+    "branch": "main",
+    "audit_timestamp_utc": "2026-11-08T11:00:00Z",
+    "auditor": "Senior ML Evaluation Engineer, Research Auditor, and Technical Documentation Specialist"
+  },
+  "evidence_sources": [
+    {
+      "source_id": "SRC-01",
+      "file_path": "reports/phase2/isolation_forest/isolation_forest_results.json",
+      "component": "Isolation Forest Point-Level Anomaly Detection",
+      "description": "Global and machine-level confusion matrix, ROC-AUC, PR-AUC, and threshold calibration metrics on frozen test partition."
+    },
+    {
+      "source_id": "SRC-02",
+      "file_path": "reports/phase2/lstm_autoencoder/lstm_autoencoder_results.json",
+      "component": "LSTM Autoencoder Sequence-Level Anomaly Detection",
+      "description": "Sequence-level reconstruction error threshold, confusion matrix, ROC-AUC, PR-AUC, and per-machine breakdown on 580 test sequence windows."
+    },
+    {
+      "source_id": "SRC-03",
+      "file_path": "reports/phase2/evaluation_audit/common_granularity_comparison.json",
+      "component": "Granularity Harmonization & Window Aggregation",
+      "description": "Common granularity comparative benchmark aggregating Isolation Forest point scores across 30-step windows vs LSTM Autoencoder."
+    },
+    {
+      "source_id": "SRC-04",
+      "file_path": "reports/phase2/sensor_attribution/fault_mechanism_consistency.json",
+      "component": "Sensor-Level Anomaly Attribution",
+      "description": "Attribution mode match rates, contribution percentages, and signed standardized residuals across faulted machines M102, M104, M107, M109."
+    },
+    {
+      "source_id": "SRC-05",
+      "file_path": "reports/phase2/failure_risk_feasibility_assessment.md",
+      "component": "Failure-Risk Prediction Feasibility (Step 5)",
+      "description": "Formal technical audit establishing NO-GO decision for tree-based supervised failure-risk forecasting under existing chronological split."
+    },
+    {
+      "source_id": "SRC-06",
+      "file_path": "reports/phase2/shap_explainability/shap_evaluation_results.json",
+      "component": "Kernel SHAP Sensor Explainability",
+      "description": "Additive efficiency metrics, background sample distribution, archetype waterfall values, and local latency benchmarks on 70-sample cohort."
+    },
+    {
+      "source_id": "SRC-07",
+      "file_path": "reports/phase2/defect_classifier/defect_classifier_results.json",
+      "component": "ResNet Vision Defect Classifier",
+      "description": "Multi-class confusion matrix, per-class precision/recall/F1/ROC-AUC, and CPU latency benchmarks on 92 frozen test images."
+    },
+    {
+      "source_id": "SRC-08",
+      "file_path": "ml/models_store/resnet_defect_classifier_metadata.json",
+      "component": "ResNet Vision Classifier Architectural Metadata",
+      "description": "Parameter counts (2,804,708 total), layer configurations, training history (35 epochs), and cryptographic checksum."
+    },
+    {
+      "source_id": "SRC-09",
+      "file_path": "reports/phase2/inference_service_eval_results.json",
+      "component": "Unified Multimodal Inference Service Integration",
+      "description": "Numerical parity across direct model vs unified service, latency percentiles, and concurrency lock verification."
+    },
+    {
+      "source_id": "SRC-10",
+      "file_path": "reports/phase2/comprehensive_ml_validation_results.json",
+      "component": "Comprehensive ML Regression Validation",
+      "description": "118-test regression inventory, multimodal pairwise routing, fuzzing results, tracemalloc telemetry, and frozen partition quarantine."
+    },
+    {
+      "source_id": "SRC-11",
+      "file_path": "reports/phase2/resnet_metadata_hash_provenance_audit.md",
+      "component": "Protected Artifact Hash Provenance Investigation",
+      "description": "Forensic audit resolving historical Step 7 report clerical hash error and confirming true immutable disk digest."
+    }
+  ],
+  "components": {
+    "isolation_forest": {
+      "evaluation_unit": "Point-level tabular reading (5 continuous sensor channels)",
+      "dataset_scope": "Frozen test partition (sensor_test.csv), 6,000 readings across 10 machines (600 readings/machine)",
+      "anomaly_threshold": 0.0269,
+      "confusion_matrix": {
+        "true_negatives": 3359,
+        "false_positives": 241,
+        "false_negatives": 0,
+        "true_positives": 2400
+      },
+      "metrics": {
+        "accuracy": 0.9598,
+        "precision": 0.9087,
+        "recall": 1.0,
+        "f1_score": 0.9522,
+        "specificity": 0.9331,
+        "false_positive_rate": 0.0669,
+        "roc_auc": 0.9979,
+        "pr_auc": 0.9965
+      },
+      "subgroup_breakdown": {
+        "faulted_machines_m102_m104_m107_m109": {
+          "total_samples": 2400,
+          "true_positives": 2400,
+          "false_negatives": 0,
+          "recall": 1.0,
+          "detection_rate_pct": 100.0
+        },
+        "healthy_machines_m101_m103_m105_m106_m108_m110": {
+          "total_samples": 3600,
+          "true_negatives": 3359,
+          "false_positives": 241,
+          "false_positive_rate": 0.0669,
+          "specificity": 0.9331,
+          "per_machine_fpr_range_pct": "6.00% (M108) to 8.17% (M101)"
+        }
+      },
+      "scientific_limitations": [
+        "Evaluated strictly on synthetic data where fault amplitudes exceed 15 to 39 standard deviations.",
+        "Point-level evaluation suffers from 6.69% false alarm rate on nominal baseline readings due to transient Gaussian tail excursions.",
+        "Zero-shot evaluation on completely unseen machine assets drops recall to 48.86%–76.14% without asset-specific threshold calibration."
+      ]
+    },
+    "lstm_autoencoder": {
+      "evaluation_unit": "Sequence window (30 timesteps = 150 minutes, stride 10 = 50 minutes, 5 channels)",
+      "dataset_scope": "Frozen test partition (sequences_test.npz), 580 sequence windows across 10 machines (58 windows/machine)",
+      "reconstruction_error_threshold": 0.901464,
+      "confusion_matrix": {
+        "true_negatives": 344,
+        "false_positives": 4,
+        "false_negatives": 0,
+        "true_positives": 232
+      },
+      "metrics": {
+        "accuracy": 0.9931,
+        "precision": 0.9831,
+        "recall": 1.0,
+        "f1_score": 0.9915,
+        "specificity": 0.9885,
+        "false_positive_rate": 0.0115,
+        "roc_auc": 1.0,
+        "pr_auc": 1.0
+      },
+      "subgroup_breakdown": {
+        "faulted_machines_m102_m104_m107_m109": {
+          "total_windows": 232,
+          "true_positives": 232,
+          "false_negatives": 0,
+          "recall": 1.0,
+          "mean_reconstruction_error": "60.94 (M102), 135.40 (M104), 106.29 (M107), 96.14 (M109)"
+        },
+        "healthy_machines_m101_m103_m105_m106_m108_m110": {
+          "total_windows": 348,
+          "true_negatives": 344,
+          "false_positives": 4,
+          "false_positive_rate": 0.0115,
+          "specificity": 0.9885,
+          "false_positive_distribution": "2 in M103, 2 in M110; 0 in M101, M105, M106, M108",
+          "mean_reconstruction_error": "0.685 to 0.710 across healthy fleet (well below 0.9015 threshold)"
+        }
+      },
+      "scientific_limitations": [
+        "Sequence windows overlap by 20 timesteps (stride 10, window 30), violating statistical sample independence across consecutive evaluation items.",
+        "Sequence-level metrics cannot be directly compared to point-level Isolation Forest metrics without temporal aggregation.",
+        "Model learns temporal autocorrelation patterns of synthetic Gaussian noise and step transitions rather than complex physical machine dynamics."
+      ]
+    },
+    "granularity_harmonization": {
+      "evaluation_unit": "Harmonized 30-timestep sequence windows (N=580)",
+      "isolation_forest_window_aggregations": {
+        "if_mean_score": {
+          "threshold": 0.01344,
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "false_positives": 0,
+          "specificity": 1.0
+        },
+        "if_max_score": {
+          "threshold": 0.11978,
+          "accuracy": 0.9845,
+          "precision": 0.9627,
+          "recall": 1.0,
+          "f1_score": 0.9810,
+          "false_positives": 9,
+          "specificity": 0.9741
+        },
+        "if_fraction_anomalous": {
+          "threshold": 0.3667,
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "false_positives": 0,
+          "specificity": 1.0
+        },
+        "if_any_point_flagged": {
+          "threshold": 0.0269,
+          "accuracy": 0.4879,
+          "precision": 0.4386,
+          "recall": 1.0,
+          "f1_score": 0.6097,
+          "false_positives": 297,
+          "specificity": 0.1466
+        }
+      },
+      "finding": "Aggregating Isolation Forest point predictions over 30-timestep windows completely eliminates or drastically suppresses transient point-level false alarms (dropping FP from 241 down to 0 for mean score, or 9 for max score), demonstrating that apparent accuracy differences between IF (0.9598) and LSTM (0.9931) were primarily artifacts of evaluation granularity rather than fundamentally superior anomaly separation."
+    },
+    "sensor_level_attribution": {
+      "evaluation_unit": "Per-feature attribution percentage and signed standardized residual (z-score space)",
+      "dataset_scope": "58 anomalous sequence windows per faulted machine (N=232 anomalous windows total)",
+      "profiles": {
+        "M102_overheating": {
+          "designed_primary_sensor": "temperature",
+          "designed_secondary_sensor": "pressure",
+          "lstm_primary_mode": "temperature",
+          "lstm_primary_match_rate_pct": 100.0,
+          "lstm_mean_attribution_pct": {
+            "temperature": 61.98,
+            "pressure": 36.67,
+            "current": 0.5,
+            "vibration": 0.44,
+            "rpm": 0.42
+          },
+          "lstm_mean_signed_residuals": {
+            "temperature": 13.35,
+            "pressure": 10.29
+          },
+          "if_ablation_primary_mode": "pressure",
+          "if_ablation_top2_match_rate_pct": 100.0
+        },
+        "M104_bearing_wear": {
+          "designed_primary_sensor": "vibration",
+          "designed_secondary_sensor": "temperature",
+          "lstm_primary_mode": "vibration",
+          "lstm_primary_match_rate_pct": 100.0,
+          "lstm_mean_attribution_pct": {
+            "vibration": 88.0,
+            "temperature": 5.9,
+            "rpm": 4.04,
+            "current": 1.67,
+            "pressure": 0.39
+          },
+          "lstm_mean_signed_residuals": {
+            "vibration": 23.37,
+            "temperature": 5.68,
+            "rpm": -4.56
+          },
+          "if_ablation_primary_mode": "vibration",
+          "if_ablation_top2_match_rate_pct": 100.0
+        },
+        "M107_pressure_drop": {
+          "designed_primary_sensor": "pressure",
+          "designed_secondary_sensor": "current",
+          "lstm_primary_mode": "pressure",
+          "lstm_primary_match_rate_pct": 100.0,
+          "lstm_mean_attribution_pct": {
+            "pressure": 91.34,
+            "current": 7.9,
+            "rpm": 0.31,
+            "temperature": 0.23,
+            "vibration": 0.22
+          },
+          "lstm_mean_signed_residuals": {
+            "pressure": -21.5,
+            "current": 6.16
+          },
+          "if_ablation_primary_mode": "current",
+          "if_ablation_top2_match_rate_pct": 100.0
+        },
+        "M109_lubrication_failure": {
+          "designed_primary_sensor": "current",
+          "designed_secondary_sensor": "vibration",
+          "lstm_primary_mode": "current",
+          "lstm_primary_match_rate_pct": 100.0,
+          "lstm_mean_attribution_pct": {
+            "current": 44.69,
+            "vibration": 31.34,
+            "temperature": 23.17,
+            "rpm": 0.47,
+            "pressure": 0.34
+          },
+          "lstm_mean_signed_residuals": {
+            "current": 14.15,
+            "vibration": 11.9,
+            "temperature": 10.13
+          },
+          "if_ablation_primary_mode": "vibration",
+          "if_ablation_top2_match_rate_pct": 100.0
+        }
+      },
+      "scientific_limitations": [
+        "Attribution results demonstrate mathematical alignment with the programmed synthetic equations in generate_sensor_data.py; they do NOT demonstrate real-world physical root-cause diagnostic capability.",
+        "LSTM Autoencoder squared reconstruction errors reflect model reconstruction failure rather than direct physical energy dissipation.",
+        "Isolation Forest ablation delta measures tree score sensitivity under feature replacement, not additive Shapley value attribution."
+      ]
+    },
+    "failure_risk_feasibility": {
+      "status": "FORMALLY_CLOSED_AS_FEASIBILITY_ASSESSMENT",
+      "verdict": "NO-GO — Supervised tree-based regression training not justified under chronological dataset design",
+      "models_trained": "NONE (Random Forest and XGBoost training formally rejected)",
+      "technical_reasons": {
+        "training_input_truncation": "Under purged chronological split (train: steps 0 to 2799, horizon H=288 steps), training inputs span steps 0 to 2511, terminating 89 steps prior to synthetic fault activation at step 2600. Consequently, the training input partition contains exactly 0.0% progressive degradation data.",
+        "target_range_discrepancy": "Maximum training target risk is 0.2090, whereas maximum test target risk is 0.9000 (test-to-train ratio of 4.31x). Random Forest is mathematically bounded by the convex hull of training targets [0.0, 0.2090] and cannot predict test targets in (0.2090, 0.9000]. XGBoost can extrapolate outside training targets, but axis-aligned splits route extreme degradation inputs to boundary leaves without learning physical slopes.",
+        "sensor_pre_onset_noise": "Baseline sensor telemetry prior to step 2600 consists of stationary i.i.d. Gaussian noise with zero progressive trend (|r| < 0.06 against future risk targets).",
+        "pseudoreplication": "25,120 training input observations originate from only 10 physical machines (4 faulted, 6 healthy). In experimental design, repeated longitudinal measurements across 10 units constitute pseudoreplication with 1-to-1 machine-to-fault confounding."
+      },
+      "alternative_architecture": "Preserve Isolation Forest and LSTM Autoencoder anomaly detection as the telemetry foundation for Phase 3 Multi-Agent LangGraph supervisory health tracking."
+    },
+    "kernel_shap_explainability": {
+      "evaluation_unit": "Local Shapley value attributions per feature for Isolation Forest negative decision function",
+      "background_samples": 50,
+      "background_provenance": "Validation set normal readings (val_features.npy), 5 observations per machine across 10 machines, base seed 42",
+      "evaluation_cohort": "70 selected observations from test partition (7 observations per machine)",
+      "additivity_verification": {
+        "validation_cohort_max_additivity_error": 1.3877787807814457e-17,
+        "frozen_test_cohort_max_additivity_error": 5.551115123125783e-17,
+        "all_samples_additive": true
+      },
+      "latency_benchmark_ms": {
+        "sample_count": 25,
+        "mean": 76.99,
+        "median": 70.43,
+        "p90": 101.43,
+        "p95": 107.58,
+        "min": 62.14,
+        "max": 109.45
+      },
+      "scientific_limitations": [
+        "The evaluated test cohort contains 70 curated observations, NOT the full 6,000-point test partition.",
+        "Kernel SHAP explains the mathematical behavior of the Isolation Forest decision function; it does NOT provide physical root-cause explanations.",
+        "Feature perturbations are sampled marginally (p(x_S) * p(x_C)), which can evaluate off-manifold synthetic feature combinations when physical correlations exist."
+      ]
+    },
+    "resnet_vision_defect_classifier": {
+      "evaluation_unit": "Individual surface image (128x128x3 RGB bitmap)",
+      "architecture": "Compact ResNet-18 (from scratch)",
+      "parameter_counts": {
+        "total_parameters": 2804708,
+        "trainable_parameters": 2799908,
+        "non_trainable_parameters": 4800,
+        "standard_resnet18_comparator": 11188164,
+        "parameter_reduction_pct": 74.93
+      },
+      "dataset_splits": {
+        "total_images": 600,
+        "classes": ["surface_crack", "spalling", "dent", "normal_surface"],
+        "train_samples": 420,
+        "val_samples": 88,
+        "frozen_test_samples": 92,
+        "samples_per_class_test": 23
+      },
+      "frozen_test_metrics": {
+        "sample_count": 92,
+        "accuracy": 1.0,
+        "macro_f1": 1.0,
+        "macro_precision": 1.0,
+        "macro_recall": 1.0,
+        "macro_roc_auc": 1.0,
+        "per_class_f1": {
+          "surface_crack": 1.0,
+          "spalling": 1.0,
+          "dent": 1.0,
+          "normal_surface": 1.0
+        }
+      },
+      "latency_benchmark_cpu_ms": {
+        "iterations": 100,
+        "mean": 156.57,
+        "median": 159.39,
+        "p95": 214.09,
+        "min": 101.89,
+        "max": 259.64,
+        "throughput_images_per_sec": 6.4
+      },
+      "scientific_limitations": [
+        "Trained and evaluated exclusively on synthetic procedural images generated with high-contrast geometric defect overlays and clean synthetic textures.",
+        "Images were randomly partitioned across splits rather than held out by machine or manufacturing batch; does NOT evaluate generalization to unseen machines, lighting variations, optical distortions, or factory environments.",
+        "Local single-worker CPU forward pass latency (156.57 ms) is an isolated computational benchmark, NOT an end-to-end production serving SLA."
+      ]
+    },
+    "unified_inference_service": {
+      "evaluation_unit": "Multimodal API inference request (tabular reading, sequence window, defect image)",
+      "numerical_parity_vs_direct_models": {
+        "isolation_forest_diff": 1.541681289574104e-07,
+        "lstm_autoencoder_diff": 3.71093733519956e-07,
+        "resnet_defect_classifier_diff": 0.0,
+        "sensor_attribution_dominant_feature_match": true,
+        "shap_additivity_error": 5.551115123125783e-17,
+        "parity_passed": true
+      },
+      "latency_benchmarks_ms": {
+        "sensor_anomaly_if": {
+          "mean": 15.07,
+          "median": 15.5,
+          "p95": 19.09,
+          "overhead_vs_direct_mean": -1.71
+        },
+        "sequence_anomaly_lstm": {
+          "mean": 871.29,
+          "median": 108.61,
+          "p95": 375.39,
+          "note": "Mean inflated by a single 72.56-second OS background garbage collection/paging pause outlier during 1 of 100 iterations; median (108.61 ms) reflects true representative execution."
+        },
+        "defect_classifier_resnet": {
+          "mean": 95.83,
+          "median": 90.16,
+          "p95": 135.46,
+          "overhead_vs_direct_mean": 3.97
+        }
+      },
+      "architectural_limitations": [
+        "Concurrency relies on in-process serialization locks (_tf_lock for Keras/TensorFlow and _shap_lock for Kernel SHAP) to prevent C-extension race conditions, serializing concurrent multi-threaded requests in a single worker.",
+        "Configured timeouts are passive evaluation deadlines rather than preemptive C-extension thread cancellation mechanisms.",
+        "Model registry is a process-local singleton; multi-process deployment (e.g. Uvicorn/Gunicorn) requires independent model instances per worker process.",
+        "Initial composite invocation exhibits empirical cold-start latency of approximately 6.04 seconds on the local host."
+      ]
+    },
+    "regression_validation": {
+      "evaluation_unit": "Pytest automated test items across complete backend codebase",
+      "test_inventory": {
+        "total_test_suites": 10,
+        "total_tests_collected": 118,
+        "total_tests_passed": 118,
+        "total_tests_failed": 0,
+        "total_tests_errored": 0,
+        "pass_rate_pct": 100.0,
+        "duration_seconds": 108.65
+      },
+      "warnings_classification": {
+        "total_warnings": 10,
+        "pending_deprecation_shap_colormap": 3,
+        "pydantic_openapi_field_example_deprecated": 7,
+        "status": "ALL_NON_BLOCKING_UPSTREAM_METADATA_DEPRECATIONS"
+      },
+      "frozen_partition_quarantine": {
+        "status": "STRICT_QUARANTINE_ENFORCED",
+        "reads_during_normal_testing": 0,
+        "synthetic_fixtures": "test_lstm_autoencoder.py (580x30x5 normal, seed 42) and test_sensor_attribution.py (50x30x5 normal + injected anomalies, seed 42)"
+      },
+      "distinction": "100% test pass rate validates software interface contracts, error boundaries, concurrency lock integrity, and regression resistance; it does NOT establish statistical generalization or real-world predictive validity."
+    }
+  },
+  "scientific_integrity_disclosures": {
+    "D01_synthetic_sensor_dataset": "The sensor dataset is purely synthetic, generated via scripted mathematical formulas and random distributions in ml/data_generator/generate_sensor_data.py.",
+    "D02_ten_machines_fleet": "Only 10 machine assets are represented (M101 through M110). Repeated longitudinal observations across 10 machines constitute pseudoreplication.",
+    "D03_machine_fault_confounding": "Four fault types are strictly coupled 1-to-1 with four specific machine IDs (M102=overheating, M104=bearing wear, M107=pressure drop, M109=lubrication failure). Machine identity and fault type are completely confounded.",
+    "D04_deterministic_fault_patterns": "Fault progressions are programmed linear and polynomial trends injected on top of stationary Gaussian noise.",
+    "D05_fixed_onset_step_2600": "Fault dynamics activate at the exact fixed timestep 2600 (65% of the 4,000-step timeline) for all faulted machines.",
+    "D06_overlapping_sequence_windows": "Sequence evaluation uses 30-step windows with stride 10, meaning consecutive windows share 20 timesteps (66.7% overlap) and violate sample independence.",
+    "D07_random_image_split_limitations": "The 600 synthetic images were split randomly (70/15/15) across train/val/test rather than by machine or generation batch, precluding claims of generalization to unseen machines or real factories.",
+    "D08_failure_risk_no_go": "Failure-risk prediction was formally closed as a NO-GO feasibility assessment; zero Random Forest or XGBoost models were trained or deployed.",
+    "D09_attribution_is_not_causal": "Sensor attribution and Kernel SHAP measure model mathematical decision boundaries and residual reconstruction errors, not real-world physical causal mechanisms.",
+    "D10_defect_01_schema_bypass": "DEFECT-01 remains open in backend/app/ml/inference/schemas.py:86-94, where partial timestamp arrays bypass chronological monotonicity validation."
+  },
+  "unresolved_technical_issues": [
+    {
+      "id": "DEFECT-01",
+      "severity": "Low",
+      "category": "Data Validation",
+      "status": "OPEN",
+      "component": "backend/app/ml/inference/schemas.py:86-94 (SequenceWindowInput.validate_sequence_structure)",
+      "description": "Chronological monotonicity is only checked when len(timestamps) == len(self.readings). If a sequence has 29 valid timestamps and 1 None, len(timestamps) == 29 != 30, skipping monotonicity verification without raising an error.",
+      "remediation": "Hardening scheduled for Phase 3 schema milestone to require all-or-nothing timestamp arrays."
+    },
+    {
+      "id": "LIM-01",
+      "severity": "Info",
+      "category": "Architecture",
+      "status": "DOCUMENTED",
+      "component": "backend/app/ml/inference/service.py (_tf_lock, _shap_lock)",
+      "description": "Process-level threading locks serialize concurrent inference for Keras and Kernel SHAP within a single worker process.",
+      "remediation": "Deploy multi-process worker pool (e.g. Uvicorn/Gunicorn workers) for horizontal concurrency."
+    },
+    {
+      "id": "LIM-02",
+      "severity": "Info",
+      "category": "Performance",
+      "status": "DOCUMENTED",
+      "component": "backend/app/ml/inference/service.py",
+      "description": "Initial composite inference invocation exhibits empirical cold-start latency of approximately 6.04 seconds.",
+      "remediation": "Implement container pre-warming or pre-warmed worker initialization in production deployment."
+    },
+    {
+      "id": "LIM-03",
+      "severity": "Info",
+      "category": "Performance",
+      "status": "DOCUMENTED",
+      "component": "backend/app/ml/inference/service.py (LSTM Autoencoder)",
+      "description": "LSTM Autoencoder latency benchmark exhibited a 72.56-second single-sample pause outlier due to background OS garbage collection/paging during iteration 68.",
+      "remediation": "Tune memory management and GC thresholds in production serving container."
+    },
+    {
+      "id": "LIM-04",
+      "severity": "Medium",
+      "category": "Generalization",
+      "status": "DOCUMENTED",
+      "component": "Isolation Forest and LSTM Autoencoder Zero-Shot Generalization",
+      "description": "Zero-shot evaluation on completely unseen machine assets yields recall drop to 48.86%–76.14% due to machine-specific baseline operating parameter variations.",
+      "remediation": "Require machine-specific baseline calibration window before activating anomaly monitoring on new assets."
+    }
+  ],
+  "model_artifact_checksums": {
+    "sensor_scaler.joblib": "f21f0899cd3af4d807e54f98b4627d5512650f08cad35ba17a6cd80268398faf",
+    "isolation_forest.joblib": "afdf397336f01cfe32c6d4660b3f0094bec01869ab3f8ec276a4d34ca8ac52a2",
+    "isolation_forest_metadata.json": "bbb05f4447d52c5ae0f4444649e2e59bf5f282aceb1cfd028e6309b86e8ed3d5",
+    "lstm_autoencoder.keras": "b1cae16de57b556f13b3f96e12a8c451d05f3bdd9887a65172817cd99e30e0b5",
+    "lstm_autoencoder_metadata.json": "d679e55a2b9935c2e8820d5b117a7c8fc8f84b94cd6565252255168f82fda0c1",
+    "resnet_defect_classifier.keras": "aac4b1c2d8c7ba47cef2e31b73d27ad6ff9b8be9352d6e3850c2e201e3195a98",
+    "resnet_defect_classifier_metadata.json": "e7e95b8037efceade0a8d19d0a14ecff86868d887e081ac306d1cb36573c8d73"
+  }
+}

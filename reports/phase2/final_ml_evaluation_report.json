@@ -1,0 +1,565 @@
+{
+  "project_metadata": {
+    "project_title": "ManuMind AI — Explainable Multi-Agent AI System for Manufacturing Anomaly Detection and Root Cause Analysis",
+    "institution": "Department of AI & Data Science, RMK Engineering College",
+    "milestone": "Phase 2 Step 10B: Final ML Evaluation Report",
+    "report_version": "1.0.0-final",
+    "date": "2026-11-08",
+    "repository_baseline_sha": "13fd0141a24c24e9e9267881e0f37672f0b114ca",
+    "branch": "main",
+    "authors": [
+      "Senior ML Research Engineer",
+      "Academic Technical Writer",
+      "Independent Evaluation Auditor"
+    ]
+  },
+  "dataset_description": {
+    "sensor_dataset": {
+      "type": "Procedural Synthetic Industrial Telemetry",
+      "generator_script": "ml/data_generator/generate_sensor_data.py",
+      "total_readings": 40000,
+      "sampling_interval_minutes": 5,
+      "total_span_hours": 333.33,
+      "total_span_days": 13.89,
+      "total_machines": 10,
+      "machine_ids": ["M101", "M102", "M103", "M104", "M105", "M106", "M107", "M108", "M109", "M110"],
+      "sensor_channels": [
+        {"name": "vibration", "unit": "mm/s", "nominal_mean": 1.80, "nominal_std": 0.22},
+        {"name": "temperature", "unit": "°C", "nominal_mean": 48.0, "nominal_std": 2.21},
+        {"name": "pressure", "unit": "bar", "nominal_mean": 6.20, "nominal_std": 0.12},
+        {"name": "current", "unit": "A", "nominal_mean": 14.52, "nominal_std": 0.71},
+        {"name": "rpm", "unit": "RPM", "nominal_mean": 1800.0, "nominal_std": 7.46}
+      ],
+      "fault_allocation": {
+        "M101": "nominal_healthy",
+        "M102": "overheating (temperature runaway, secondary pressure)",
+        "M103": "nominal_healthy",
+        "M104": "bearing_wear (vibration surge, secondary temperature)",
+        "M105": "nominal_healthy",
+        "M106": "nominal_healthy",
+        "M107": "pressure_drop (pressure decline, current compensation)",
+        "M108": "nominal_healthy",
+        "M109": "lubrication_failure (current surge, friction heating, vibration)",
+        "M110": "nominal_healthy"
+      },
+      "fault_onset_timestep": 2600,
+      "fault_onset_fraction": 0.65,
+      "chronological_partitions": {
+        "train": {"steps": [0, 2799], "readings_per_machine": 2800, "total_readings": 28000, "percentage": 70.0},
+        "validation": {"steps": [2800, 3399], "readings_per_machine": 600, "total_readings": 6000, "percentage": 15.0},
+        "frozen_test": {"steps": [3400, 3999], "readings_per_machine": 600, "total_readings": 6000, "percentage": 15.0}
+      },
+      "sequence_generation": {
+        "window_length": 30,
+        "stride": 10,
+        "train_windows": 2770,
+        "val_windows": 580,
+        "frozen_test_windows": 580
+      }
+    },
+    "vision_dataset": {
+      "type": "Procedural Synthetic Surface Defect Images",
+      "resolution": [128, 128, 3],
+      "channels": "RGB",
+      "total_images": 600,
+      "classes": ["surface_crack", "spalling", "dent", "normal_surface"],
+      "images_per_class": 150,
+      "partitions": {
+        "train": {"total": 420, "per_class": 105, "percentage": 70.0},
+        "validation": {"total": 88, "per_class": 22, "percentage": 14.67},
+        "frozen_test": {"total": 92, "per_class": 23, "percentage": 15.33}
+      }
+    }
+  },
+  "sensor_models": {
+    "isolation_forest": {
+      "model_type": "Isolation Forest (scikit-learn)",
+      "hyperparameters": {
+        "n_estimators": 200,
+        "max_samples": 256,
+        "contamination": "auto",
+        "random_state": 42
+      },
+      "evaluation_unit": "Point-level reading (1x5 tabular vector)",
+      "dataset_scope": "Frozen test partition (sensor_test.csv), 6,000 points across 10 machines (600 points/machine)",
+      "anomaly_threshold": 0.0269,
+      "threshold_calibration": "99th percentile of raw anomaly scores on validation normal readings (calibrated threshold = 0.0269)",
+      "confusion_matrix": {
+        "true_negatives": 3359,
+        "false_positives": 241,
+        "false_negatives": 0,
+        "true_positives": 2400
+      },
+      "performance_metrics": {
+        "accuracy": 0.9598,
+        "precision": 0.9087,
+        "recall": 1.0,
+        "f1_score": 0.9522,
+        "specificity": 0.9331,
+        "false_positive_rate": 0.0669,
+        "roc_auc": 0.9979,
+        "pr_auc": 0.9965
+      },
+      "fleet_breakdown": {
+        "faulted_machines": {
+          "machines": ["M102", "M104", "M107", "M109"],
+          "total_samples": 2400,
+          "true_positives": 2400,
+          "false_negatives": 0,
+          "recall": 1.0,
+          "detection_rate_pct": 100.0
+        },
+        "healthy_machines": {
+          "machines": ["M101", "M103", "M105", "M106", "M108", "M110"],
+          "total_samples": 3600,
+          "true_negatives": 3359,
+          "false_positives": 241,
+          "false_positive_rate": 0.0669,
+          "specificity": 0.9331,
+          "per_machine_false_alarms": {
+            "M101": {"fp": 49, "fpr_pct": 8.17},
+            "M103": {"fp": 39, "fpr_pct": 6.50},
+            "M105": {"fp": 38, "fpr_pct": 6.33},
+            "M106": {"fp": 42, "fpr_pct": 7.00},
+            "M108": {"fp": 36, "fpr_pct": 6.00},
+            "M110": {"fp": 37, "fpr_pct": 6.17}
+          }
+        }
+      },
+      "source_reference": "reports/phase2/isolation_forest/isolation_forest_results.json"
+    },
+    "lstm_autoencoder": {
+      "model_type": "Sequence-to-Sequence LSTM Autoencoder (TensorFlow/Keras)",
+      "architecture": "Encoder [64 LSTM -> 32 LSTM -> 16 Dense] -> Decoder [32 LSTM -> 64 LSTM -> 5 Dense Linear]",
+      "evaluation_unit": "Sequence window (30x5 tensor, 150 min, stride 10)",
+      "dataset_scope": "Frozen test partition (sequences_test.npz), 580 sequence windows across 10 machines (58 windows/machine)",
+      "reconstruction_error_threshold": 0.901464,
+      "threshold_calibration": "99th percentile of reconstruction error on normal validation sequences (N=348)",
+      "confusion_matrix": {
+        "true_negatives": 344,
+        "false_positives": 4,
+        "false_negatives": 0,
+        "true_positives": 232
+      },
+      "performance_metrics": {
+        "accuracy": 0.9931,
+        "precision": 0.9831,
+        "recall": 1.0,
+        "f1_score": 0.9915,
+        "specificity": 0.9885,
+        "false_positive_rate": 0.0115,
+        "roc_auc": 1.0,
+        "pr_auc": 1.0
+      },
+      "fleet_breakdown": {
+        "faulted_machines": {
+          "machines": ["M102", "M104", "M107", "M109"],
+          "total_windows": 232,
+          "true_positives": 232,
+          "false_negatives": 0,
+          "recall": 1.0,
+          "mean_reconstruction_error": {
+            "M102": 60.94193,
+            "M104": 135.39843,
+            "M107": 106.29151,
+            "M109": 96.136206
+          }
+        },
+        "healthy_machines": {
+          "machines": ["M101", "M103", "M105", "M106", "M108", "M110"],
+          "total_windows": 348,
+          "true_negatives": 344,
+          "false_positives": 4,
+          "false_positive_rate": 0.0115,
+          "specificity": 0.9885,
+          "per_machine_false_alarms": {
+            "M101": {"fp": 0, "tn": 58},
+            "M103": {"fp": 2, "tn": 56},
+            "M105": {"fp": 0, "tn": 58},
+            "M106": {"fp": 0, "tn": 58},
+            "M108": {"fp": 0, "tn": 58},
+            "M110": {"fp": 2, "tn": 56}
+          },
+          "mean_reconstruction_error_range": "0.68515 to 0.71024 (strictly below 0.901464 threshold)"
+        }
+      },
+      "source_reference": "reports/phase2/lstm_autoencoder/lstm_autoencoder_results.json"
+    }
+  },
+  "unseen_machine_diagnostic": {
+    "experiment_type": "Exploratory Zero-Shot Machine Holdout Diagnostic",
+    "training_fleet": ["M101", "M103", "M105", "M106", "M108"],
+    "training_samples": 20000,
+    "holdout_fleet": ["M110", "M102", "M104", "M107", "M109"],
+    "evaluation_horizon": "Full 4,000-timestep machine lifecycle (2,600 normal, 1,400 anomalous steps)",
+    "frozen_threshold": 0.0269,
+    "per_machine_results": {
+      "M110_healthy": {
+        "actual_normal": 4000,
+        "true_negatives": 3944,
+        "false_positives": 56,
+        "specificity": 0.9860,
+        "false_alarm_rate": 0.0140
+      },
+      "M102_overheating": {
+        "actual_anomalies": 1400,
+        "true_positives": 684,
+        "false_negatives": 716,
+        "lifetime_recall": 0.4886,
+        "precision": 0.9620,
+        "specificity": 0.9896
+      },
+      "M104_bearing_wear": {
+        "actual_anomalies": 1400,
+        "true_positives": 969,
+        "false_negatives": 431,
+        "lifetime_recall": 0.6921,
+        "precision": 0.9700,
+        "specificity": 0.9885
+      },
+      "M107_pressure_drop": {
+        "actual_anomalies": 1400,
+        "true_positives": 1036,
+        "false_negatives": 364,
+        "lifetime_recall": 0.7400,
+        "precision": 0.9700,
+        "specificity": 0.9877
+      },
+      "M109_lubrication_failure": {
+        "actual_anomalies": 1400,
+        "true_positives": 1066,
+        "false_negatives": 334,
+        "lifetime_recall": 0.7614,
+        "precision": 0.9753,
+        "specificity": 0.9896
+      }
+    },
+    "lifecycle_breakdown": {
+      "incipient_phase_steps_2600_to_3399": {
+        "readings": 800,
+        "progression_range": "0.00 to 0.57",
+        "signal_deviation": "+0.5σ to +3.0σ",
+        "observed_recall_range": "25% to 55%"
+      },
+      "severe_phase_steps_3400_to_3999": {
+        "readings": 600,
+        "progression_range": "0.57 to 1.00",
+        "signal_deviation": "> +15σ",
+        "observed_recall": "100.0%"
+      }
+    },
+    "source_reference": "reports/phase2/model_audit/generalization_diagnostic.json"
+  },
+  "common_granularity_comparison": {
+    "evaluation_windows": 580,
+    "anomalous_windows": 232,
+    "normal_windows": 348,
+    "methods": {
+      "lstm_autoencoder": {
+        "threshold": 0.901464,
+        "confusion_matrix": {"tn": 344, "fp": 4, "fn": 0, "tp": 232},
+        "accuracy": 0.9931,
+        "precision": 0.9831,
+        "recall": 1.0,
+        "f1_score": 0.9915,
+        "specificity": 0.9885,
+        "false_positive_rate": 0.0115
+      },
+      "if_mean_score": {
+        "threshold": 0.013440,
+        "confusion_matrix": {"tn": 348, "fp": 0, "fn": 0, "tp": 232},
+        "accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "specificity": 1.0,
+        "false_positive_rate": 0.0
+      },
+      "if_fraction_anomalous": {
+        "threshold": 0.366667,
+        "confusion_matrix": {"tn": 348, "fp": 0, "fn": 0, "tp": 232},
+        "accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "specificity": 1.0,
+        "false_positive_rate": 0.0
+      },
+      "if_max_score": {
+        "threshold": 0.119781,
+        "confusion_matrix": {"tn": 339, "fp": 9, "fn": 0, "tp": 232},
+        "accuracy": 0.9845,
+        "precision": 0.9627,
+        "recall": 1.0,
+        "f1_score": 0.9810,
+        "specificity": 0.9741,
+        "false_positive_rate": 0.0259
+      },
+      "if_naive_any_point": {
+        "threshold": 0.026900,
+        "confusion_matrix": {"tn": 51, "fp": 297, "fn": 0, "tp": 232},
+        "accuracy": 0.4879,
+        "precision": 0.4386,
+        "recall": 1.0,
+        "f1_score": 0.6097,
+        "specificity": 0.1466,
+        "false_positive_rate": 0.8534
+      }
+    },
+    "source_reference": "reports/phase2/evaluation_audit/common_granularity_comparison.json"
+  },
+  "sensor_attribution": {
+    "methodology": {
+      "lstm": "Normalized squared reconstruction error percentage per sensor channel",
+      "signed_residuals": "Standardized difference (z-score space) preserving drift direction",
+      "isolation_forest": "Model-agnostic feature ablation score drop vs reference median"
+    },
+    "anomalous_windows_evaluated": 232,
+    "fault_consistency_profiles": {
+      "M102_overheating": {
+        "primary_expected": "temperature",
+        "secondary_expected": "pressure",
+        "lstm_primary_mode": "temperature",
+        "lstm_mode_match_rate_pct": 100.0,
+        "lstm_attribution_pct": {"temperature": 61.98, "pressure": 36.67, "current": 0.50, "vibration": 0.44, "rpm": 0.42},
+        "lstm_signed_residuals": {"temperature": 13.3451, "pressure": 10.2897},
+        "if_ablation_top2_match_rate_pct": 100.0
+      },
+      "M104_bearing_wear": {
+        "primary_expected": "vibration",
+        "secondary_expected": "temperature",
+        "lstm_primary_mode": "vibration",
+        "lstm_mode_match_rate_pct": 100.0,
+        "lstm_attribution_pct": {"vibration": 88.00, "temperature": 5.90, "rpm": 4.04, "current": 1.67, "pressure": 0.39},
+        "lstm_signed_residuals": {"vibration": 23.3672, "temperature": 5.6753, "rpm": -4.5601},
+        "if_ablation_top2_match_rate_pct": 100.0
+      },
+      "M107_pressure_drop": {
+        "primary_expected": "pressure",
+        "secondary_expected": "current",
+        "lstm_primary_mode": "pressure",
+        "lstm_mode_match_rate_pct": 100.0,
+        "lstm_attribution_pct": {"pressure": 91.34, "current": 7.90, "rpm": 0.31, "temperature": 0.23, "vibration": 0.22},
+        "lstm_signed_residuals": {"pressure": -21.4989, "current": 6.1649},
+        "if_ablation_top2_match_rate_pct": 100.0
+      },
+      "M109_lubrication_failure": {
+        "primary_expected": "current",
+        "secondary_expected": "vibration",
+        "lstm_primary_mode": "current",
+        "lstm_mode_match_rate_pct": 100.0,
+        "lstm_attribution_pct": {"current": 44.69, "vibration": 31.34, "temperature": 23.17, "rpm": 0.47, "pressure": 0.34},
+        "lstm_signed_residuals": {"current": 14.1534, "vibration": 11.8966, "temperature": 10.1269},
+        "if_ablation_top2_match_rate_pct": 100.0
+      }
+    },
+    "source_reference": "reports/phase2/sensor_attribution/fault_mechanism_consistency.json"
+  },
+  "failure_risk_feasibility": {
+    "status": "FORMALLY_CLOSED_AS_FEASIBILITY_ASSESSMENT",
+    "formal_decision": "NO-GO — Supervised tree-based failure-risk regression rejected",
+    "models_trained": "NONE (Zero Random Forest or XGBoost models trained or evaluated)",
+    "prohibitive_constraints": {
+      "training_input_truncation": "Chronological partition with H=288 steps (24 hours) truncates training inputs at step 2511, 89 steps prior to synthetic fault activation at step 2600. Training input partition contains exactly 0.0% degradation data.",
+      "target_range_discrepancy": "Maximum training target risk is 0.2090, while maximum test target risk is 0.9000 (4.31x expansion). Random Forest predictions are convex combinations of training targets bounded within [0.0000, 0.2090].",
+      "tree_extrapolation_limits": "Axis-aligned decision trees route severe degradation inputs (>15σ) into boundary leaves rather than extrapolating a continuous degradation slope.",
+      "pre_onset_noise": "Baseline telemetry prior to step 2600 consists of stationary Gaussian noise with negligible correlation (|r| < 0.06) against future failure risk.",
+      "pseudoreplication": "40,000 readings originate from only 10 physical machines (4 faulted, 6 healthy) with 1-to-1 machine-to-fault confounding."
+    },
+    "source_reference": "reports/phase2/failure_risk_feasibility_assessment.md"
+  },
+  "kernel_shap_explainability": {
+    "explainer_method": "Kernel SHAP (shap.KernelExplainer)",
+    "explained_model": "Isolation Forest",
+    "explained_output": "Continuous anomaly intensity (-decision_function(x))",
+    "background_configuration": {
+      "sample_count": 50,
+      "source": "Healthy training readings (data/processed/scaled_sensor_train.csv, is_anomaly == 0)",
+      "distribution": "5 normal readings per machine across 10 machines (base seed 42)",
+      "base_expected_value": -0.047782257284656585,
+      "interventional_masking_disclosure": "Kernel SHAP uses an interventional marginal masking approach, combining observed feature subsets with values drawn from the background dataset to estimate feature contributions. This can break dependencies between correlated sensor variables and generate combinations that are uncommon or physically implausible in actual manufacturing operations. Attributions explain model behavior under this masking scheme and do not constitute physical causal effects."
+    },
+    "additivity_verification": {
+      "validation_cohort": {
+        "sample_count": 80,
+        "max_additivity_error": 1.3877787807814457e-17,
+        "all_additive": true
+      },
+      "frozen_test_cohort": {
+        "sample_count": 70,
+        "max_additivity_error": 5.551115123125783e-17,
+        "all_additive": true
+      }
+    },
+    "latency_benchmark_ms": {
+      "sample_count": 25,
+      "mean": 76.99,
+      "median": 70.43,
+      "p90": 101.43,
+      "p95": 107.58,
+      "min": 62.14,
+      "max": 109.45
+    },
+    "source_reference": "reports/phase2/shap_explainability/shap_evaluation_results.json"
+  },
+  "resnet_defect_classifier": {
+    "model_architecture": "Compact ResNet-18 (trained from scratch)",
+    "input_dimensions": [128, 128, 3],
+    "parameter_counts": {
+      "total_parameters": 2804708,
+      "trainable_parameters": 2799908,
+      "non_trainable_parameters": 4800,
+      "standard_resnet18_comparator": 11188164,
+      "reduction_pct": 74.93
+    },
+    "training_hyperparameters": {
+      "epochs_completed": 35,
+      "best_epoch": 33,
+      "initial_lr": 0.0003,
+      "final_lr": 3.75e-05,
+      "batch_size": 32,
+      "best_val_loss": 0.424704,
+      "best_val_accuracy": 1.0
+    },
+    "frozen_test_evaluation": {
+      "sample_count": 92,
+      "classes": ["surface_crack", "spalling", "dent", "normal_surface"],
+      "accuracy": 1.0,
+      "macro_precision": 1.0,
+      "macro_recall": 1.0,
+      "macro_f1": 1.0,
+      "macro_roc_auc": 1.0,
+      "per_class_f1": {
+        "surface_crack": 1.0,
+        "spalling": 1.0,
+        "dent": 1.0,
+        "normal_surface": 1.0
+      }
+    },
+    "latency_benchmark_cpu_ms": {
+      "iterations": 100,
+      "mean": 156.57,
+      "median": 159.39,
+      "p95": 214.09,
+      "min": 101.89,
+      "max": 259.64,
+      "throughput_images_per_sec": 6.4
+    },
+    "source_reference": "reports/phase2/defect_classifier/defect_classifier_results.json"
+  },
+  "unified_inference_service": {
+    "numerical_parity_vs_direct_models": {
+      "isolation_forest_diff": 1.541681289574104e-07,
+      "lstm_autoencoder_diff": 3.71093733519956e-07,
+      "resnet_defect_classifier_diff": 0.0,
+      "sensor_attribution_dominant_feature_match": true,
+      "shap_additivity_error": 5.551115123125783e-17,
+      "parity_passed": true
+    },
+    "latency_benchmarks_ms": {
+      "isolation_forest": {
+        "direct_median": 15.98,
+        "service_median": 15.50,
+        "direct_mean": 16.78,
+        "service_mean": 15.07,
+        "p95": 19.09
+      },
+      "lstm_autoencoder": {
+        "direct_median": 96.90,
+        "service_median": 108.61,
+        "direct_mean": 104.03,
+        "service_mean": 871.29,
+        "trimmed_service_mean": 147.12,
+        "median_overhead": 11.71,
+        "p95": 375.39,
+        "max_outlier_ms": 72563.70,
+        "outlier_status": "The LSTM inference-service benchmark recorded one extreme latency outlier of 72,563.70 ms during the 100 timed iterations. The underlying cause was not conclusively established by the benchmark instrumentation."
+      },
+      "resnet_defect_classifier": {
+        "direct_median": 87.54,
+        "service_median": 90.16,
+        "direct_mean": 91.86,
+        "service_mean": 95.83,
+        "median_overhead": 2.62,
+        "p95": 135.46
+      }
+    },
+    "architectural_safeguards": {
+      "concurrency_locks": "In-process serialization locks (_tf_lock, _shap_lock) protect C-extension thread safety",
+      "lazy_loading": "Models loaded into memory on first invocation rather than server startup",
+      "input_validation": "Strict Pydantic schema validation for sensor, sequence, and image buffers"
+    },
+    "source_reference": "reports/phase2/inference_service_eval_results.json"
+  },
+  "regression_validation": {
+    "total_test_suites": 10,
+    "total_tests_collected": 118,
+    "total_tests_passed": 118,
+    "total_tests_failed": 0,
+    "total_tests_errored": 0,
+    "pass_rate_pct": 100.0,
+    "execution_duration_seconds": 108.65,
+    "warnings_classification": {
+      "total_warnings": 10,
+      "shap_matplotlib_colormap_deprecation": 3,
+      "pydantic_openapi_field_example_deprecated": 7,
+      "status": "ALL_NON_BLOCKING_UPSTREAM_METADATA_DEPRECATIONS"
+    },
+    "frozen_partition_quarantine": {
+      "status": "STRICT_QUARANTINE_ENFORCED",
+      "test_partition_reads_during_testing": 0,
+      "synthetic_fixtures_used": "Deterministic pseudorandom sequence arrays (seed 42)"
+    },
+    "source_reference": "reports/phase2/comprehensive_ml_validation_results.json"
+  },
+  "outstanding_defects_and_limitations": {
+    "defects": [
+      {
+        "defect_id": "DEFECT-01",
+        "severity": "Low (provisional evaluation assessment; not a formally approved operational risk classification)",
+        "category": "Input Schema Validation",
+        "status": "OPEN",
+        "location": "backend/app/ml/inference/schemas.py:86-94 (SequenceWindowInput.validate_sequence_structure)",
+        "description": "Chronological monotonicity is only evaluated when len(timestamps) == len(self.readings). Sequences with partial timestamps (e.g. 29 timestamps and 1 None) bypass monotonicity checking without raising an error.",
+        "remediation_plan": "Phase 3 schema hardening to enforce all-or-nothing timestamp arrays."
+      }
+    ],
+    "architectural_limitations": [
+      {"id": "LIM-01", "name": "In-process lock serialization for Keras and SHAP in single-worker processes"},
+      {"id": "LIM-02", "name": "Cold-Start Latency", "description": "A composite cold-start observation of approximately 6.04 seconds was recorded. C-library initialization was considered a possible contributing factor, but the benchmark instrumentation did not conclusively establish the cause."},
+      {"id": "LIM-03", "name": "Passive synchronous timeouts cannot preempt running C-extensions mid-execution"},
+      {"id": "LIM-04", "name": "Process-local singleton model registry requires multi-process architecture for horizontal scaling"},
+      {"id": "LIM-05", "name": "Zero-Shot Holdout Generalization", "description": "Exploratory zero-shot machine holdout testing produced lifetime recall between 48.86% and 76.14% across the four unseen faulted machines. Incipient-stage recall was lower, approximately 25%–55%, while severe-stage recall was 100% in the reported synthetic experiment."}
+    ]
+  },
+  "scientific_limitations_and_negative_claims": {
+    "mandatory_disclosures": [
+      "The sensor dataset is purely synthetic, generated via scripted formulas in generate_sensor_data.py.",
+      "Only 10 machines are represented, constituting experimental pseudoreplication.",
+      "Four fault types are coupled 1-to-1 with four specific machine IDs, completely confounding machine identity and fault type.",
+      "Fault progressions follow programmed linear/polynomial trends added to Gaussian noise, not natural physical degradation.",
+      "Fault dynamics activate at the exact fixed timestep 2600 across all faulted machines.",
+      "Sequence windows overlap by 20 timesteps (stride 10, window 30), violating sample independence.",
+      "The 600 synthetic defect images were split randomly rather than by machine or batch, precluding claims of generalization to unseen machines or real factories.",
+      "Failure-risk prediction was formally closed as a NO-GO feasibility assessment; zero Random Forest or XGBoost models were trained.",
+      "Sensor attribution and Kernel SHAP measure model mathematical decision boundaries, not physical causal mechanisms.",
+      "DEFECT-01 remains open in the inference schema validation layer."
+    ],
+    "explicit_negative_declarations": [
+      "No claim of production-ready predictive accuracy in operational industrial factories.",
+      "No claim of proven real-world fault generalization across diverse, unobserved machinery.",
+      "No claim of real-world causal root-cause identification.",
+      "No claim of validated failure probabilities or remaining useful life (RUL) estimation.",
+      "No claim of formal zero-leak memory stability or production SLA compliance."
+    ]
+  },
+  "model_artifact_checksums": {
+    "sensor_scaler.joblib": "f21f0899cd3af4d807e54f98b4627d5512650f08cad35ba17a6cd80268398faf",
+    "isolation_forest.joblib": "afdf397336f01cfe32c6d4660b3f0094bec01869ab3f8ec276a4d34ca8ac52a2",
+    "isolation_forest_metadata.json": "bbb05f4447d52c5ae0f4444649e2e59bf5f282aceb1cfd028e6309b86e8ed3d5",
+    "lstm_autoencoder.keras": "b1cae16de57b556f13b3f96e12a8c451d05f3bdd9887a65172817cd99e30e0b5",
+    "lstm_autoencoder_metadata.json": "d679e55a2b9935c2e8820d5b117a7c8fc8f84b94cd6565252255168f82fda0c1",
+    "resnet_defect_classifier.keras": "aac4b1c2d8c7ba47cef2e31b73d27ad6ff9b8be9352d6e3850c2e201e3195a98",
+    "resnet_defect_classifier_metadata.json": "e7e95b8037efceade0a8d19d0a14ecff86868d887e081ac306d1cb36573c8d73"
+  }
+}
