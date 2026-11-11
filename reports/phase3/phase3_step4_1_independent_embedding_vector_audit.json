@@ -1,0 +1,161 @@
+{
+  "timestamp": "2026-11-11T11:30:00+05:30",
+  "audit_milestone": "Phase 3 Step 4.1 — Independent Embedding and Vector Index Audit",
+  "department": "Department of AI & Data Science, RMK Engineering College",
+  "project": "ManuMind AI — Explainable Multi-Agent AI System for Manufacturing Anomaly Detection and Root Cause Analysis",
+  "repository": {
+    "path": "D:\\Desktop\\FInal year project\\manumind-ai",
+    "branch": "main",
+    "baseline_head": "e5e686939e1830b64191dcbd327b2b7bf35a0793",
+    "remote_sync": "0 0",
+    "git_clean_index": true,
+    "lockfile_sha256": "778FDE7658E8F5A0FD3CB039C6271FBBCCE95AB967FBECE6D29CA82E3F035AD2"
+  },
+  "critical_audit_a": {
+    "audit_title": "Canonical Chunk Category Discrepancy Investigation",
+    "verdict": "NO CANONICAL CHANGE — REPORTING DIFFERENCE ONLY",
+    "step3_1_baseline": {
+      "INCIDENT": 400,
+      "SOP": 110,
+      "TROUBLESHOOTING": 39,
+      "SAFETY": 15,
+      "TOTAL": 564
+    },
+    "step4_reported": {
+      "INCIDENT": 400,
+      "SOP": 102,
+      "TROUBLESHOOTING": 39,
+      "SAFETY": 23,
+      "TOTAL": 564
+    },
+    "actual_canonical_chunks": {
+      "INCIDENT": 400,
+      "SOP": 110,
+      "TROUBLESHOOTING": 39,
+      "SAFETY": 15,
+      "TOTAL": 564
+    },
+    "actual_chromadb_records": {
+      "INCIDENT": 400,
+      "SOP": 110,
+      "TROUBLESHOOTING": 39,
+      "SAFETY": 15,
+      "TOTAL": 564
+    },
+    "mismatches_between_chunks_and_chroma": 0,
+    "root_cause": "Clerical and typographical transposition in the Step 4 narrative and JSON summary; zero underlying chunk regeneration or category change occurred in reality."
+  },
+  "audit_b_tokenizer": {
+    "model_name": "BAAI/bge-small-en-v1.5",
+    "revision_commit_hash": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+    "tokenizer_architecture": "BertTokenizerFast",
+    "vocabulary_size": 30522,
+    "nominal_max_length": 512,
+    "effective_content_budget": 500,
+    "total_inputs_evaluated": 564,
+    "min_tokens": 41,
+    "max_tokens": 424,
+    "mean_tokens": 314.61,
+    "median_tokens": 381.0,
+    "matching_token_counts": 564,
+    "mismatched_token_counts": 0,
+    "max_discrepancy": 0,
+    "inputs_exceeding_500": 0,
+    "inputs_exceeding_512": 0,
+    "truncated_inputs": 0
+  },
+  "audit_c_embeddings": {
+    "compute_device": "CPU",
+    "cuda_available": false,
+    "tensorflow_imported_in_rag": false,
+    "kmp_duplicate_lib_ok_set": false,
+    "pytorch_version": "2.5.1+cpu",
+    "total_vectors": 564,
+    "embedding_dimension": 384,
+    "tensor_shape": [564, 384],
+    "nan_count": 0,
+    "inf_count": 0,
+    "l2_norm_min": 0.99999988,
+    "l2_norm_max": 1.00000012,
+    "l2_norm_mean": 1.0,
+    "l2_norm_std": 4.74e-8,
+    "generation_duration_seconds": 160.7092,
+    "measured_throughput_per_second": 3.51,
+    "batch_size": 32
+  },
+  "audit_d_segmentation_lineage": {
+    "total_canonical_chunks": 564,
+    "total_embedding_segments": 564,
+    "mapping_ratio": "1:1",
+    "unique_parent_ids": 564,
+    "missing_parent_references": 0,
+    "total_incident_segments": 400,
+    "unique_incident_source_records": 400,
+    "unique_incident_row_indices": 400,
+    "row_index_range": [1, 400],
+    "total_spec_placeholders_preserved": 123,
+    "segments_with_spec_placeholders": 41,
+    "silent_text_loss": false,
+    "silent_truncation": false
+  },
+  "audit_e_chromadb": {
+    "collection_name": "manumind_bge_small_v1",
+    "persist_directory": "knowledge_base/index/chroma_bge_small_v1",
+    "chromadb_version": "0.5.23",
+    "distance_metric": "cosine",
+    "hnsw_space": "cosine",
+    "collection_count": 564,
+    "idempotency_strategy": "content_hash comparison",
+    "persistence_verified_across_restart": true,
+    "total_storage_footprint_bytes": 11653860,
+    "storage_footprint_mb": 11.11,
+    "sqlite_bytes": 9973760,
+    "hnsw_bytes": 1680100
+  },
+  "audit_f_safety": {
+    "strip_disclaimer_function_active": true,
+    "disclaimer_text_preserved_in_content": true,
+    "genuine_safety_procedures_preserved": true,
+    "safety_segments_by_category": {
+      "SAFETY": 15,
+      "SOP": 71,
+      "TROUBLESHOOTING": 17,
+      "INCIDENT": 103
+    },
+    "total_safety_related_segments": 206,
+    "total_non_safety_segments": 358,
+    "safety_proportion_percentage": 36.52
+  },
+  "audit_g_findings": {
+    "FINDING-01": { "status": "CLOSED", "description": "Reporting arithmetic defect fixed" },
+    "FINDING-02": { "status": "CLOSED", "description": "Official BGE tokenizer verified; max 424 tokens; 0 truncated" },
+    "FINDING-03": { "status": "CLOSED", "description": "Disclaimer false positive eliminated; refined from 516 to 206" },
+    "FINDING-04": { "status": "CLOSED", "description": "Official BertTokenizerFast wrapper implemented" }
+  },
+  "audit_h_tests": {
+    "step4_tokenizer": { "total": 8, "passed": 8, "failed": 0 },
+    "step4_segmenter": { "total": 16, "passed": 16, "failed": 0 },
+    "step4_embeddings": { "total": 9, "passed": 9, "failed": 0 },
+    "step4_vector_store": { "total": 12, "passed": 12, "failed": 0 },
+    "step4_subtotal": { "total": 45, "passed": 45, "failed": 0 },
+    "step3_chunking": { "total": 24, "passed": 24, "failed": 0 },
+    "step2_ingestion": { "total": 18, "passed": 18, "failed": 0 },
+    "phase3_rag_subtotal": { "total": 87, "passed": 87, "failed": 0 },
+    "phase2_ml_regression": { "total": 56, "passed": 56, "failed": 0 },
+    "grand_total": 143,
+    "grand_passed": 143,
+    "grand_failed": 0,
+    "pass_rate_percentage": 100.0
+  },
+  "audit_i_baseline": {
+    "baseline_head": "e5e686939e1830b64191dcbd327b2b7bf35a0793",
+    "origin_synchronized": true,
+    "ml_models_intact": true,
+    "tau_isolation_forest": 0.0269,
+    "tau_lstm_autoencoder": 0.901464,
+    "manifest_documents_count": 418,
+    "maintenance_records_count": 400,
+    "git_staged_changes": false
+  },
+  "audit_verdict": "PASS — INDEPENDENT STEP 4 AUDIT APPROVED"
+}

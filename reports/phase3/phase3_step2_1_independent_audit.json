@@ -1,0 +1,190 @@
+{
+  "timestamp": "2026-11-09T19:50:46.006145+05:30",
+  "milestone": "Phase 3 Step 2.1 \u2014 Independent Ingestion Pipeline Audit",
+  "project": "ManuMind AI \u2014 Explainable Multi-Agent AI System for Manufacturing Anomaly Detection and Root Cause Analysis",
+  "department": "Department of AI & Data Science, RMK Engineering College",
+  "baseline_head": "e5e686939e1830b64191dcbd327b2b7bf35a0793",
+  "branch": "main",
+  "role": "Independent Senior RAG Architect, Python Code Auditor, Test Engineer and Quality Assurance Auditor",
+  "final_verdict": "PASS \u2014 INDEPENDENT AUDIT APPROVED",
+  "audit_scope": "Comprehensive independent code, data, hash, manifest, and test audit of Phase 3 Step 2 implementation",
+  "findings_summary": {
+    "critical_defects": 0,
+    "high_defects": 0,
+    "medium_defects": 0,
+    "low_defects_and_recommendations": 2
+  },
+  "critical_integrity_checks": {
+    "hashing": {
+      "raw_file_hash_source": "raw file bytes (hashlib.sha256(raw_bytes).hexdigest())",
+      "content_hash_source": "normalized document body (hashlib.sha256(normalized.encode('utf-8')).hexdigest())",
+      "normalization_rules": [
+        "CRLF and CR standardized to LF (\\n)",
+        "Trailing whitespace stripped from each line (line.rstrip())",
+        "Leading and trailing document whitespace trimmed (strip())"
+      ],
+      "content_preservation": "Original raw body preserved verbatim in IngestionRecord.content",
+      "identity_separation": "document_id (identity) distinct from content_hash (content) and raw_file_hash (bytes)",
+      "status": "PASSED"
+    },
+    "manifest_reconciliation": {
+      "manifest_entries_total": 418,
+      "disk_documents_total": 418,
+      "manifest_entries_missing_on_disk": 0,
+      "disk_documents_untracked_in_manifest": 0,
+      "size_mismatches": 0,
+      "sha256_mismatches": 0,
+      "both_directions_reconciled": true,
+      "status": "PASSED"
+    },
+    "incident_source_row_mapping": {
+      "maintenance_csv_total_rows": 400,
+      "incident_documents_total": 400,
+      "unique_source_rows_mapped": 400,
+      "duplicate_source_rows": 0,
+      "missing_source_rows_in_range_1_to_400": 0,
+      "duplicate_doc_ids": 0,
+      "field_mismatches": 0,
+      "status": "PASSED"
+    },
+    "provenance_and_synthetic_disclosures": {
+      "sops_source_type": "SYNTHETIC_DEMONSTRATION (10/10)",
+      "troubleshooting_source_type": "SYNTHETIC_DEMONSTRATION (5/5)",
+      "safety_source_type": "SYNTHETIC_DEMONSTRATION (3/3)",
+      "incidents_source_type": "DERIVED_SYNTHETIC (400/400)",
+      "is_synthetic_true_count": 418,
+      "visible_synthetic_disclaimers_present": 418,
+      "spec_required_placeholders_preserved": 123,
+      "spec_required_documents_count": 18,
+      "authoritative_oem_claims": 0,
+      "status": "PASSED"
+    },
+    "idempotency_and_conflict_detection": {
+      "in_memory_registry_after_run1": 418,
+      "in_memory_registry_after_run2": 418,
+      "duplicate_logical_records_created": 0,
+      "changed_content_detection_verified": true,
+      "disk_mutation_detected": false,
+      "unexpected_persistence_detected": false,
+      "status": "PASSED"
+    }
+  },
+  "regression_and_test_execution": {
+    "rag_ingestion_suite": {
+      "test_file": "backend/tests/test_rag_ingestion.py",
+      "framework": "unittest / pytest",
+      "scenarios_tested": 18,
+      "scenarios_passed": 18,
+      "failures": 0,
+      "errors": 0,
+      "duration_seconds": 3.13,
+      "status": "PASSED"
+    },
+    "phase2_ml_regression_suite": {
+      "isolation_forest_tests": {
+        "executed": 10,
+        "passed": 10,
+        "failed": 0
+      },
+      "resnet_defect_classifier_tests": {
+        "executed": 11,
+        "passed": 11,
+        "failed": 0
+      },
+      "lstm_autoencoder_tests": {
+        "executed": 10,
+        "passed": 10,
+        "failed": 0
+      },
+      "unified_inference_service_tests": {
+        "executed": 25,
+        "passed": 25,
+        "failed": 0
+      },
+      "total_ml_regression_tests": 56,
+      "total_ml_regression_passed": 56,
+      "failures": 0,
+      "status": "PASSED"
+    }
+  },
+  "scope_compliance": {
+    "embedding_weights_downloaded": false,
+    "embeddings_generated": false,
+    "production_chromadb_collections_created": false,
+    "vector_indexing_implemented": false,
+    "similarity_retrieval_implemented": false,
+    "llm_api_invoked": false,
+    "langgraph_implemented": false,
+    "mcp_tools_implemented": false,
+    "fastapi_routes_modified": false,
+    "frontend_modified": false,
+    "models_retrained": false,
+    "knowledge_base_index_contents": [
+      ".gitkeep"
+    ],
+    "status": "PASSED \u2014 STRICT COMPLIANCE"
+  },
+  "preservation_audit": {
+    "seven_model_artifacts": {
+      "sensor_scaler.joblib": "f21f0899cd3af4d807e54f98b4627d5512650f08cad35ba17a6cd80268398faf (100% MATCH)",
+      "isolation_forest.joblib": "afdf397336f01cfe32c6d4660b3f0094bec01869ab3f8ec276a4d34ca8ac52a2 (100% MATCH)",
+      "isolation_forest_metadata.json": "bbb05f4447d52c5ae0f4444649e2e59bf5f282aceb1cfd028e6309b86e8ed3d5 (100% MATCH)",
+      "lstm_autoencoder.keras": "b1cae16de57b556f13b3f96e12a8c451d05f3bdd9887a65172817cd99e30e0b5 (100% MATCH)",
+      "lstm_autoencoder_metadata.json": "d679e55a2b9935c2e8820d5b117a7c8fc8f84b94cd6565252255168f82fda0c1 (100% MATCH)",
+      "resnet_defect_classifier.keras": "aac4b1c2d8c7ba47cef2e31b73d27ad6ff9b8be9352d6e3850c2e201e3195a98 (100% MATCH)",
+      "resnet_defect_classifier_metadata.json": "e7e95b8037efceade0a8d19d0a14ecff86868d887e081ac306d1cb36573c8d73 (100% MATCH)"
+    },
+    "decision_thresholds": {
+      "tau_IF": "0.0269 (100% MATCH)",
+      "tau_LSTM": "0.901464 (100% MATCH)"
+    },
+    "virtual_environments": {
+      "base_python_numpy": "2.4.6 (UNMODIFIED)",
+      "base_python_tensorflow": "2.21.0 (UNMODIFIED)",
+      "base_python_keras": "3.15.1 (UNMODIFIED)",
+      "base_python_sklearn": "1.9.0 (UNMODIFIED)",
+      "venv_rag_lockfile_packages": 104,
+      "venv_rag_frozen_packages": 104,
+      "lockfile_differences": []
+    },
+    "status": "PASSED \u2014 ZERO DRIFT"
+  },
+  "findings_and_recommendations": [
+    {
+      "id": "REC-01",
+      "severity": "Low",
+      "category": "Security Hardening",
+      "title": "Path Traversal Hardening for External Inputs",
+      "description": "DocumentLoader currently relies on Path.relative_to(root_dir) which is robust for the fixed internal knowledge_base repository directory. For future phases that might ingest documents from user uploads, explicitly assert Path.resolve().is_relative_to(root_dir.resolve()) to guard against symlink path traversal.",
+      "action": "Maintain existing implementation for Step 2; integrate before any external upload feature."
+    },
+    {
+      "id": "REC-02",
+      "severity": "Low",
+      "category": "Reporting Completeness",
+      "title": "Consolidate Full ML Regression Coverage Metrics",
+      "description": "The Step 2 implementation report explicitly cited 21 regression tests from Isolation Forest and ResNet. This independent audit confirmed that 10 LSTM Autoencoder tests and 25 Unified Inference Facade tests also exist and pass (total 56 regression tests).",
+      "action": "Incorporate all 56 regression tests into authoritative project reporting."
+    }
+  ],
+  "git_status": {
+    "head": "e5e686939e1830b64191dcbd327b2b7bf35a0793",
+    "branch": "main",
+    "remote_sync": "Synchronized with origin/main (0 ahead, 0 behind)",
+    "tracked_modifications": [
+      "M .gitignore (line 10: .venv-rag/)"
+    ],
+    "untracked_paths": [
+      "backend/app/rag/",
+      "backend/requirements-rag.lock",
+      "backend/tests/test_rag_ingestion.py",
+      "knowledge_base/corpus_manifest.json",
+      "knowledge_base/incidents/",
+      "knowledge_base/sops/",
+      "reports/phase3/"
+    ],
+    "staged_files_count": 0,
+    "commits_count": 0,
+    "pushes_count": 0
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "timestamp": "2026-11-11T12:32:40.206238+05:30",
+  "milestone": "Phase 3 Step 2 \u2014 RAG Document Ingestion Pipeline",
+  "project": "ManuMind AI \u2014 Explainable Multi-Agent AI System for Manufacturing Anomaly Detection and Root Cause Analysis",
+  "department": "Department of AI & Data Science, RMK Engineering College",
+  "baseline_head": "e5e686939e1830b64191dcbd327b2b7bf35a0793",
+  "branch": "main",
+  "final_verdict": "PASS \u2014 INGESTION PIPELINE COMPLETE",
+  "execution_mode": "in_memory_ingestion",
+  "duration_seconds": 0.5971,
+  "summary_metrics": {
+    "total_discovered": 418,
+    "total_parsed": 418,
+    "total_valid": 418,
+    "total_rejected": 0,
+    "duplicate_ids_count": 0,
+    "provenance_passed": 418,
+    "disclaimer_passed": 418,
+    "incident_mappings_reconciled": 400
+  },
+  "acceptance_targets": {
+    "discovered_documents": {
+      "target": 418,
+      "actual": 418,
+      "status": true
+    },
+    "valid_documents": {
+      "target": 418,
+      "actual": 418,
+      "status": true
+    },
+    "rejected_documents": {
+      "target": 0,
+      "actual": 0,
+      "status": true
+    },
+    "duplicate_ids": {
+      "target": 0,
+      "actual": 0,
+      "status": true
+    },
+    "provenance_validations_passed": {
+      "target": 418,
+      "actual": 418,
+      "status": true
+    },
+    "disclaimer_validations_passed": {
+      "target": 418,
+      "actual": 418,
+      "status": true
+    },
+    "incident_mappings_reconciled": {
+      "target": 400,
+      "actual": 400,
+      "status": true
+    }
+  },
+  "manifest_reconciliation": {
+    "total_manifest_entries": 418,
+    "matched_entries": 418,
+    "missing_on_disk": [],
+    "untracked_on_disk": [],
+    "hash_mismatches": [],
+    "size_mismatches": [],
+    "is_reconciled": true
+  },
+  "incident_mapping_reconciliation": {
+    "total_csv_rows": 400,
+    "mapped_documents": 400,
+    "mismatches": [],
+    "is_reconciled": true
+  },
+  "distributions": {
+    "document_types": {
+      "INCIDENT": 400,
+      "SAFETY": 3,
+      "SOP": 10,
+      "TROUBLESHOOTING": 5
+    },
+    "machines": {
+      "M110": 43,
+      "M101": 36,
+      "M108": 49,
+      "M102": 43,
+      "M107": 29,
+      "M106": 40,
+      "M105": 47,
+      "M104": 36,
+      "M109": 50,
+      "M103": 37
+    },
+    "fault_categories": {
+      "bearing_wear": 1,
+      "lubrication_failure": 1,
+      "optical_surface_defects": 1,
+      "overheating": 1,
+      "pressure_drop": 1
+    }
+  },
+  "rejected_documents": [],
+  "warnings": [],
+  "errors": [],
+  "test_results": {
+    "all_18_unit_tests_passed": true
+  }
+}

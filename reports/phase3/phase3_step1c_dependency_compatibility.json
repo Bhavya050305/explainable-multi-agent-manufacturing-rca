@@ -1,0 +1,209 @@
+{
+  "timestamp": "2026-11-09T15:25:00+05:30",
+  "milestone": "Phase 3 Step 1C \u2014 Dependency Compatibility Assessment and Installation Readiness",
+  "verdict": "READY FOR CONTROLLED INSTALLATION",
+  "environment": {
+    "python_version": "3.11.9 (tags/v3.11.9:de54cf5, Apr 2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+    "python_executable": "C:\\Users\\PR BHAYA SREE\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+    "in_virtualenv": false,
+    "os_platform": "Windows-10-10.0.26300-SP0 (Windows 11 64-bit AMD64)",
+    "cpu_logical_cores": 12,
+    "disk_free_gb": 173.27,
+    "pip_version": "24.0"
+  },
+  "core_installed_packages": {
+    "numpy": "2.4.6",
+    "tensorflow": "2.21.0",
+    "keras": "3.15.1",
+    "scikit-learn": "1.9.0",
+    "shap": "0.51.0",
+    "fastapi": "0.141.1",
+    "pydantic": "2.13.4",
+    "SQLAlchemy": "2.0.52",
+    "alembic": "1.19.1",
+    "uvicorn": "0.52.3",
+    "httpx": "0.28.1",
+    "pandas": "3.0.5",
+    "scipy": "1.17.1"
+  },
+  "rag_dependency_readiness": {
+    "chromadb": {
+      "status": "NOT_INSTALLED",
+      "proposed_version": ">=0.5.0",
+      "pydantic_v2_compatible": true,
+      "numpy2_compatible": true,
+      "role": "Persistent vector database with expressive metadata filtering"
+    },
+    "sentence-transformers": {
+      "status": "NOT_INSTALLED",
+      "proposed_version": ">=3.0.0",
+      "numpy2_compatible": true,
+      "role": "Local embedding model pipeline"
+    },
+    "torch": {
+      "status": "NOT_INSTALLED",
+      "proposed_version": ">=2.3.0",
+      "variant": "CPU-only",
+      "numpy2_compatible": true,
+      "role": "Tensor execution engine for embedding transformer"
+    },
+    "transformers": {
+      "status": "NOT_INSTALLED",
+      "proposed_version": ">=4.40.0",
+      "role": "Hugging Face model architecture & tokenizers"
+    },
+    "pypdf": {
+      "status": "DEFERRED",
+      "proposed_version": ">=4.2.0",
+      "role": "PDF document extraction (deferred, corpus is 100% Markdown)"
+    },
+    "python-docx": {
+      "status": "DEFERRED",
+      "proposed_version": ">=1.1.0",
+      "role": "Word document extraction (deferred, corpus is 100% Markdown)"
+    }
+  },
+  "embedding_candidates_evaluation": [
+    {
+      "candidate": "BAAI/bge-small-en-v1.5",
+      "dimensions": 384,
+      "max_sequence_length": 512,
+      "usable_token_budget": 500,
+      "model_size_mb": 133,
+      "ram_inference_mb": 300,
+      "cpu_latency_ms": "15-25",
+      "license": "MIT",
+      "mteb_retrieval_score": 62.11,
+      "suitability_for_chunks": "EXCELLENT (Fits 300-450 token procedural chunks comfortably)",
+      "formatting": "Optional query instruction; passages unformatted",
+      "ranked_recommendation": "PRIMARY_CANDIDATE"
+    },
+    {
+      "candidate": "intfloat/e5-small-v2",
+      "dimensions": 384,
+      "max_sequence_length": 512,
+      "usable_token_budget": 508,
+      "model_size_mb": 133,
+      "ram_inference_mb": 300,
+      "cpu_latency_ms": "18-28",
+      "license": "MIT",
+      "mteb_retrieval_score": 61.45,
+      "suitability_for_chunks": "EXCELLENT",
+      "formatting": "MANDATORY asymmetric prefixing ('query: ' and 'passage: ')",
+      "ranked_recommendation": "ALTERNATIVE_CANDIDATE"
+    },
+    {
+      "candidate": "sentence-transformers/all-MiniLM-L6-v2",
+      "dimensions": 384,
+      "max_sequence_length": 256,
+      "usable_token_budget": 254,
+      "model_size_mb": 90,
+      "ram_inference_mb": 200,
+      "cpu_latency_ms": "10-18",
+      "license": "Apache 2.0",
+      "mteb_retrieval_score": 56.26,
+      "suitability_for_chunks": "UNSUITABLE (Hard truncation at 256 tokens causes silent data loss on 300-450 token chunks)",
+      "formatting": "Symmetric (No prefix)",
+      "ranked_recommendation": "NOT_RECOMMENDED"
+    },
+    {
+      "candidate": "BAAI/bge-base-en-v1.5",
+      "dimensions": 768,
+      "max_sequence_length": 512,
+      "usable_token_budget": 500,
+      "model_size_mb": 438,
+      "ram_inference_mb": 900,
+      "cpu_latency_ms": "45-70",
+      "license": "MIT",
+      "mteb_retrieval_score": 64.11,
+      "suitability_for_chunks": "EXCELLENT",
+      "formatting": "Optional query instruction; passages unformatted",
+      "ranked_recommendation": "RESOURCE_HEAVY_ALTERNATIVE"
+    }
+  ],
+  "vector_database_evaluation": [
+    {
+      "database": "ChromaDB",
+      "mode": "Embedded In-Process (SQLite + DuckDB/Parquet/hnswlib)",
+      "windows_support": "EXCELLENT",
+      "python311_support": "EXCELLENT",
+      "persistence": "Native local directory (knowledge_base/index/)",
+      "metadata_filtering": "Native expressive boolean syntax ($and, $or, $eq, $in)",
+      "operational_overhead": "ZERO background daemons or containers",
+      "ranked_recommendation": "PRIMARY_RECOMMENDATION"
+    },
+    {
+      "database": "FAISS (CPU) + SQLite",
+      "mode": "In-process vector index + external relational metadata",
+      "windows_support": "MODERATE (Requires pre-compiled wheel)",
+      "python311_support": "GOOD",
+      "persistence": "Manual file serialization (faiss.write_index)",
+      "metadata_filtering": "NONE natively; requires custom two-tier SQLite synchronization layer",
+      "operational_overhead": "High implementation and synchronization burden",
+      "ranked_recommendation": "FALLBACK_RECOMMENDATION"
+    },
+    {
+      "database": "Qdrant",
+      "mode": "Embedded client or Docker container",
+      "windows_support": "MODERATE in embedded; COMPLEX in server mode (requires Docker/WSL2)",
+      "python311_support": "GOOD",
+      "persistence": "Native disk directory",
+      "metadata_filtering": "EXCELLENT payload filtering",
+      "operational_overhead": "Moderate to High",
+      "ranked_recommendation": "DEFERRED_ENTERPRISE_ALTERNATIVE"
+    }
+  ],
+  "environment_strategy": {
+    "recommended_option": "OPTION_B_DEDICATED_VIRTUALENV",
+    "description": "Direct installation into active Python 3.11 with strict pinning (torch CPU, chromadb>=0.5.0, sentence-transformers>=3.0.0) if single-environment execution is mandated by user.",
+    "fallback_option": "OPTION_A_DIRECT_INSTALL"
+  },
+  "phase2_artifact_preservation": {
+    "all_artifacts_match": true,
+    "isolation_forest_threshold": 0.0269,
+    "lstm_autoencoder_threshold": 0.901464,
+    "artifacts": {
+      "sensor_scaler.joblib": {
+        "expected": "f21f0899cd3af4d807e54f98b4627d5512650f08cad35ba17a6cd80268398faf",
+        "actual": "f21f0899cd3af4d807e54f98b4627d5512650f08cad35ba17a6cd80268398faf",
+        "match": true
+      },
+      "isolation_forest.joblib": {
+        "expected": "afdf397336f01cfe32c6d4660b3f0094bec01869ab3f8ec276a4d34ca8ac52a2",
+        "actual": "afdf397336f01cfe32c6d4660b3f0094bec01869ab3f8ec276a4d34ca8ac52a2",
+        "match": true
+      },
+      "isolation_forest_metadata.json": {
+        "expected": "bbb05f4447d52c5ae0f4444649e2e59bf5f282aceb1cfd028e6309b86e8ed3d5",
+        "actual": "bbb05f4447d52c5ae0f4444649e2e59bf5f282aceb1cfd028e6309b86e8ed3d5",
+        "match": true
+      },
+      "lstm_autoencoder.keras": {
+        "expected": "b1cae16de57b556f13b3f96e12a8c451d05f3bdd9887a65172817cd99e30e0b5",
+        "actual": "b1cae16de57b556f13b3f96e12a8c451d05f3bdd9887a65172817cd99e30e0b5",
+        "match": true
+      },
+      "lstm_autoencoder_metadata.json": {
+        "expected": "d679e55a2b9935c2e8820d5b117a7c8fc8f84b94cd6565252255168f82fda0c1",
+        "actual": "d679e55a2b9935c2e8820d5b117a7c8fc8f84b94cd6565252255168f82fda0c1",
+        "match": true
+      },
+      "resnet_defect_classifier.keras": {
+        "expected": "aac4b1c2d8c7ba47cef2e31b73d27ad6ff9b8be9352d6e3850c2e201e3195a98",
+        "actual": "aac4b1c2d8c7ba47cef2e31b73d27ad6ff9b8be9352d6e3850c2e201e3195a98",
+        "match": true
+      },
+      "resnet_defect_classifier_metadata.json": {
+        "expected": "e7e95b8037efceade0a8d19d0a14ecff86868d887e081ac306d1cb36573c8d73",
+        "actual": "e7e95b8037efceade0a8d19d0a14ecff86868d887e081ac306d1cb36573c8d73",
+        "match": true
+      }
+    }
+  },
+  "git_status": {
+    "branch": "main",
+    "head": "e5e686939e1830b64191dcbd327b2b7bf35a0793",
+    "tracked_modifications": 0,
+    "clean_index": true
+  }
+}

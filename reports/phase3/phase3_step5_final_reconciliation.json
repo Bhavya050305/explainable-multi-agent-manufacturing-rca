@@ -1,0 +1,126 @@
+{
+  "timestamp": "2026-11-11T12:45:00+05:30",
+  "status": "PASS",
+  "milestone": "Phase 3 Step 5 — Retrieval and Search Pipeline",
+  "department": "Department of AI & Data Science, RMK Engineering College",
+  "project": "ManuMind AI — Explainable Multi-Agent AI System for Manufacturing Anomaly Detection and Root Cause Analysis",
+  "repository": {
+    "path": "D:\\Desktop\\FInal year project\\manumind-ai",
+    "branch": "main",
+    "baseline_head": "e5e686939e1830b64191dcbd327b2b7bf35a0793",
+    "remote_sync": "0 0",
+    "staged_changes": false,
+    "lockfile_sha256": "778FDE7658E8F5A0FD3CB039C6271FBBCCE95AB967FBECE6D29CA82E3F035AD2"
+  },
+  "retrieval_specification": {
+    "embedding_model": "BAAI/bge-small-en-v1.5",
+    "embedding_revision": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+    "tokenizer_class": "BertTokenizerFast",
+    "vector_dimension": 384,
+    "distance_metric": "cosine",
+    "collection_name": "manumind_bge_small_v1",
+    "vector_count": 564,
+    "bge_query_prefix": "Represent this sentence for searching relevant passages: ",
+    "execution_device": "cpu",
+    "torch_version": "2.5.1+cpu"
+  },
+  "test_execution_summary": {
+    "step5_metadata_filter_tests": 14,
+    "step5_source_resolver_tests": 9,
+    "step5_retrieval_service_tests": 14,
+    "step5_evaluation_tests": 9,
+    "step5_total_tests": 46,
+    "step4_vector_store_tests": 15,
+    "step4_embeddings_tests": 15,
+    "step4_segmenter_tests": 15,
+    "step4_tokenizer_tests": 8,
+    "step3_chunking_tests": 24,
+    "step2_ingestion_tests": 18,
+    "phase3_rag_total_tests": 141,
+    "phase2_ml_regression_tests": 56,
+    "total_tests_executed": 197,
+    "pass_rate": 1.0,
+    "failures": 0,
+    "errors": 0
+  },
+  "golden_query_benchmarks": {
+    "total_queries": 36,
+    "evaluated_valid_queries": 32,
+    "negative_queries_rejected": 4,
+    "rejection_accuracy": 1.0,
+    "mean_reciprocal_rank": 0.7875,
+    "precision_at_1": 0.7812,
+    "precision_at_3": 0.6458,
+    "precision_at_5": 0.5875,
+    "recall_at_5": 2.4062,
+    "ndcg_at_5": 1.5911,
+    "provenance_validation_rate": 1.0,
+    "latency_benchmarks_ms": {
+      "embedding_mean": 43.31,
+      "search_mean": 10.78,
+      "resolution_mean": 1.03,
+      "total_mean": 55.16,
+      "total_median": 52.40,
+      "total_p95": 74.37,
+      "total_max": 210.50
+    }
+  },
+  "phase2_ml_artifacts_verified": [
+    {
+      "artifact": "isolation_forest.joblib",
+      "sha256": "afdf397336f01cfe32c6d4660b3f0094bec01869ab3f8ec276a4d34ca8ac52a2",
+      "status": "PASS"
+    },
+    {
+      "artifact": "isolation_forest_metadata.json",
+      "sha256": "bbb05f4447d52c5ae0f4444649e2e59bf5f282aceb1cfd028e6309b86e8ed3d5",
+      "status": "PASS"
+    },
+    {
+      "artifact": "sensor_scaler.joblib",
+      "sha256": "f21f0899cd3af4d807e54f98b4627d5512650f08cad35ba17a6cd80268398faf",
+      "status": "PASS"
+    },
+    {
+      "artifact": "lstm_autoencoder.keras",
+      "sha256": "b1cae16de57b556f13b3f96e12a8c451d05f3bdd9887a65172817cd99e30e0b5",
+      "status": "PASS"
+    },
+    {
+      "artifact": "lstm_autoencoder_metadata.json",
+      "sha256": "d679e55a2b9935c2e8820d5b117a7c8fc8f84b94cd6565252255168f82fda0c1",
+      "status": "PASS"
+    },
+    {
+      "artifact": "resnet_defect_classifier.keras",
+      "sha256": "aac4b1c2d8c7ba47cef2e31b73d27ad6ff9b8be9352d6e3850c2e201e3195a98",
+      "status": "PASS"
+    },
+    {
+      "artifact": "resnet_defect_classifier_metadata.json",
+      "sha256": "e7e95b8037efceade0a8d19d0a14ecff86868d887e081ac306d1cb36573c8d73",
+      "status": "PASS"
+    }
+  ],
+  "frozen_decision_thresholds": {
+    "tau_isolation_forest": 0.0269,
+    "tau_lstm_autoencoder": 0.901464,
+    "status": "PASS"
+  },
+  "knowledge_base_invariants": {
+    "corpus_documents_count": 418,
+    "canonical_chunks_count": 564,
+    "chromadb_vectors_count": 564,
+    "collection_space": "cosine",
+    "database_file_size_bytes": 11653860,
+    "status": "PASS"
+  },
+  "scope_boundary_compliance": {
+    "llm_text_generation": "COMPLIANT_ZERO_CALLS",
+    "langgraph_multi_agent": "COMPLIANT_ZERO_GRAPHS",
+    "fastapi_http_endpoints": "COMPLIANT_ZERO_ROUTES",
+    "git_staging_and_commits": "COMPLIANT_ZERO_CHANGES",
+    "ml_weights_modification": "COMPLIANT_FROZEN_BASELINES"
+  },
+  "final_audit_verdict": "PASS — STEP 5 RETRIEVAL PIPELINE APPROVED FOR CLOSURE"
+}

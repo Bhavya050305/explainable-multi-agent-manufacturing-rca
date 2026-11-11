@@ -1,0 +1,186 @@
+{
+  "timestamp": "2026-11-09T19:30:00+05:30",
+  "milestone": "Phase 3 Step 1D \u2014 Final Dependency Installation Closure Reconciliation",
+  "repository": "D:/Desktop/FInal year project/manumind-ai",
+  "baseline_head": "e5e686939e1830b64191dcbd327b2b7bf35a0793",
+  "branch": "main",
+  "role": "Senior Python Environment Engineer, Windows ML Runtime Specialist, and Independent Technical Auditor",
+  "final_verdict": "PASS \u2014 STEP 1D CLOSED",
+  "historical_reports_reconciliation": {
+    "reports_audited": [
+      "reports/phase3/phase3_step1d_dependency_installation_report.md",
+      "reports/phase3/phase3_step1d_dependency_installation.json",
+      "reports/phase3/phase3_step1d1_ipc_remediation_report.md",
+      "reports/phase3/phase3_step1d1_ipc_remediation.json"
+    ],
+    "all_historical_reports_present": true,
+    "historical_record_integrity": "Preserved without rewriting or misrepresentation"
+  },
+  "environment_isolation": {
+    "venv_path": "D:/Desktop/FInal year project/manumind-ai/.venv-rag",
+    "interpreter": "D:/Desktop/FInal year project/manumind-ai/.venv-rag/Scripts/python.exe",
+    "base_interpreter": "C:/Users/PR BHAYA SREE/AppData/Local/Programs/Python/Python311/python.exe",
+    "include_system_site_packages": false,
+    "git_ignored": true,
+    "gitignore_rule": ".venv-rag/ (line 10)"
+  },
+  "installed_dependencies": {
+    "direct_candidates": {
+      "torch": "2.5.1+cpu",
+      "sentence-transformers": "3.4.1",
+      "transformers": "4.46.3",
+      "tokenizers": "0.20.3",
+      "chromadb": "0.5.23",
+      "pydantic-settings": "2.7.1"
+    },
+    "key_transitive": {
+      "numpy": "2.4.6",
+      "onnxruntime": "1.31.1",
+      "chroma-hnswlib": "0.7.6",
+      "safetensors": "0.8.0",
+      "huggingface-hub": "0.36.2",
+      "scikit-learn": "1.9.1",
+      "scipy": "1.17.1",
+      "pydantic": "2.14.3"
+    },
+    "disallowed_packages_confirmed_absent": [
+      "torchvision",
+      "torchaudio",
+      "langgraph",
+      "faiss",
+      "qdrant"
+    ],
+    "cuda_dependencies_present": false,
+    "pip_check_status": "PASSED (No broken requirements found, exit code 0)",
+    "lockfile": {
+      "path": "backend/requirements-rag.lock",
+      "exists": true,
+      "package_count": 104,
+      "matches_live_freeze": true
+    }
+  },
+  "smoke_testing_reconciliation": {
+    "base_environment_stage1": {
+      "status": "PASSED",
+      "tensorflow_version": "2.21.0",
+      "keras_version": "3.15.1",
+      "model_tested": "resnet_defect_classifier.keras",
+      "input_contract": [
+        1,
+        128,
+        128,
+        3
+      ],
+      "forward_pass_output_shape": [
+        1,
+        4
+      ]
+    },
+    "rag_worker_environment_stage2": {
+      "status": "PASSED",
+      "pytorch_version": "2.5.1+cpu",
+      "cuda_available": false,
+      "numpy_2_4_6_interoperability": "PASSED (torch.from_numpy, tensor.numpy, np.allclose)",
+      "nlp_libraries_offline_imports": "PASSED (sentence-transformers, transformers, tokenizers)",
+      "model_weights_downloaded": false,
+      "chromadb_persistence_and_metadata_filter": "PASSED (PersistentClient, 3 records inserted, $and filter verified, clean reopen & count=3, scratch cleaned)"
+    },
+    "ipc_testing_stage3": {
+      "original_asynchronous_test": {
+        "status": "INCONCLUSIVE",
+        "harness": "asyncio.create_subprocess_exec() in ProactorEventLoop",
+        "completed_iterations": 0,
+        "target_iterations": 3,
+        "diagnosis": "Windows ProactorEventLoop anonymous pipe connection deadlock on redirected stdio handles. Child entrypoint was never reached. No OpenMP collision occurred.",
+        "disposition": "Recorded as INCONCLUSIVE. Terminated cleanly without residual processes."
+      },
+      "remediated_synchronous_test": {
+        "status": "PASSED",
+        "harness": "Standard library subprocess.run(shell=False, timeout=120)",
+        "completed_iterations": 3,
+        "target_iterations": 3,
+        "all_returncodes_zero": true,
+        "average_elapsed_seconds": 4.257,
+        "json_exchange_verified": true,
+        "numerical_equality_verified": true,
+        "parent_tensorflow_intact": true,
+        "child_pytorch_intact": true
+      }
+    },
+    "openmp_governance": {
+      "kmp_duplicate_lib_ok": null,
+      "workaround_applied": false,
+      "dll_collisions_observed": false,
+      "process_isolation_verified": true,
+      "scope_clarification": "Synchronous subprocess testing proves process boundary isolation for the tested pipeline; universal in-process OpenMP compatibility is neither claimed nor required."
+    }
+  },
+  "preservation_audit": {
+    "all_artifacts_match": true,
+    "isolation_forest_threshold": 0.0269,
+    "isolation_forest_expected": 0.0269,
+    "isolation_forest_match": true,
+    "lstm_autoencoder_threshold": 0.901464,
+    "lstm_autoencoder_expected": 0.901464,
+    "lstm_autoencoder_match": true,
+    "base_environment_packages_unchanged": true,
+    "artifacts": {
+      "sensor_scaler.joblib": {
+        "expected": "f21f0899cd3af4d807e54f98b4627d5512650f08cad35ba17a6cd80268398faf",
+        "actual": "f21f0899cd3af4d807e54f98b4627d5512650f08cad35ba17a6cd80268398faf",
+        "match": true
+      },
+      "isolation_forest.joblib": {
+        "expected": "afdf397336f01cfe32c6d4660b3f0094bec01869ab3f8ec276a4d34ca8ac52a2",
+        "actual": "afdf397336f01cfe32c6d4660b3f0094bec01869ab3f8ec276a4d34ca8ac52a2",
+        "match": true
+      },
+      "isolation_forest_metadata.json": {
+        "expected": "bbb05f4447d52c5ae0f4444649e2e59bf5f282aceb1cfd028e6309b86e8ed3d5",
+        "actual": "bbb05f4447d52c5ae0f4444649e2e59bf5f282aceb1cfd028e6309b86e8ed3d5",
+        "match": true
+      },
+      "lstm_autoencoder.keras": {
+        "expected": "b1cae16de57b556f13b3f96e12a8c451d05f3bdd9887a65172817cd99e30e0b5",
+        "actual": "b1cae16de57b556f13b3f96e12a8c451d05f3bdd9887a65172817cd99e30e0b5",
+        "match": true
+      },
+      "lstm_autoencoder_metadata.json": {
+        "expected": "d679e55a2b9935c2e8820d5b117a7c8fc8f84b94cd6565252255168f82fda0c1",
+        "actual": "d679e55a2b9935c2e8820d5b117a7c8fc8f84b94cd6565252255168f82fda0c1",
+        "match": true
+      },
+      "resnet_defect_classifier.keras": {
+        "expected": "aac4b1c2d8c7ba47cef2e31b73d27ad6ff9b8be9352d6e3850c2e201e3195a98",
+        "actual": "aac4b1c2d8c7ba47cef2e31b73d27ad6ff9b8be9352d6e3850c2e201e3195a98",
+        "match": true
+      },
+      "resnet_defect_classifier_metadata.json": {
+        "expected": "e7e95b8037efceade0a8d19d0a14ecff86868d887e081ac306d1cb36573c8d73",
+        "actual": "e7e95b8037efceade0a8d19d0a14ecff86868d887e081ac306d1cb36573c8d73",
+        "match": true
+      }
+    }
+  },
+  "git_invariance": {
+    "head": "e5e686939e1830b64191dcbd327b2b7bf35a0793",
+    "branch": "main",
+    "clean_index": true,
+    "tracked_modifications": [
+      "M .gitignore"
+    ],
+    "untracked_allowed": [
+      "backend/requirements-rag.lock",
+      "knowledge_base/corpus_manifest.json",
+      "knowledge_base/incidents/",
+      "knowledge_base/sops/",
+      "reports/phase3/"
+    ],
+    "zero_staging_or_commits": true
+  },
+  "limitations_and_governance_boundaries": [
+    "Asyncio subprocess execution on Windows with anonymous pipes is deprecated for this project; production RAG workers must use synchronous subprocess.run() or dedicated HTTP microservices.",
+    "Model weights (BAAI/bge-small-en-v1.5) remain un-downloaded; deferred strictly to Phase 3 Step 2.",
+    "Production ChromaDB vector store (knowledge_base/index/) remains un-initialized; deferred to Phase 3 Step 2."
+  ]
+}

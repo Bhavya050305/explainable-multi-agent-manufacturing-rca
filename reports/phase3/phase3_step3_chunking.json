@@ -1,0 +1,96 @@
+{
+  "timestamp": "2026-11-10T22:39:54.747289+05:30",
+  "milestone": "Phase 3 Step 3 \u2014 Document Chunking and Metadata-Aware Chunk Generation",
+  "project": "ManuMind AI \u2014 Explainable Multi-Agent AI System for Manufacturing Anomaly Detection and Root Cause Analysis",
+  "department": "Department of AI & Data Science, RMK Engineering College",
+  "baseline_head": "e5e686939e1830b64191dcbd327b2b7bf35a0793",
+  "branch": "main",
+  "final_verdict": "PASS \u2014 CHUNKING IMPLEMENTATION COMPLETE",
+  "execution_mode": "validation_only",
+  "duration_seconds": 0.4649,
+  "chunking_architecture": {
+    "strategy": "structural_markdown_v1",
+    "token_estimation_strategy": "deterministic_subword_heuristic_v1",
+    "target_chunk_size_tokens": 400,
+    "token_size_range": "300\u2013450 tokens",
+    "chunk_overlap_tokens": 50,
+    "tokenizer_verification": "Provisional deterministic subword heuristic. Embedding model weights (BAAI/bge-small-en-v1.5) were strictly NOT downloaded in compliance with Phase 3 Step 3 boundaries."
+  },
+  "quality_metrics": {
+    "total_source_documents": 418,
+    "total_chunks_generated": 564,
+    "chunks_per_category": {
+      "SAFETY": 15,
+      "SOP": 110,
+      "TROUBLESHOOTING": 39,
+      "INCIDENT": 400
+    },
+    "chunks_per_machine": {
+      "M101": 46,
+      "M102": 53,
+      "M103": 47,
+      "M104": 46,
+      "M105": 57,
+      "M106": 50,
+      "M107": 39,
+      "M108": 59,
+      "M109": 60,
+      "M110": 53
+    },
+    "token_counts": {
+      "min": 61,
+      "max": 532,
+      "mean": 400.16,
+      "median": 481.0
+    },
+    "chunks_exceeding_target": 400,
+    "chunks_below_minimum_preferred": 51,
+    "safety_related_chunks": 516,
+    "chunks_with_spec_placeholders": 41,
+    "chunks_with_synthetic_disclaimers": 433,
+    "incident_chunks": 400,
+    "duplicate_chunk_ids_count": 0,
+    "empty_chunks_count": 0,
+    "source_text_coverage_percentage": 100.0,
+    "is_deterministic": true
+  },
+  "warnings": [],
+  "errors": [],
+  "test_results": {
+    "rag_chunking_tests": {
+      "total": 24,
+      "passed": 24,
+      "failed": 0,
+      "errors": 0,
+      "status": "PASS"
+    },
+    "rag_ingestion_tests": {
+      "total": 18,
+      "passed": 18,
+      "failed": 0,
+      "errors": 0,
+      "status": "PASS"
+    },
+    "phase2_ml_regression_tests": {
+      "isolation_forest_and_resnet": {
+        "total": 21,
+        "passed": 21,
+        "status": "PASS"
+      },
+      "lstm_autoencoder": {
+        "total": 10,
+        "passed": 10,
+        "status": "PASS"
+      },
+      "inference_service": {
+        "total": 25,
+        "passed": 25,
+        "status": "PASS"
+      },
+      "total": 56,
+      "passed": 56,
+      "failed": 0,
+      "status": "PASS"
+    }
+  }
+}

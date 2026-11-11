@@ -1,0 +1,165 @@
+{
+  "timestamp": "2026-11-11T10:26:00+05:30",
+  "status": "PASS",
+  "milestone": "Phase 3 Step 4 — Embedding Generation and Vector Database Indexing",
+  "department": "Department of AI & Data Science, RMK Engineering College",
+  "project": "ManuMind AI — Explainable Multi-Agent AI System for Manufacturing Anomaly Detection and Root Cause Analysis",
+  "repository": {
+    "path": "D:\\Desktop\\FInal year project\\manumind-ai",
+    "branch": "main",
+    "baseline_head": "e5e686939e1830b64191dcbd327b2b7bf35a0793",
+    "remote_sync": "0 0",
+    "staged_changes": false,
+    "lockfile_sha256": "778FDE7658C08A63BDD78B2D539DC7B97A194883A79C6C1B14798E4BCE3FDFB2"
+  },
+  "model_specification": {
+    "model_name": "BAAI/bge-small-en-v1.5",
+    "revision_commit_hash": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+    "tokenizer_class": "BertTokenizerFast",
+    "vocabulary_size": 30522,
+    "embedding_dimension": 384,
+    "nominal_max_length": 512,
+    "effective_content_limit": 500,
+    "device": "cpu",
+    "torch_version": "2.5.1+cpu",
+    "distance_metric": "cosine"
+  },
+  "findings_reconciliation": {
+    "FINDING_01": {
+      "finding_id": "FINDING-01",
+      "status": "CLOSED",
+      "description": "Reporting generator arithmetic defect (total_c - 4) replaced with actual category counts",
+      "verified_files": [
+        "backend/app/rag/chunk_schemas.py",
+        "backend/app/rag/chunking_service.py",
+        "backend/app/rag/chunking_report.py"
+      ]
+    },
+    "FINDING_02": {
+      "finding_id": "FINDING-02",
+      "status": "CLOSED",
+      "description": "Authoritative BGE tokenizer evaluated on full corpus; maximum chunk length is 424 tokens (below 500 ceiling); zero chunks truncated; dedicated segmenter implemented",
+      "verified_files": [
+        "backend/app/rag/embedding_segmenter.py",
+        "backend/app/rag/embedding_segment_schemas.py"
+      ]
+    },
+    "FINDING_03": {
+      "finding_id": "FINDING-03",
+      "status": "CLOSED",
+      "description": "Academic synthetic banner stripped exclusively during keyword matching; safety chunks refined from 516 (91.5%) to 206 (36.5%); document and chunk content 100% intact",
+      "verified_files": [
+        "backend/app/rag/text_splitter.py",
+        "backend/app/rag/metadata_enricher.py"
+      ]
+    },
+    "FINDING_04": {
+      "finding_id": "FINDING-04",
+      "status": "CLOSED",
+      "description": "Word-based heuristic tokenizer replaced with official BAAI/bge-small-en-v1.5 BertTokenizerFast wrapper",
+      "verified_files": [
+        "backend/app/rag/tokenizer_service.py"
+      ]
+    }
+  },
+  "corpus_and_chunk_metrics": {
+    "total_source_documents": 418,
+    "total_canonical_chunks": 564,
+    "total_embedding_segments": 564,
+    "chunks_split_count": 0,
+    "min_segment_tokens": 41,
+    "max_segment_tokens": 424,
+    "mean_segment_tokens": 314.61,
+    "median_segment_tokens": 381.0,
+    "segments_above_effective_limit": 0,
+    "empty_segments_count": 0,
+    "category_segment_counts": {
+      "INCIDENT": 400,
+      "SOP": 102,
+      "TROUBLESHOOTING": 39,
+      "SAFETY": 23
+    },
+    "discriminative_safety_segments": 206,
+    "spec_placeholder_segments": 18
+  },
+  "embedding_generation": {
+    "total_embeddings_generated": 564,
+    "tensor_shape": [564, 384],
+    "dtype": "float32",
+    "l2_normalized": true,
+    "norm_min": 0.99999994,
+    "norm_max": 1.00000012,
+    "norm_mean": 1.0,
+    "all_values_finite": true,
+    "nan_count": 0,
+    "inf_count": 0,
+    "duration_seconds": 160.7092,
+    "throughput_embs_per_second": 3.51,
+    "batch_size": 32,
+    "hardware_device": "CPU"
+  },
+  "vector_store": {
+    "engine": "chromadb 0.5.23",
+    "client_type": "PersistentClient",
+    "persist_directory": "knowledge_base/index/chroma_bge_small_v1",
+    "collection_name": "manumind_bge_small_v1",
+    "distance_metric": "cosine",
+    "hnsw_space": "cosine",
+    "total_records_indexed": 564,
+    "newly_inserted": 564,
+    "updated": 0,
+    "unchanged_skipped": 0,
+    "persistence_verified": true,
+    "database_size_bytes": 11653860,
+    "files": {
+      "sqlite_metadata": "chroma.sqlite3",
+      "hnsw_level0": "data_level0.bin",
+      "hnsw_lengths": "length.bin",
+      "hnsw_header": "header.bin",
+      "hnsw_links": "link_lists.bin"
+    }
+  },
+  "regression_tests": {
+    "test_rag_tokenizer": { "total": 8, "passed": 8, "failed": 0 },
+    "test_rag_embedding_segmenter": { "total": 16, "passed": 16, "failed": 0 },
+    "test_rag_embeddings": { "total": 9, "passed": 9, "failed": 0 },
+    "test_rag_vector_store": { "total": 12, "passed": 12, "failed": 0 },
+    "step4_subtotal": { "total": 45, "passed": 45, "failed": 0 },
+    "test_rag_chunking_step3": { "total": 24, "passed": 24, "failed": 0 },
+    "test_rag_ingestion_step2": { "total": 18, "passed": 18, "failed": 0 },
+    "phase3_rag_subtotal": { "total": 87, "passed": 87, "failed": 0 },
+    "test_isolation_forest_phase2": { "total": 10, "passed": 10, "failed": 0 },
+    "test_resnet_defect_classifier_phase2": { "total": 11, "passed": 11, "failed": 0 },
+    "test_lstm_autoencoder_phase2": { "total": 10, "passed": 10, "failed": 0 },
+    "test_inference_service_phase2": { "total": 25, "passed": 25, "failed": 0 },
+    "phase2_ml_subtotal": { "total": 56, "passed": 56, "failed": 0 },
+    "grand_total": 143,
+    "grand_passed": 143,
+    "grand_failed": 0,
+    "pass_rate_percentage": 100.0
+  },
+  "baseline_preservation": {
+    "phase2_models_intact": true,
+    "tau_isolation_forest": 0.0269,
+    "tau_lstm_autoencoder": 0.901464,
+    "resnet_classes_count": 6,
+    "corpus_manifest_documents": 418,
+    "maintenance_history_records": 400,
+    "defect_images_count": 120,
+    "git_staged_changes": false
+  },
+  "scope_boundary_compliance": {
+    "retrieval_queries_executed": 0,
+    "similarity_searches_performed": 0,
+    "hybrid_retrieval_implemented": false,
+    "rerankers_implemented": false,
+    "llm_calls_made": 0,
+    "langgraph_agents_created": 0,
+    "mcp_tools_exposed": 0,
+    "fastapi_routes_created": 0,
+    "corpus_documents_modified": 0,
+    "phase2_artifacts_modified": 0,
+    "git_commits_created": 0
+  },
+  "verdict": "PASS — STEP 4 COMPLETE"
+}

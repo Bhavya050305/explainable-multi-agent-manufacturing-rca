@@ -1,0 +1,192 @@
+{
+  "audit_timestamp": "2026-11-09T15:15:00+05:30",
+  "milestone": "Phase 3 Step 1B \u2014 Independent Synthetic Corpus Audit",
+  "verdict": "PASS",
+  "sections": {
+    "inventory": [
+      {
+        "name": "SOP count (10)",
+        "status": "PASS",
+        "details": "Found 10"
+      },
+      {
+        "name": "Troubleshooting count (5)",
+        "status": "PASS",
+        "details": "Found 5"
+      },
+      {
+        "name": "Safety count (3)",
+        "status": "PASS",
+        "details": "Found 3"
+      },
+      {
+        "name": "No extra files in sops/",
+        "status": "PASS",
+        "details": "Extra files: []"
+      },
+      {
+        "name": "Incident count (400)",
+        "status": "PASS",
+        "details": "Found 400"
+      },
+      {
+        "name": "No extra files in incidents/",
+        "status": "PASS",
+        "details": "Extra files: []"
+      },
+      {
+        "name": "Index folder uninitialized (only .gitkeep)",
+        "status": "PASS",
+        "details": "Index files: ['.gitkeep']"
+      },
+      {
+        "name": "Manifest file exists",
+        "status": "PASS",
+        "details": "D:\\Desktop\\FInal year project\\manumind-ai\\knowledge_base\\corpus_manifest.json"
+      },
+      {
+        "name": "Step 1A validation report exists",
+        "status": "PASS",
+        "details": "Found Step 1A MD report"
+      },
+      {
+        "name": "Step 1A validation JSON exists",
+        "status": "PASS",
+        "details": "Found Step 1A JSON summary"
+      },
+      {
+        "name": "Total corpus documents (418)",
+        "status": "PASS",
+        "details": "Total documents on disk: 418"
+      }
+    ],
+    "csv_traceability": [
+      {
+        "name": "Source CSV row count (400)",
+        "status": "PASS",
+        "details": "Found 400 rows"
+      },
+      {
+        "name": "All 400 incident records 100% match CSV",
+        "status": "PASS",
+        "details": "Mismatches: 0"
+      },
+      {
+        "name": "20 audited sample rows match",
+        "status": "PASS",
+        "details": "Samples checked: 19"
+      }
+    ],
+    "consistency": [
+      {
+        "name": "M103 designated Healthy Reference Asset",
+        "status": "PASS",
+        "details": "Found Healthy Reference Asset in SOP-M103.md"
+      },
+      {
+        "name": "M103 explicitly denies historical bearing wear",
+        "status": "PASS",
+        "details": "Explicit zero bearing wear disclaimer in SOP-M103.md"
+      },
+      {
+        "name": "M104 designated Bearing Wear Demonstration Asset",
+        "status": "PASS",
+        "details": "Found Bearing Wear Demonstration Asset in SOP-M104.md"
+      },
+      {
+        "name": "All 5 sensor channels and units correctly defined across 10 SOPs",
+        "status": "PASS",
+        "details": "Verified Vibration (mm/s), Temp (\u00b0C), Pressure (bar), Current (A), RPM"
+      },
+      {
+        "name": "Troubleshooting Bearing Wear cites M104 and preserves M101/M103 healthy",
+        "status": "PASS",
+        "details": "Found M104 demonstration asset and M103 healthy preservation"
+      }
+    ],
+    "provenance": [
+      {
+        "name": "All 418 documents have complete YAML front matter",
+        "status": "PASS",
+        "details": "Missing in: 0"
+      },
+      {
+        "name": "All 418 documents have is_synthetic: true",
+        "status": "PASS",
+        "details": "418/418 verified"
+      },
+      {
+        "name": "All 418 documents have recognized source_type",
+        "status": "PASS",
+        "details": "418/418 verified"
+      },
+      {
+        "name": "All 418 documents have visible body disclaimer",
+        "status": "PASS",
+        "details": "418/418 verified"
+      }
+    ],
+    "safety": [
+      {
+        "name": "All 18 technical docs contain [SPEC_REQUIRED:] placeholders",
+        "status": "PASS",
+        "details": "Found 123 total placeholders across 18 docs"
+      },
+      {
+        "name": "All 15 SOPs & Troubleshooting guides define Non-Causality Principle",
+        "status": "PASS",
+        "details": "Missing in: []"
+      },
+      {
+        "name": "All 3 Safety Demonstration docs contain mandatory strict disclaimers",
+        "status": "PASS",
+        "details": "Verified in LOTO, Electrical, Hydraulic docs"
+      }
+    ],
+    "manifest": [
+      {
+        "name": "Manifest contains exactly 418 document objects",
+        "status": "PASS",
+        "details": "Found 418"
+      },
+      {
+        "name": "All 418 manifest paths resolve to existing disk files",
+        "status": "PASS",
+        "details": "Discrepancies: 0"
+      },
+      {
+        "name": "100% SHA-256 match between manifest and disk",
+        "status": "PASS",
+        "details": "Discrepancies: 0"
+      },
+      {
+        "name": "All disk files are listed in manifest (1-to-1)",
+        "status": "PASS",
+        "details": "Disk set size: 418, Manifest set size: 418"
+      }
+    ],
+    "phase2_preservation": [
+      {
+        "name": "All 7 ML model artifacts SHA-256 match frozen baseline",
+        "status": "PASS",
+        "details": "Discrepancies: 0"
+      },
+      {
+        "name": "Isolation Forest frozen threshold 0.0269 preserved in config.py",
+        "status": "PASS",
+        "details": "Verified 0.0269"
+      },
+      {
+        "name": "LSTM Autoencoder frozen threshold 0.901464 preserved in config.py",
+        "status": "PASS",
+        "details": "Verified 0.901464"
+      }
+    ]
+  },
+  "summary": {
+    "total_checks": 33,
+    "passed_checks": 33,
+    "failed_checks": 0,
+    "warnings": 0
+  }
+}

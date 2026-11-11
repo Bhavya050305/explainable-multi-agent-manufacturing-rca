@@ -1,0 +1,291 @@
+{
+  "timestamp": "2026-11-10T22:58:00+05:30",
+  "milestone": "Phase 3 Step 3.1 — Independent Chunking Audit and Metric Reconciliation",
+  "project": "ManuMind AI — Explainable Multi-Agent AI System for Manufacturing Anomaly Detection and Root Cause Analysis",
+  "department": "Department of AI & Data Science, RMK Engineering College",
+  "repository": "D:/Desktop/FInal year project/manumind-ai",
+  "baseline_head": "e5e686939e1830b64191dcbd327b2b7bf35a0793",
+  "branch": "main",
+  "role": "Independent Senior RAG Architect, Quality Assurance Auditor, and Technical Auditor",
+  "final_verdict": "PASS WITH LIMITATIONS",
+  "verdict_summary": "Core chunking integrity, deterministic chunk IDs, 1-to-1 atomic incident isolation (400/400), and Phase 2 regression baselines are 100% verified. Discrepancies in the Step 3 report are traced to presentation-layer arithmetic in the report generator, atomic incident chunks exceeding the 450-token soft bound, and keyword-based safety overclassification due to synthetic disclaimer headers. All 4 limitations are non-blocking and explicitly documented.",
+  "preflight_verification": {
+    "repository_path": "D:/Desktop/FInal year project/manumind-ai",
+    "branch": "main",
+    "head": "e5e686939e1830b64191dcbd327b2b7bf35a0793",
+    "remote_sync": "origin/main (0 0)",
+    "git_tracked_modifications": [
+      ".gitignore (line 10: .venv-rag/)"
+    ],
+    "untracked_directories_and_files": [
+      "backend/app/rag/",
+      "backend/requirements-rag.lock",
+      "backend/tests/test_rag_chunking.py",
+      "backend/tests/test_rag_ingestion.py",
+      "knowledge_base/corpus_manifest.json",
+      "knowledge_base/incidents/",
+      "knowledge_base/sops/",
+      "reports/phase3/"
+    ],
+    "git_staged_files": [],
+    "venv_rag_ignored": true,
+    "rag_lockfile_packages": 104,
+    "rag_lockfile_sha256": "778FDE7658E8F5A0FD3CB039C6271FBBCCE95AB967FBECE6D29CA82E3F035AD2",
+    "rag_lockfile_matches_live_freeze": true,
+    "corpus_manifest_document_count": 418,
+    "corpus_manifest_hash_integrity": "100% MATCH (0 bytes drift, 0 hash mismatches)",
+    "phase2_model_hashes": {
+      "ml/models_store/sensor_scaler.joblib": "f21f0899cd3af4d807e54f98b4627d5512650f08cad35ba17a6cd80268398faf (MATCH)",
+      "ml/models_store/isolation_forest.joblib": "afdf397336f01cfe32c6d4660b3f0094bec01869ab3f8ec276a4d34ca8ac52a2 (MATCH)",
+      "ml/models_store/isolation_forest_metadata.json": "bbb05f4447d52c5ae0f4444649e2e59bf5f282aceb1cfd028e6309b86e8ed3d5 (MATCH)",
+      "ml/models_store/lstm_autoencoder.keras": "b1cae16de57b556f13b3f96e12a8c451d05f3bdd9887a65172817cd99e30e0b5 (MATCH)",
+      "ml/models_store/lstm_autoencoder_metadata.json": "d679e55a2b9935c2e8820d5b117a7c8fc8f84b94cd6565252255168f82fda0c1 (MATCH)",
+      "ml/models_store/resnet_defect_classifier.keras": "aac4b1c2d8c7ba47cef2e31b73d27ad6ff9b8be9352d6e3850c2e201e3195a98 (MATCH)",
+      "ml/models_store/resnet_defect_classifier_metadata.json": "e7e95b8037efceade0a8d19d0a14ecff86868d887e081ac306d1cb36573c8d73 (MATCH)"
+    },
+    "phase2_calibrated_thresholds": {
+      "tau_IF": 0.0269,
+      "tau_IF_match": true,
+      "tau_LSTM": 0.901464,
+      "tau_LSTM_match": true
+    }
+  },
+  "critical_audit_a_incident_reconciliation": {
+    "status": "RECONCILED",
+    "findings": "The apparent machine-level incident count of 470 in Step 3 Report Table 3.2 is an arithmetic presentation bug in ChunkingReportGenerator._build_markdown() (line 186). The generator hardcoded 'total_c - 4' assuming 4 SOP chunks per machine, whereas each SOP produced 11 chunks. The actual underlying chunk records contain exactly 400 incident chunks matching the authoritative corpus audit.",
+    "actual_underlying_metrics": {
+      "total_chunks_generated": 564,
+      "total_incident_chunks": 400,
+      "unique_incident_document_ids": 400,
+      "unique_source_record_ids": 400,
+      "multi_chunk_incidents": 0,
+      "incident_chunk_ratio": 1.0
+    },
+    "machine_distribution_reconciliation": {
+      "M101": {"step3_reported_incidents": 42, "actual_incident_chunks": 35, "actual_sop_chunks": 11, "actual_total": 46, "corpus_expected": 35, "delta": 0},
+      "M102": {"step3_reported_incidents": 49, "actual_incident_chunks": 42, "actual_sop_chunks": 11, "actual_total": 53, "corpus_expected": 42, "delta": 0},
+      "M103": {"step3_reported_incidents": 43, "actual_incident_chunks": 36, "actual_sop_chunks": 11, "actual_total": 47, "corpus_expected": 36, "delta": 0},
+      "M104": {"step3_reported_incidents": 42, "actual_incident_chunks": 35, "actual_sop_chunks": 11, "actual_total": 46, "corpus_expected": 35, "delta": 0},
+      "M105": {"step3_reported_incidents": 53, "actual_incident_chunks": 46, "actual_sop_chunks": 11, "actual_total": 57, "corpus_expected": 46, "delta": 0},
+      "M106": {"step3_reported_incidents": 46, "actual_incident_chunks": 39, "actual_sop_chunks": 11, "actual_total": 50, "corpus_expected": 39, "delta": 0},
+      "M107": {"step3_reported_incidents": 35, "actual_incident_chunks": 28, "actual_sop_chunks": 11, "actual_total": 39, "corpus_expected": 28, "delta": 0},
+      "M108": {"step3_reported_incidents": 55, "actual_incident_chunks": 48, "actual_sop_chunks": 11, "actual_total": 59, "corpus_expected": 48, "delta": 0},
+      "M109": {"step3_reported_incidents": 56, "actual_incident_chunks": 49, "actual_sop_chunks": 11, "actual_total": 60, "corpus_expected": 49, "delta": 0},
+      "M110": {"step3_reported_incidents": 49, "actual_incident_chunks": 42, "actual_sop_chunks": 11, "actual_total": 53, "corpus_expected": 42, "delta": 0},
+      "UNASSIGNED": {"actual_safety_chunks": 15, "actual_troubleshooting_chunks": 39, "actual_total": 54}
+    },
+    "incident_totals": {
+      "reported_in_table_3_2": 470,
+      "actual_reconciled": 400,
+      "corpus_manifest_expected": 400,
+      "match": true
+    }
+  },
+  "critical_audit_b_token_distribution": {
+    "token_estimation_strategy": "deterministic_subword_heuristic_v1",
+    "configured_parameters": {
+      "target_chunk_size_tokens": 400,
+      "min_preferred_chunk_size_tokens": 150,
+      "max_chunk_size_tokens": 450,
+      "chunk_overlap_tokens": 50
+    },
+    "overall_corpus_stats": {
+      "total_chunks": 564,
+      "min_tokens": 61,
+      "max_tokens": 532,
+      "mean_tokens": 400.16,
+      "median_tokens": 481.0,
+      "percentiles": {
+        "p25": 271,
+        "p75": 487,
+        "p90": 492,
+        "p95": 494,
+        "p99": 500
+      },
+      "buckets": {
+        "lt_150": {"count": 51, "percentage": 9.04},
+        "lt_300": {"count": 155, "percentage": 27.48},
+        "300_to_400": {"count": 4, "percentage": 0.71},
+        "401_to_450": {"count": 5, "percentage": 0.89},
+        "gt_450": {"count": 400, "percentage": 70.92},
+        "gt_512": {"count": 1, "percentage": 0.18},
+        "gt_256": {"count": 453, "percentage": 80.32}
+      }
+    },
+    "category_breakdown": {
+      "INCIDENT": {
+        "chunks": 400,
+        "min": 473,
+        "max": 532,
+        "mean": 484.98,
+        "median": 483.0,
+        "percentiles": {"p25": 480, "p75": 490, "p90": 493, "p95": 496, "p99": 501},
+        "lt_150": 0,
+        "lt_300": 0,
+        "300_to_400": 0,
+        "401_to_450": 0,
+        "gt_450": 400,
+        "gt_512": 1,
+        "gt_256": 400,
+        "analysis": "All 400 incident chunks exceed 450 tokens because they were kept intact as 1:1 atomic incident records. 1 chunk (INC-0381_chk000) reached 532 tokens under the heuristic."
+      },
+      "SOP": {
+        "chunks": 110,
+        "min": 61,
+        "max": 302,
+        "mean": 192.04,
+        "median": 207.0,
+        "percentiles": {"p25": 114, "p75": 265, "p90": 270, "p95": 288, "p99": 302},
+        "lt_150": 30,
+        "lt_300": 108,
+        "300_to_400": 2,
+        "401_to_450": 0,
+        "gt_450": 0,
+        "gt_512": 0,
+        "gt_256": 38,
+        "analysis": "All 110 chunks comply with the 450 token upper bound. 30 small sections (such as document sign-off blocks) remain < 150 tokens."
+      },
+      "TROUBLESHOOTING": {
+        "chunks": 39,
+        "min": 81,
+        "max": 442,
+        "mean": 206.0,
+        "median": 186.0,
+        "percentiles": {"p25": 115, "p75": 264, "p90": 426, "p95": 438, "p99": 442},
+        "lt_150": 15,
+        "lt_300": 34,
+        "300_to_400": 0,
+        "401_to_450": 5,
+        "gt_450": 0,
+        "gt_512": 0,
+        "gt_256": 12,
+        "analysis": "100% compliant with 450-token upper limit."
+      },
+      "SAFETY": {
+        "chunks": 15,
+        "min": 80,
+        "max": 336,
+        "mean": 169.47,
+        "median": 165.0,
+        "percentiles": {"p25": 106, "p75": 185, "p90": 306, "p95": 306, "p99": 336},
+        "lt_150": 6,
+        "lt_300": 13,
+        "300_to_400": 2,
+        "401_to_450": 0,
+        "gt_450": 0,
+        "gt_512": 0,
+        "gt_256": 3,
+        "analysis": "100% compliant with 450-token upper limit."
+      }
+    },
+    "oversized_chunk_investigation": {
+      "chunk_id": "INC-0381_chk000",
+      "token_count": 532,
+      "category": "INCIDENT",
+      "root_cause": "Detailed borescopic spindle bearing replacement procedure with extensive Markdown syntax and Klüber Isoflex lubricant reference. Heuristic counts every punctuation symbol individually. Must be validated against real BGE tokenizer in Step 4."
+    }
+  },
+  "critical_audit_c_source_text_coverage": {
+    "source_documents_evaluated": 418,
+    "front_matter_treatment": "Exacted by YAML parser into structured metadata and excluded from body text to prevent embedding noise.",
+    "body_text_representation": "100.0% of source document body text is present across generated chunks.",
+    "table_integrity": "Markdown tables preserved as contiguous single blocks without row fragmentation.",
+    "heading_context_prepended": "Heading hierarchies prepended to procedural sections, enhancing semantic standalone retrieval.",
+    "specification_placeholders": {
+      "total_in_source_corpus": 123,
+      "total_in_generated_chunks": 123,
+      "chunks_bearing_placeholders": 41,
+      "mismatches_or_truncations": 0
+    },
+    "incident_records_preservation": {
+      "source_incident_records": 400,
+      "chunk_incident_records": 400,
+      "textual_content_mismatches": 0
+    }
+  },
+  "critical_audit_d_safety_classification": {
+    "total_safety_chunks_reported": 516,
+    "total_chunks": 564,
+    "safety_chunk_ratio": 0.9149,
+    "category_breakdown": {
+      "SAFETY": {"total_chunks": 15, "safety_tagged": 15, "percentage": 100.0},
+      "SOP": {"total_chunks": 110, "safety_tagged": 80, "percentage": 72.73},
+      "TROUBLESHOOTING": {"total_chunks": 39, "safety_tagged": 21, "percentage": 53.85},
+      "INCIDENT": {"total_chunks": 400, "safety_tagged": 400, "percentage": 100.0}
+    },
+    "root_cause_of_incident_overclassification": "All 400 synthetic incident documents include a mandatory academic banner: '> **SAFETY NOTICE: SYNTHETIC DEMONSTRATION MATERIAL...'. The enricher checked chunk content for chunking_config.SAFETY_KEYWORDS, which includes 'SAFETY'. Because 'SAFETY' appears in the banner, 100% of incidents were classified as is_safety_related=True.",
+    "assessment": "Semantic overclassification. Does not cause data loss, but diminishes metadata filter precision. Recommended for refinement in Step 4."
+  },
+  "critical_audit_e_chunk_identity_and_metadata": {
+    "total_chunks": 564,
+    "unique_chunk_ids": 564,
+    "zero_based_continuous_indexing": true,
+    "index_continuity_errors": 0,
+    "schema_conformity": "ChunkRecord and ChunkMetadata validate under Pydantic v2",
+    "hash_separation": {
+      "raw_file_hash": "SHA-256 of entire raw source file on disk (including front matter)",
+      "content_hash": "SHA-256 of normalized chunk body string",
+      "separation_verified": true
+    },
+    "duplicate_template_handling": {
+      "m101_m102_sop_separation": "DOC-SOP-M101-001 and DOC-SOP-M102-001 produce distinct chunk IDs and distinct machine_id metadata despite similar procedural template bodies."
+    }
+  },
+  "critical_audit_f_test_suite_verification": {
+    "total_tests_executed": 98,
+    "total_tests_passed": 98,
+    "total_tests_failed": 0,
+    "suites": {
+      "backend/tests/test_rag_chunking.py": {"tests": 24, "passed": 24, "env": ".venv-rag", "status": "PASS"},
+      "backend/tests/test_rag_ingestion.py": {"tests": 18, "passed": 18, "env": ".venv-rag", "status": "PASS"},
+      "backend/tests/test_isolation_forest.py & test_resnet_defect_classifier.py": {"tests": 21, "passed": 21, "env": "Base Python 3.11", "status": "PASS"},
+      "backend/tests/test_lstm_autoencoder.py": {"tests": 10, "passed": 10, "env": "Base Python 3.11", "status": "PASS"},
+      "backend/tests/test_inference_service.py": {"tests": 25, "passed": 25, "env": "Base Python 3.11", "status": "PASS"}
+    }
+  },
+  "critical_audit_g_scope_preservation": {
+    "embedding_weights_downloaded": false,
+    "embeddings_generated": false,
+    "chromadb_production_collection_modified": false,
+    "vector_index_populated": false,
+    "llm_api_invoked": false,
+    "corpus_manifest_modified": false,
+    "phase2_models_or_thresholds_modified": false,
+    "git_staged_or_committed": false
+  },
+  "classified_findings": [
+    {
+      "id": "FINDING-01",
+      "severity": "Medium",
+      "category": "Reporting Arithmetic Defect",
+      "title": "Hardcoded SOP Chunk Heuristic in Step 3 Report Table 3.2",
+      "description": "ChunkingReportGenerator._build_markdown() (line 186) used 'total_c - 4' to compute machine incident chunks, artificially inflating reported incident chunks from 400 to 470 across M101-M110. Actual chunk records contain exactly 400 incident chunks.",
+      "remediation": "Update ChunkingReportGenerator._build_markdown() in a subsequent milestone to partition machine chunks using actual chunk metadata categories rather than hardcoded subtraction."
+    },
+    {
+      "id": "FINDING-02",
+      "severity": "Low",
+      "category": "Chunk Size Soft-Bound Excursion",
+      "title": "Atomic Incident Chunks Exceed 450-Token Soft Bound",
+      "description": "All 400 atomic maintenance incident chunks have token counts between 473 and 532 tokens under the heuristic (mean: 484.98), exceeding the 450-token soft bound. 1 chunk (INC-0381_chk000) reaches 532 tokens.",
+      "remediation": "Verify actual token counts with the official BAAI/bge-small-en-v1.5 tokenizer in Phase 3 Step 4. If actual BGE token count exceeds 512, implement section-aware splitting for INC-0381 or trim non-diagnostic metadata lines."
+    },
+    {
+      "id": "FINDING-03",
+      "severity": "Medium",
+      "category": "Metadata Semantic Overclassification",
+      "title": "Synthetic Disclaimer Banner Triggers Safety Keyword Tagging for All Incidents",
+      "description": "Because the synthetic disclaimer banner starts with 'SAFETY NOTICE', the keyword 'SAFETY' matches, causing 100% of incident chunks (400/400) and 91.5% of total corpus chunks (516/564) to be tagged is_safety_related=True.",
+      "remediation": "In Phase 3 Step 4, refine the safety detection logic to exclude the synthetic disclaimer header from the safety keyword scan, restricting is_safety_related to operational LOTO, PPE, hazard, and isolation content."
+    },
+    {
+      "id": "FINDING-04",
+      "severity": "Informational",
+      "category": "Token Counting Strategy Limitation",
+      "title": "Provisional Deterministic Subword Heuristic vs BGE-small Tokenizer",
+      "description": "Token counts are calculated via regex subword approximation (deterministic_subword_heuristic_v1) because embedding model weights were strictly not downloaded during Step 3.",
+      "remediation": "Conduct an authoritative tokenizer validation exercise at the start of Phase 3 Step 4 once model weights are authorized."
+    }
+  ],
+  "closure_recommendation": "Step 3 chunking data structures, schemas, tests, and in-memory services are structurally sound, completely deterministic, and ready to support embedding generation in Phase 3 Step 4. The 4 identified findings are non-blocking and should be reconciled in Phase 3 Step 4 without requiring a full re-implementation of Step 3."
+}

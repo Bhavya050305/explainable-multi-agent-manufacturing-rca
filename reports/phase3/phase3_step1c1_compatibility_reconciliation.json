@@ -1,0 +1,193 @@
+{
+  "timestamp": "2026-11-09T15:35:00+05:30",
+  "milestone": "Phase 3 Step 1C.1 \u2014 Dependency Compatibility Reconciliation and Installation Gate",
+  "verdict": "READY FOR STEP 1D",
+  "environment": {
+    "python_version": "3.11.9",
+    "python_executable": "C:/Users/PR BHAYA SREE/AppData/Local/Programs/Python/Python311/python.exe",
+    "operating_system": "Windows 11 Home / Pro (Build 10.0.26300, 64-bit AMD64)",
+    "cpu_cores": 12,
+    "free_disk_gb": 173.27,
+    "base_interpreter_status": "Preserved without modifications"
+  },
+  "numpy_reconciliation_matrix": {
+    "active_numpy_version": "2.4.6",
+    "packages": {
+      "tensorflow": {
+        "version": "2.21.0",
+        "numpy_constraint": "numpy>=1.26.0",
+        "supports_numpy_2_4_6": true,
+        "abi_risk": "Low (compiled and validated in active environment)",
+        "transitive_notes": "h5py<3.15.0,>=3.11.0; ml_dtypes<1.0.0,>=0.5.1"
+      },
+      "scikit-learn": {
+        "version": "1.9.0",
+        "numpy_constraint": "numpy>=1.24.1",
+        "supports_numpy_2_4_6": true,
+        "abi_risk": "Low (native wheel active)",
+        "transitive_notes": "scipy>=1.10.0, joblib>=1.4.0, threadpoolctl>=3.5.0"
+      },
+      "shap": {
+        "version": "0.51.0",
+        "numpy_constraint": "numpy>=2",
+        "supports_numpy_2_4_6": true,
+        "abi_risk": "Low (strictly requires NumPy 2.x; downgrading to NumPy 1.x breaks SHAP)",
+        "transitive_notes": "scipy, scikit-learn"
+      },
+      "scipy": {
+        "version": "1.17.1",
+        "numpy_constraint": "numpy>=1.23.5",
+        "supports_numpy_2_4_6": true,
+        "abi_risk": "Low (native wheel active)",
+        "transitive_notes": "None"
+      },
+      "pandas": {
+        "version": "3.0.5",
+        "numpy_constraint": "numpy>=1.26.0",
+        "supports_numpy_2_4_6": true,
+        "abi_risk": "Low (native wheel active)",
+        "transitive_notes": "python-dateutil, pytz"
+      },
+      "torch_cpu_candidate": {
+        "version": "2.5.1+cpu",
+        "numpy_constraint": "numpy>=1.21.0 (officially supports NumPy 2.x starting in 2.3.0)",
+        "supports_numpy_2_4_6": true,
+        "abi_risk": "Low in dedicated RAG venv",
+        "transitive_notes": "filelock, typing_extensions, sympy, networkx, jinja2, fsspec"
+      },
+      "sentence_transformers_candidate": {
+        "version": "3.4.1",
+        "numpy_constraint": "numpy>=1.20.0",
+        "supports_numpy_2_4_6": true,
+        "abi_risk": "Low in dedicated RAG venv",
+        "transitive_notes": "transformers>=4.41.0, tokenizers>=0.19.0, huggingface-hub>=0.20.0"
+      },
+      "chromadb_candidate": {
+        "version": "0.5.23",
+        "numpy_constraint": "numpy>=1.22.5",
+        "supports_numpy_2_4_6": true,
+        "abi_risk": "Low with onnxruntime>=1.19.0 (pre-built chroma-hnswlib wheel)",
+        "transitive_notes": "pydantic>=2.0.0, pydantic-settings>=2.0.0, chroma-hnswlib, onnxruntime"
+      }
+    }
+  },
+  "pytorch_sentence_transformers_resolution": {
+    "torch_candidate": "torch==2.5.1+cpu",
+    "torch_index_url": "https://download.pytorch.org/whl/cpu",
+    "torchvision_needed": false,
+    "torchvision_decision": "EXCLUDED (text embedding only; avoids 200MB+ overhead and extra binary dependencies)",
+    "torchaudio_needed": false,
+    "torchaudio_decision": "EXCLUDED (completely unused in manufacturing RCA NLP RAG)",
+    "sentence_transformers_candidate": "sentence-transformers==3.4.1",
+    "transformers_candidate": "transformers==4.48.3",
+    "tokenizers_candidate": "tokenizers==0.21.0",
+    "huggingface_hub_candidate": "huggingface-hub==0.28.1",
+    "safetensors_candidate": "safetensors==0.5.2",
+    "windows_wheel_availability": {
+      "torch_cpu": "torch-2.5.1+cpu-cp311-cp311-win_amd64.whl verified available",
+      "tokenizers": "tokenizers-0.21.0-cp311-cp311-win_amd64.whl verified on PyPI",
+      "safetensors": "safetensors-0.5.2-cp311-cp311-win_amd64.whl verified on PyPI",
+      "sentence_transformers": "Pure python universal wheel (py3-none-any.whl)",
+      "transformers": "Pure python universal wheel (py3-none-any.whl)",
+      "huggingface_hub": "Pure python universal wheel (py3-none-any.whl)"
+    }
+  },
+  "chromadb_resolution": {
+    "candidate_version": "chromadb==0.5.23",
+    "python_version_support": "Python 3.11 fully supported",
+    "platform_support": "Windows x86_64 pre-built wheels verified",
+    "pydantic_v2_support": true,
+    "pydantic_settings_required": true,
+    "persistence_mode": "Embedded in-process PersistentClient(path='knowledge_base/index')",
+    "metadata_filtering": "Native boolean ($and, $or, $eq, $ne, $in, $nin, $gt, $gte, $lt, $lte)",
+    "transitive_dependencies": {
+      "chroma_hnswlib": "0.7.6 (pre-built cp311-win_amd64 wheel on PyPI)",
+      "onnxruntime": "1.20.1 (pre-built cp311-win_amd64 wheel on PyPI; native NumPy 2.x support)",
+      "pypika": "0.48.9 (pure python)",
+      "posthog": "3.11.0",
+      "sqlite3": "Bundled in Python 3.11 Windows runtime"
+    }
+  },
+  "environment_architecture": {
+    "recommended_model": "Dedicated RAG virtual environment (.venv-rag) with Subprocess IPC Execution",
+    "reasons": [
+      "Provides strict OS process boundary isolating TensorFlow (MSVC OpenMP) from PyTorch (Intel OpenMP)",
+      "Eliminates DLL collision risk (vcomp140.dll vs libiomp5md.dll in same address space)",
+      "Preserves base Python environment and frozen Phase 2 dependencies 100% untouched",
+      "Allows independent pip requirements lock for RAG stack"
+    ],
+    "ipc_mechanism": "Async standard I/O (stdin/stdout) JSON-RPC protocol between FastAPI backend and RAG worker",
+    "system_site_packages_policy": "STRICTLY PROHIBITED (enabling system-site-packages leaks base environment, defeating isolation)",
+    "dll_isolation_principle": "Virtual environments isolate files, not process memory. OS process separation is mandatory for DLL/OpenMP safety."
+  },
+  "openmp_reconciliation": {
+    "cpu_wheel_clarification": "CPU-only PyTorch wheels still link Intel OpenMP (libiomp5md.dll); they are NOT automatically collision-free if loaded in the same process as TensorFlow",
+    "thread_limiting_role": "Reduces thread contention but does not prevent duplicate runtime initialization collisions in shared process memory",
+    "blanket_hack_policy": "KMP_DUPLICATE_LIB_OK=TRUE is STRICTLY PROHIBITED per project governance",
+    "architectural_guarantee": "Process-level boundary (separate OS process) is the only true guarantee of memory space separation",
+    "smoke_test_plan": [
+      "Test 1: TensorFlow-only process in base environment",
+      "Test 2: PyTorch-only process in .venv-rag",
+      "Test 3: Concurrent execution of TensorFlow and PyTorch across separate processes via IPC",
+      "Test 4: ChromaDB persistence and metadata query in RAG worker process"
+    ]
+  },
+  "proposed_step1d_installation_plan": {
+    "target_environment": ".venv-rag at repository root",
+    "installation_commands": [
+      "python -m venv .venv-rag",
+      ".venv-rag\\Scripts\\python.exe -m pip install --upgrade pip setuptools wheel",
+      ".venv-rag\\Scripts\\pip install torch==2.5.1+cpu --index-url https://download.pytorch.org/whl/cpu",
+      ".venv-rag\\Scripts\\pip install sentence-transformers==3.4.1 chromadb==0.5.23 pydantic-settings>=2.0.0"
+    ],
+    "reproducibility": "Export .venv-rag freeze to backend/requirements-rag.lock upon completion",
+    "base_environment_mutation": "Zero modifications allowed"
+  },
+  "phase2_artifact_preservation": {
+    "all_artifacts_match": true,
+    "isolation_forest_threshold": 0.0269,
+    "lstm_autoencoder_threshold": 0.901464,
+    "artifacts": {
+      "sensor_scaler.joblib": {
+        "expected": "f21f0899cd3af4d807e54f98b4627d5512650f08cad35ba17a6cd80268398faf",
+        "actual": "f21f0899cd3af4d807e54f98b4627d5512650f08cad35ba17a6cd80268398faf",
+        "match": true
+      },
+      "isolation_forest.joblib": {
+        "expected": "afdf397336f01cfe32c6d4660b3f0094bec01869ab3f8ec276a4d34ca8ac52a2",
+        "actual": "afdf397336f01cfe32c6d4660b3f0094bec01869ab3f8ec276a4d34ca8ac52a2",
+        "match": true
+      },
+      "isolation_forest_metadata.json": {
+        "expected": "bbb05f4447d52c5ae0f4444649e2e59bf5f282aceb1cfd028e6309b86e8ed3d5",
+        "actual": "bbb05f4447d52c5ae0f4444649e2e59bf5f282aceb1cfd028e6309b86e8ed3d5",
+        "match": true
+      },
+      "lstm_autoencoder.keras": {
+        "expected": "b1cae16de57b556f13b3f96e12a8c451d05f3bdd9887a65172817cd99e30e0b5",
+        "actual": "b1cae16de57b556f13b3f96e12a8c451d05f3bdd9887a65172817cd99e30e0b5",
+        "match": true
+      },
+      "lstm_autoencoder_metadata.json": {
+        "expected": "d679e55a2b9935c2e8820d5b117a7c8fc8f84b94cd6565252255168f82fda0c1",
+        "actual": "d679e55a2b9935c2e8820d5b117a7c8fc8f84b94cd6565252255168f82fda0c1",
+        "match": true
+      },
+      "resnet_defect_classifier.keras": {
+        "expected": "aac4b1c2d8c7ba47cef2e31b73d27ad6ff9b8be9352d6e3850c2e201e3195a98",
+        "actual": "aac4b1c2d8c7ba47cef2e31b73d27ad6ff9b8be9352d6e3850c2e201e3195a98",
+        "match": true
+      },
+      "resnet_defect_classifier_metadata.json": {
+        "expected": "e7e95b8037efceade0a8d19d0a14ecff86868d887e081ac306d1cb36573c8d73",
+        "actual": "e7e95b8037efceade0a8d19d0a14ecff86868d887e081ac306d1cb36573c8d73",
+        "match": true
+      }
+    }
+  },
+  "git_status": {
+    "head": "e5e686939e1830b64191dcbd327b2b7bf35a0793",
+    "branch": "main",
+    "clean_index": true
+  }
+}

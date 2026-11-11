@@ -1,0 +1,326 @@
+{
+  "timestamp": "2026-11-10T22:23:02.377881+05:30",
+  "milestone": "Phase 3 Step 2.1.1 \u2014 Synthetic Specification Placeholder Count Reconciliation",
+  "project": "ManuMind AI \u2014 Explainable Multi-Agent AI System for Manufacturing Anomaly Detection and Root Cause Analysis",
+  "department": "Department of AI & Data Science, RMK Engineering College",
+  "baseline_head": "e5e686939e1830b64191dcbd327b2b7bf35a0793",
+  "branch": "main",
+  "final_verdict": "PASS \u2014 DISCREPANCY EXPLAINED AND RECONCILED",
+  "discrepancy_summary": {
+    "reported_counts": {
+      "step1a_corpus_validation_report_md": "Unquantified (Reported 100% 18/18 documents compliant; did not state 85)",
+      "step1a_corpus_validation_json": "Unquantified (Reported 18/18 compliant; did not state 85)",
+      "step1b_independent_corpus_audit_md": "85 explicit placeholders (prose narrative typo)",
+      "step1b_independent_corpus_audit_json": "123 total placeholders (automated tool output)",
+      "step2_1_independent_audit_report_md": "123 explicit placeholders",
+      "step2_1_independent_audit_json": "123 explicit placeholders"
+    },
+    "root_cause": "The number 85 was an isolated narrative transcription typo introduced exclusively in the Markdown text of Phase 3 Step 1B (reports/phase3/phase3_step1b_independent_corpus_audit.md, line 132). In the exact same Step 1B execution, the companion machine-readable audit report (phase3_step1b_independent_corpus_audit.json, safety check section) dynamically counted and recorded 'Found 123 total placeholders across 18 docs'. Step 1A never stated 85. The actual corpus files have remained 100% cryptographically invariant and byte-for-byte unchanged across all milestones."
+  },
+  "verified_metrics": {
+    "total_documents_inspected": 18,
+    "documents_with_placeholders": 18,
+    "documents_coverage_percentage": 100.0,
+    "total_placeholder_occurrences": 123,
+    "unique_placeholder_strings": 17,
+    "occurrences_by_category": {
+      "SOP": 90,
+      "TROUBLESHOOTING": 23,
+      "SAFETY": 10
+    },
+    "incidents_with_placeholders": 0
+  },
+  "methodology_comparison": {
+    "exact_uppercase_regex": {
+      "pattern": "\\[SPEC_REQUIRED:[^\\]]+\\]",
+      "count": 123
+    },
+    "case_insensitive_regex": {
+      "pattern": "\\[spec_required:[^\\]]+\\]",
+      "count": 123
+    },
+    "exact_substring": {
+      "string": "[SPEC_REQUIRED:",
+      "count": 123
+    },
+    "case_insensitive_substring": {
+      "string": "[spec_required:",
+      "count": 123
+    },
+    "methodology_sensitivity": "Counting methodology variations (case sensitivity, regex vs literal substring) yield identical counts (123). The discrepancy was not caused by counting methodology differences."
+  },
+  "cryptographic_manifest_verification": {
+    "all_18_files_match_manifest": true,
+    "hash_mismatches": 0,
+    "size_mismatches": 0,
+    "conclusion": "All 18 technical procedure documents are byte-for-byte identical to the original corpus generated in Phase 3 Step 1A."
+  },
+  "per_document_results": [
+    {
+      "filename": "SAFETY-ELECTRICAL-ISOLATION-DEMO.md",
+      "category": "SAFETY",
+      "total_placeholders": 4,
+      "unique_placeholders": 4,
+      "size_bytes": 3203,
+      "manifest_sha256": "81c5d0ff71a96d271cb453e5229ccd4221897f546bdb798d74311aa202e8fd01",
+      "sha_match": true
+    },
+    {
+      "filename": "SAFETY-HYDRAULIC-PRESSURE-DEMO.md",
+      "category": "SAFETY",
+      "total_placeholders": 3,
+      "unique_placeholders": 3,
+      "size_bytes": 3144,
+      "manifest_sha256": "cf233c706bc7b0559f33fe63ae168a245598fc2bc7b05d15c71d6aa52292020e",
+      "sha_match": true
+    },
+    {
+      "filename": "SAFETY-LOCKOUT-TAGOUT-DEMO.md",
+      "category": "SAFETY",
+      "total_placeholders": 3,
+      "unique_placeholders": 3,
+      "size_bytes": 3390,
+      "manifest_sha256": "9b1caec26e13bf268ee7f23be7622955f1f94ea5116790e2908df9d0b04bcff4",
+      "sha_match": true
+    },
+    {
+      "filename": "SOP-M101.md",
+      "category": "SOP",
+      "total_placeholders": 9,
+      "unique_placeholders": 7,
+      "size_bytes": 4878,
+      "manifest_sha256": "1ae9fa7f4a21e42fa089d0426b38c2089408b8b0900e4b85da8e52dbbfa4c7b8",
+      "sha_match": true
+    },
+    {
+      "filename": "SOP-M102.md",
+      "category": "SOP",
+      "total_placeholders": 9,
+      "unique_placeholders": 7,
+      "size_bytes": 4878,
+      "manifest_sha256": "1ae9fa7f4a21e42fa089d0426b38c2089408b8b0900e4b85da8e52dbbfa4c7b8",
+      "sha_match": true
+    },
+    {
+      "filename": "SOP-M103.md",
+      "category": "SOP",
+      "total_placeholders": 9,
+      "unique_placeholders": 7,
+      "size_bytes": 4917,
+      "manifest_sha256": "3cb40f6d61d1ea0e051c50bfdddd9fba85fdf2cbffbe55d648c6a086da3b27b5",
+      "sha_match": true
+    },
+    {
+      "filename": "SOP-M104.md",
+      "category": "SOP",
+      "total_placeholders": 9,
+      "unique_placeholders": 7,
+      "size_bytes": 4914,
+      "manifest_sha256": "cbf72248ceae0737fba4f669e46a788e0b65bf744b81d77cb36e632824cf4816",
+      "sha_match": true
+    },
+    {
+      "filename": "SOP-M105.md",
+      "category": "SOP",
+      "total_placeholders": 9,
+      "unique_placeholders": 7,
+      "size_bytes": 4878,
+      "manifest_sha256": "1ae9fa7f4a21e42fa089d0426b38c2089408b8b0900e4b85da8e52dbbfa4c7b8",
+      "sha_match": true
+    },
+    {
+      "filename": "SOP-M106.md",
+      "category": "SOP",
+      "total_placeholders": 9,
+      "unique_placeholders": 7,
+      "size_bytes": 4878,
+      "manifest_sha256": "1ae9fa7f4a21e42fa089d0426b38c2089408b8b0900e4b85da8e52dbbfa4c7b8",
+      "sha_match": true
+    },
+    {
+      "filename": "SOP-M107.md",
+      "category": "SOP",
+      "total_placeholders": 9,
+      "unique_placeholders": 7,
+      "size_bytes": 4878,
+      "manifest_sha256": "1ae9fa7f4a21e42fa089d0426b38c2089408b8b0900e4b85da8e52dbbfa4c7b8",
+      "sha_match": true
+    },
+    {
+      "filename": "SOP-M108.md",
+      "category": "SOP",
+      "total_placeholders": 9,
+      "unique_placeholders": 7,
+      "size_bytes": 4878,
+      "manifest_sha256": "1ae9fa7f4a21e42fa089d0426b38c2089408b8b0900e4b85da8e52dbbfa4c7b8",
+      "sha_match": true
+    },
+    {
+      "filename": "SOP-M109.md",
+      "category": "SOP",
+      "total_placeholders": 9,
+      "unique_placeholders": 7,
+      "size_bytes": 4878,
+      "manifest_sha256": "1ae9fa7f4a21e42fa089d0426b38c2089408b8b0900e4b85da8e52dbbfa4c7b8",
+      "sha_match": true
+    },
+    {
+      "filename": "SOP-M110.md",
+      "category": "SOP",
+      "total_placeholders": 9,
+      "unique_placeholders": 7,
+      "size_bytes": 4878,
+      "manifest_sha256": "1ae9fa7f4a21e42fa089d0426b38c2089408b8b0900e4b85da8e52dbbfa4c7b8",
+      "sha_match": true
+    },
+    {
+      "filename": "TROUBLESHOOTING-BEARING-WEAR.md",
+      "category": "TROUBLESHOOTING",
+      "total_placeholders": 6,
+      "unique_placeholders": 5,
+      "size_bytes": 5447,
+      "manifest_sha256": "5879e7e0a2911997794859b08e5b2a7abe06bb2f8137ca7f030a1366037be1ba",
+      "sha_match": true
+    },
+    {
+      "filename": "TROUBLESHOOTING-LUBRICATION-FAILURE.md",
+      "category": "TROUBLESHOOTING",
+      "total_placeholders": 4,
+      "unique_placeholders": 4,
+      "size_bytes": 4726,
+      "manifest_sha256": "25be00a6e3ee939333da78d21b44ec90d1bf47b97e974f886f4cf8bf13320f7f",
+      "sha_match": true
+    },
+    {
+      "filename": "TROUBLESHOOTING-OPTICAL-DEFECTS.md",
+      "category": "TROUBLESHOOTING",
+      "total_placeholders": 4,
+      "unique_placeholders": 4,
+      "size_bytes": 4905,
+      "manifest_sha256": "b0532ff488e7343468bfb36f75ceee93a404ee58694cb02f1f6c406ba75027c9",
+      "sha_match": true
+    },
+    {
+      "filename": "TROUBLESHOOTING-OVERHEATING.md",
+      "category": "TROUBLESHOOTING",
+      "total_placeholders": 4,
+      "unique_placeholders": 4,
+      "size_bytes": 4983,
+      "manifest_sha256": "0e599cf0214c7c34dd0be39a25039dfc989531804d0ef920ae1e9d1c9118e763",
+      "sha_match": true
+    },
+    {
+      "filename": "TROUBLESHOOTING-PRESSURE-DROP.md",
+      "category": "TROUBLESHOOTING",
+      "total_placeholders": 5,
+      "unique_placeholders": 4,
+      "size_bytes": 4991,
+      "manifest_sha256": "4b6a8a3ce2bb97f5ef95d13a9d4f0d4ea336f851080cb9d750c8227b61f2f8a8",
+      "sha_match": true
+    }
+  ],
+  "unique_placeholders_catalog": [
+    {
+      "id": 1,
+      "string": "[SPEC_REQUIRED: Site-approved lockout/tagout procedure]",
+      "occurrences": 28,
+      "scope": "Universal plant safety & mechanical procedures"
+    },
+    {
+      "id": 2,
+      "string": "[SPEC_REQUIRED: OEM Permissible Speed Band]",
+      "occurrences": 20,
+      "scope": "Machine speed boundaries across 10 SOPs"
+    },
+    {
+      "id": 3,
+      "string": "[SPEC_REQUIRED: Certified torque specification]",
+      "occurrences": 15,
+      "scope": "Tooling and mechanical fastener mounting"
+    },
+    {
+      "id": 4,
+      "string": "[SPEC_REQUIRED: Certified OEM electrical isolation procedure]",
+      "occurrences": 11,
+      "scope": "Cabinet electrical disconnect & isolation"
+    },
+    {
+      "id": 5,
+      "string": "[SPEC_REQUIRED: Approved hydraulic pressure limit]",
+      "occurrences": 11,
+      "scope": "Hydraulic manifold and clamp relief bounds"
+    },
+    {
+      "id": 6,
+      "string": "[SPEC_REQUIRED: Minimum Operating Standby Pressure]",
+      "occurrences": 10,
+      "scope": "Auxiliary pump and hydraulic readiness limits"
+    },
+    {
+      "id": 7,
+      "string": "[SPEC_REQUIRED: OEM operating temperature limit]",
+      "occurrences": 10,
+      "scope": "Thermal alarm setpoints across 10 SOPs"
+    },
+    {
+      "id": 8,
+      "string": "[SPEC_REQUIRED: Certified OEM component clearance tolerance]",
+      "occurrences": 5,
+      "scope": "Bearing and rotary clearance specifications"
+    },
+    {
+      "id": 9,
+      "string": "[SPEC_REQUIRED: Maximum Permissible Vibration / Temperature Limit]",
+      "occurrences": 5,
+      "scope": "Troubleshooting acoustic/vibration limits"
+    },
+    {
+      "id": 10,
+      "string": "[SPEC_REQUIRED: VFD DC Bus Discharge Duration (typically 5-10 minutes)]",
+      "occurrences": 1,
+      "scope": "High-voltage cabinet capacitor discharge"
+    },
+    {
+      "id": 11,
+      "string": "[SPEC_REQUIRED: Site arc-flash boundary calculations]",
+      "occurrences": 1,
+      "scope": "Electrical arc-rated personal protective boundary"
+    },
+    {
+      "id": 12,
+      "string": "[SPEC_REQUIRED: Calibrated multimeter zero-voltage test procedure]",
+      "occurrences": 1,
+      "scope": "De-energized electrical verification"
+    },
+    {
+      "id": 13,
+      "string": "[SPEC_REQUIRED: Certified mechanical ram safety block procedure]",
+      "occurrences": 1,
+      "scope": "Hydraulic press gravitational safety drop lock"
+    },
+    {
+      "id": 14,
+      "string": "[SPEC_REQUIRED: OEM accumulator manual discharge sequence]",
+      "occurrences": 1,
+      "scope": "Stored fluid hydraulic energy bleed-down"
+    },
+    {
+      "id": 15,
+      "string": "[SPEC_REQUIRED: Authorized personal padlock key control protocol]",
+      "occurrences": 1,
+      "scope": "Personal safety padlock key accountability"
+    },
+    {
+      "id": 16,
+      "string": "[SPEC_REQUIRED: Site zero-energy verification checklist]",
+      "occurrences": 1,
+      "scope": "Zero mechanical/electrical energy verification"
+    },
+    {
+      "id": 17,
+      "string": "[SPEC_REQUIRED: Maximum Permissible Spindle Runout]",
+      "occurrences": 1,
+      "scope": "Rotary spindle dynamic runout limit"
+    }
+  ]
+}

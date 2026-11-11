@@ -1,0 +1,167 @@
+{
+  "timestamp": "2026-11-09T19:15:00+05:30",
+  "milestone": "Phase 3 Step 1D \u2014 Controlled Dependency Installation and Environment Smoke Testing",
+  "repository": "D:/Desktop/FInal year project/manumind-ai",
+  "baseline_head": "e5e686939e1830b64191dcbd327b2b7bf35a0793",
+  "branch": "main",
+  "python_version": "3.11.9 (tags/v3.11.9:de54cf5, Apr 2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+  "platform": "Windows 11 Home / Pro (Build 10.0.26300, 64-bit AMD64)",
+  "environment_path": "D:/Desktop/FInal year project/manumind-ai/.venv-rag",
+  "installed_packages": {
+    "torch": "2.5.1+cpu",
+    "sentence-transformers": "3.4.1",
+    "transformers": "4.46.3",
+    "tokenizers": "0.20.3",
+    "chromadb": "0.5.23",
+    "pydantic-settings": "2.7.1",
+    "numpy": "2.4.6",
+    "onnxruntime": "1.31.1",
+    "safetensors": "0.8.0",
+    "huggingface-hub": "0.36.2",
+    "scikit-learn": "1.9.1",
+    "scipy": "1.17.1",
+    "pydantic": "2.14.3",
+    "torchvision": "EXCLUDED (Not Installed)",
+    "torchaudio": "EXCLUDED (Not Installed)"
+  },
+  "resolver_status": "PASSED (Resolved compatible graph with tokenizers==0.20.3, transformers==4.46.3, torch==2.5.1+cpu)",
+  "pip_check_status": "PASSED (No broken requirements found, exit code 0)",
+  "tensorflow_smoke_test": {
+    "status": "PASSED",
+    "tensorflow_version": "2.21.0",
+    "keras_version": "3.15.1",
+    "model_loaded": "resnet_defect_classifier.keras",
+    "input_contract": [
+      1,
+      128,
+      128,
+      3
+    ],
+    "forward_pass_output_shape": [
+      1,
+      4
+    ],
+    "exit_code": 0
+  },
+  "pytorch_smoke_test": {
+    "status": "PASSED",
+    "torch_version": "2.5.1+cpu",
+    "cuda_available": false,
+    "cpu_arithmetic": "PASSED",
+    "numpy_interoperability": {
+      "from_numpy": "PASSED",
+      "to_numpy": "PASSED",
+      "numerical_equality": "PASSED",
+      "numpy_version": "2.4.6"
+    }
+  },
+  "sentence_transformers_smoke_test": {
+    "status": "PASSED (Offline Verification)",
+    "sentence_transformers_version": "3.4.1",
+    "transformers_version": "4.46.3",
+    "tokenizers_version": "0.20.3",
+    "offline_imports": "PASSED",
+    "model_weights_downloaded": false
+  },
+  "chromadb_persistence_test": {
+    "status": "PASSED",
+    "chromadb_version": "0.5.23",
+    "test_scratch_directory": "scratch/chroma_smoke_test",
+    "collection_created": "smoke_test_collection",
+    "records_inserted": 3,
+    "metadata_query_filter": {
+      "$and": [
+        {
+          "machine_id": "M101"
+        },
+        {
+          "fault_category": "BEARING_FAILURE"
+        }
+      ]
+    },
+    "retrieved_id": "doc_001",
+    "persistence_reopened_count": 3,
+    "scratch_directory_cleaned": true
+  },
+  "subprocess_ipc_test": {
+    "status": "INCONCLUSIVE",
+    "completed_iterations": 0,
+    "target_iterations": 3,
+    "parent_process": "Base Python 3.11 with TensorFlow 2.21",
+    "child_process": ".venv-rag Python 3.11 with PyTorch 2.5.1 CPU",
+    "incident_summary": "Process hung indefinitely during Stage 3 execution. Parent initialized TensorFlow; child process did not output stderr banner. No CPU/disk activity observed. Task was gracefully terminated after 3 hours.",
+    "suspected_root_cause": "Windows asynchronous pipe deadlock in ProactorEventLoop communicate() or terminal sandbox subprocess restriction on redirected stdin/stdout anonymous pipes.",
+    "termination_action": "Gracefully terminated parent and child test processes; no residual hanging processes."
+  },
+  "openmp_observations": {
+    "kmp_duplicate_lib_ok_set": false,
+    "workaround_applied": false,
+    "dll_collision_observed": false,
+    "notes": "No OpenMP crash occurred; hang was at OS/asyncio pipe connection boundary."
+  },
+  "model_hash_verification": {
+    "all_match": true,
+    "artifacts": {
+      "sensor_scaler.joblib": {
+        "expected": "f21f0899cd3af4d807e54f98b4627d5512650f08cad35ba17a6cd80268398faf",
+        "actual": "f21f0899cd3af4d807e54f98b4627d5512650f08cad35ba17a6cd80268398faf",
+        "match": true
+      },
+      "isolation_forest.joblib": {
+        "expected": "afdf397336f01cfe32c6d4660b3f0094bec01869ab3f8ec276a4d34ca8ac52a2",
+        "actual": "afdf397336f01cfe32c6d4660b3f0094bec01869ab3f8ec276a4d34ca8ac52a2",
+        "match": true
+      },
+      "isolation_forest_metadata.json": {
+        "expected": "bbb05f4447d52c5ae0f4444649e2e59bf5f282aceb1cfd028e6309b86e8ed3d5",
+        "actual": "bbb05f4447d52c5ae0f4444649e2e59bf5f282aceb1cfd028e6309b86e8ed3d5",
+        "match": true
+      },
+      "lstm_autoencoder.keras": {
+        "expected": "b1cae16de57b556f13b3f96e12a8c451d05f3bdd9887a65172817cd99e30e0b5",
+        "actual": "b1cae16de57b556f13b3f96e12a8c451d05f3bdd9887a65172817cd99e30e0b5",
+        "match": true
+      },
+      "lstm_autoencoder_metadata.json": {
+        "expected": "d679e55a2b9935c2e8820d5b117a7c8fc8f84b94cd6565252255168f82fda0c1",
+        "actual": "d679e55a2b9935c2e8820d5b117a7c8fc8f84b94cd6565252255168f82fda0c1",
+        "match": true
+      },
+      "resnet_defect_classifier.keras": {
+        "expected": "aac4b1c2d8c7ba47cef2e31b73d27ad6ff9b8be9352d6e3850c2e201e3195a98",
+        "actual": "aac4b1c2d8c7ba47cef2e31b73d27ad6ff9b8be9352d6e3850c2e201e3195a98",
+        "match": true
+      },
+      "resnet_defect_classifier_metadata.json": {
+        "expected": "e7e95b8037efceade0a8d19d0a14ecff86868d887e081ac306d1cb36573c8d73",
+        "actual": "e7e95b8037efceade0a8d19d0a14ecff86868d887e081ac306d1cb36573c8d73",
+        "match": true
+      }
+    }
+  },
+  "threshold_verification": {
+    "isolation_forest_threshold": 0.0269,
+    "isolation_forest_expected": 0.0269,
+    "isolation_forest_match": true,
+    "lstm_autoencoder_threshold": 0.901464,
+    "lstm_autoencoder_expected": 0.901464,
+    "lstm_autoencoder_match": true
+  },
+  "git_invariance": {
+    "head": "e5e686939e1830b64191dcbd327b2b7bf35a0793",
+    "branch": "main",
+    "clean_index": true,
+    "gitignore_updated": true,
+    "venv_rag_ignored": true,
+    "lockfile_created": true
+  },
+  "warnings": [
+    "Stage 3 Subprocess IPC test hung indefinitely and was terminated; recorded as INCONCLUSIVE.",
+    "Matplotlib in base environment logged non-writable directory warning (non-blocking).",
+    "ChromaDB emitted harmless telemetry capture warning in offline execution (non-blocking)."
+  ],
+  "failures": [
+    "Stage 3 Subprocess IPC communication could not be demonstrated within the execution window."
+  ],
+  "final_verdict": "FAIL \u2014 STEP 1D INCOMPLETE"
+}

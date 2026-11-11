@@ -1,0 +1,106 @@
+{
+  "validation_timestamp": "2026-11-09T15:10:00+05:30",
+  "verdict": "PASS",
+  "total_checks": 16,
+  "passed_checks": 16,
+  "failed_checks": 0,
+  "warnings": 0,
+  "checks": [
+    {
+      "category": "Integrity",
+      "check": "Manifest valid JSON",
+      "status": "PASS",
+      "details": "Successfully parsed JSON"
+    },
+    {
+      "category": "Completeness",
+      "check": "SOP count (10)",
+      "status": "PASS",
+      "details": "Found 10 SOP files"
+    },
+    {
+      "category": "Completeness",
+      "check": "Troubleshooting count (5)",
+      "status": "PASS",
+      "details": "Found 5 troubleshooting files"
+    },
+    {
+      "category": "Completeness",
+      "check": "Safety count (3)",
+      "status": "PASS",
+      "details": "Found 3 safety files"
+    },
+    {
+      "category": "Completeness",
+      "check": "Incidents count (400)",
+      "status": "PASS",
+      "details": "Found 400 incident files"
+    },
+    {
+      "category": "Completeness",
+      "check": "Total document count (418)",
+      "status": "PASS",
+      "details": "Found 418 total files on disk"
+    },
+    {
+      "category": "Completeness",
+      "check": "Manifest total documents count",
+      "status": "PASS",
+      "details": "Manifest total: 418"
+    },
+    {
+      "category": "Integrity",
+      "check": "Disk to Manifest 1-to-1 parity",
+      "status": "PASS",
+      "details": "Disk paths: 418, Manifest paths: 418"
+    },
+    {
+      "category": "Integrity",
+      "check": "SHA-256 manifest match",
+      "status": "PASS",
+      "details": "Discrepancies: 0"
+    },
+    {
+      "category": "Provenance",
+      "check": "Visible body disclaimer in all files",
+      "status": "PASS",
+      "details": "Missing: 0"
+    },
+    {
+      "category": "Safety",
+      "check": "Engineering placeholders present in all SOPs/Guides/Safety",
+      "status": "PASS",
+      "details": "Missing in: 0"
+    },
+    {
+      "category": "Consistency",
+      "check": "M103 healthy reference integrity (No bearing wear assigned)",
+      "status": "PASS",
+      "details": "Inconsistencies: 0"
+    },
+    {
+      "category": "Consistency",
+      "check": "Machine IDs valid across all files",
+      "status": "PASS",
+      "details": "Invalid: 0"
+    },
+    {
+      "category": "Integrity",
+      "check": "Unique document IDs (418)",
+      "status": "PASS",
+      "details": "Unique IDs: 418"
+    },
+    {
+      "category": "Integrity",
+      "check": "Unique incident source record IDs (400)",
+      "status": "PASS",
+      "details": "Unique record IDs: 400"
+    },
+    {
+      "category": "Safety",
+      "check": "Non-causality principle in all SOPs & troubleshooting guides",
+      "status": "PASS",
+      "details": "15/15 files present"
+    }
+  ]
+}
