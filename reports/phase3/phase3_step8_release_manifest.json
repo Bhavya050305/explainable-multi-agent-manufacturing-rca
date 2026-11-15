@@ -1,0 +1,295 @@
+{
+  "timestamp": "2026-11-15T13:53:00+05:30",
+  "project": "ManuMind AI — Explainable Multi-Agent AI System for Manufacturing Anomaly Detection and Root Cause Analysis",
+  "department": "Department of AI & Data Science, RMK Engineering College",
+  "milestone": "Phase 3 Step 8: Release Preparation and Git Governance Review",
+  "mode": "STRICTLY READ-ONLY AUDIT",
+  "final_verdict": "READY FOR EXPLICIT RELEASE AUTHORIZATION",
+  "git_preflight": {
+    "active_branch": "main",
+    "head_commit": "3f0a6d08223c74741f4db3e0819b6f52a0d0f0c6",
+    "remote_tracking_ref": "origin/main",
+    "remote_head_commit": "3f0a6d08223c74741f4db3e0819b6f52a0d0f0c6",
+    "ahead_behind": {
+      "ahead": 0,
+      "behind": 0
+    },
+    "staged_files_count": 0,
+    "staged_files": [],
+    "tracked_modified_count": 1,
+    "tracked_modified_files": [
+      "backend/app/rag/__init__.py"
+    ],
+    "untracked_items_collapsed_git_status": 43,
+    "untracked_files_expanded_uall": 46,
+    "total_uncommitted_files_in_scope": 47
+  },
+  "file_count_reconciliation": {
+    "pre_step7_untracked_items_collapsed": 39,
+    "step7_generated_reports": [
+      "reports/phase3/phase3_step7_final_independent_closure_audit_report.md",
+      "reports/phase3/phase3_step7_final_independent_closure_audit.json"
+    ],
+    "step7_untracked_items_collapsed_count": 41,
+    "step8_generated_reports": [
+      "reports/phase3/phase3_step8_release_preparation_report.md",
+      "reports/phase3/phase3_step8_release_manifest.json"
+    ],
+    "step8_untracked_items_collapsed_count": 43,
+    "directory_collapse_vs_uall_explanation": "Git's default 'git status' collapses untracked directory 'backend/app/rag/providers/' into a single directory entry (yielding 39 pre-Step 7 items, 41 post-Step 7 items, and 43 post-Step 8 items). When 'git status -uall' is invoked, Git enumerates the 4 individual files inside 'backend/app/rag/providers/' (__init__.py, base.py, factory.py, mock_provider.py), adding +3 files to the count (yielding 44 untracked files post-Step 7 and 46 untracked files post-Step 8)."
+  },
+  "tracked_modification_assessment": {
+    "file": "backend/app/rag/__init__.py",
+    "status": "MODIFIED",
+    "nature_of_change": "Exposes Step 6 Grounded Generation public interfaces, schemas, prompt utilities, validator, provider abstractions, and service instances.",
+    "accidental_deletions": false,
+    "unrelated_edits": false,
+    "import_side_effects": false,
+    "test_coverage": "Fully exercised by all 259 RAG unit, evaluation, hardening, and remediation tests.",
+    "recommendation": "INCLUDE"
+  },
+  "exclusions_and_sensitive_data_audit": {
+    "virtualenv_ignored": true,
+    "virtualenv_path": ".venv-rag/",
+    "chromadb_ignored": true,
+    "chromadb_path": "knowledge_base/index/chroma_bge_small_v1/",
+    "cache_ignored": true,
+    "cache_patterns": ["__pycache__/", ".pytest_cache/"],
+    "secrets_detected": 0,
+    "sensitive_files_detected": 0,
+    "release_blockers_in_working_tree": 0
+  },
+  "protected_baseline_invariants": {
+    "total_invariants_checked": 10,
+    "invariants_passed": 10,
+    "invariants_failed": 0,
+    "checks": [
+      {
+        "id": 1,
+        "name": "Source Documents",
+        "expected": 418,
+        "actual": 418,
+        "source": "knowledge_base/**/*.md",
+        "status": "PASS"
+      },
+      {
+        "id": 2,
+        "name": "Historical Incidents",
+        "expected": 400,
+        "actual": 400,
+        "source": "knowledge_base/incidents/INC-*.md",
+        "status": "PASS"
+      },
+      {
+        "id": 3,
+        "name": "ChromaDB Vectors",
+        "expected": 564,
+        "actual": 564,
+        "source": "Persistent collection 'manumind_bge_small_v1' in knowledge_base/index/chroma_bge_small_v1",
+        "status": "PASS"
+      },
+      {
+        "id": 4,
+        "name": "Specification Placeholders",
+        "expected": 123,
+        "actual": 123,
+        "source": "Regex scan '[SPEC_REQUIRED:' across knowledge_base/sops/*.md",
+        "status": "PASS"
+      },
+      {
+        "id": 5,
+        "name": "Canonical Chunks",
+        "expected": 564,
+        "actual": 564,
+        "source": "reports/phase3/phase3_step3_chunking.json",
+        "status": "PASS"
+      },
+      {
+        "id": 6,
+        "name": "Serialized ML Model Artifacts",
+        "expected": 7,
+        "actual": 7,
+        "source": "ml/models_store/ (isolation_forest.joblib, isolation_forest_metadata.json, lstm_autoencoder.keras, lstm_autoencoder_metadata.json, resnet_defect_classifier.keras, resnet_defect_classifier_metadata.json, sensor_scaler.joblib)",
+        "status": "PASS"
+      },
+      {
+        "id": 7,
+        "name": "Isolation Forest Threshold",
+        "expected": 0.0269,
+        "actual": 0.0269,
+        "source": "ml/models_store/isolation_forest_metadata.json",
+        "status": "PASS"
+      },
+      {
+        "id": 8,
+        "name": "LSTM Autoencoder Threshold",
+        "expected": 0.901464,
+        "actual": 0.901464,
+        "source": "ml/models_store/lstm_autoencoder_metadata.json",
+        "status": "PASS"
+      },
+      {
+        "id": 9,
+        "name": "BGE Model Revision",
+        "expected": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+        "actual": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+        "source": "backend/app/rag/embedding_model.py (BGEEmbeddingModel.REVISION_COMMIT_HASH)",
+        "status": "PASS"
+      },
+      {
+        "id": 10,
+        "name": "RAG Lockfile SHA-256",
+        "expected": "778FDE7658E8F5A0FD3CB039C6271FBBCCE95AB967FBECE6D29CA82E3F035AD2",
+        "actual": "778FDE7658E8F5A0FD3CB039C6271FBBCCE95AB967FBECE6D29CA82E3F035AD2",
+        "source": "backend/requirements-rag.lock",
+        "status": "PASS"
+      }
+    ]
+  },
+  "test_verification_results": {
+    "total_modules_executed": 26,
+    "total_tests_collected": 377,
+    "total_tests_passed": 377,
+    "total_tests_failed": 0,
+    "total_tests_errored": 0,
+    "total_tests_skipped": 0,
+    "pass_rate_percentage": 100.0,
+    "subtotals": {
+      "phase3_rag_tests": {
+        "modules_count": 16,
+        "tests_collected": 259,
+        "tests_passed": 259,
+        "tests_failed": 0,
+        "tests_errored": 0
+      },
+      "phase1_and_2_ml_regression_tests": {
+        "modules_count": 10,
+        "tests_collected": 118,
+        "tests_passed": 118,
+        "tests_failed": 0,
+        "tests_errored": 0
+      }
+    }
+  },
+  "proposed_release_manifest": {
+    "category_a_rag_implementation_source_files": [
+      "backend/app/rag/__init__.py",
+      "backend/app/rag/context_builder.py",
+      "backend/app/rag/generation_config.py",
+      "backend/app/rag/generation_schemas.py",
+      "backend/app/rag/generation_service.py",
+      "backend/app/rag/grounding_validator.py",
+      "backend/app/rag/prompt_templates.py",
+      "backend/app/rag/providers/__init__.py",
+      "backend/app/rag/providers/base.py",
+      "backend/app/rag/providers/factory.py",
+      "backend/app/rag/providers/mock_provider.py"
+    ],
+    "category_b_rag_test_files_and_fixtures": [
+      "backend/tests/fixtures/rag_grounded_generation_eval_cases.json",
+      "backend/tests/test_rag_grounded_generation.py",
+      "backend/tests/test_rag_grounded_generation_evaluation.py",
+      "backend/tests/test_rag_grounded_generation_hardening.py",
+      "backend/tests/test_rag_grounded_generation_remediation.py",
+      "backend/tests/test_rag_grounded_generation_remediation_v2.py",
+      "backend/tests/test_rag_grounded_generation_remediation_v3.py"
+    ],
+    "category_c_phase3_reports_and_audit_evidence": [
+      "reports/phase3/phase3_step5_git_release_report.md",
+      "reports/phase3/phase3_step6_grounded_generation_implementation_report.md",
+      "reports/phase3/phase3_step6_grounded_generation_evaluation_report.md",
+      "reports/phase3/phase3_step6_grounded_generation_safety_audit.md",
+      "reports/phase3/phase3_step6_final_reconciliation.json",
+      "reports/phase3/phase3_step6_1_independent_grounded_generation_audit_report.md",
+      "reports/phase3/phase3_step6_1_independent_grounded_generation_audit.json",
+      "reports/phase3/phase3_step6_2_grounding_safety_hardening_implementation_report.md",
+      "reports/phase3/phase3_step6_2_grounding_safety_hardening_evaluation_report.md",
+      "reports/phase3/phase3_step6_2_grounding_safety_hardening_reconciliation.json",
+      "reports/phase3/phase3_step6_2_1_independent_grounding_safety_context_audit_report.md",
+      "reports/phase3/phase3_step6_2_1_independent_grounding_safety_context_audit.json",
+      "reports/phase3/phase3_step6_2_2_targeted_remediation_implementation_report.md",
+      "reports/phase3/phase3_step6_2_2_targeted_remediation_evaluation_report.md",
+      "reports/phase3/phase3_step6_2_2_targeted_remediation_reconciliation.json",
+      "reports/phase3/phase3_step6_2_2_1_independent_remediation_audit_report.md",
+      "reports/phase3/phase3_step6_2_2_1_independent_remediation_audit.json",
+      "reports/phase3/phase3_step6_2_2_2_targeted_remediation_implementation_report.md",
+      "reports/phase3/phase3_step6_2_2_2_targeted_remediation_evaluation_report.md",
+      "reports/phase3/phase3_step6_2_2_2_targeted_remediation_reconciliation.json",
+      "reports/phase3/phase3_step6_2_2_3_independent_remediation_audit_report.md",
+      "reports/phase3/phase3_step6_2_2_3_independent_remediation_audit.json",
+      "reports/phase3/phase3_step6_2_2_4_targeted_remediation_report.md",
+      "reports/phase3/phase3_step6_2_2_4_targeted_remediation.json",
+      "reports/phase3/phase3_step6_2_2_5_independent_remediation_audit_report.md",
+      "reports/phase3/phase3_step6_2_2_5_independent_remediation_audit.json",
+      "reports/phase3/phase3_step7_final_independent_closure_audit_report.md",
+      "reports/phase3/phase3_step7_final_independent_closure_audit.json",
+      "reports/phase3/phase3_step8_release_preparation_report.md",
+      "reports/phase3/phase3_step8_release_manifest.json"
+    ],
+    "category_d_dependencies_and_configuration": [
+      "backend/requirements-rag.lock"
+    ],
+    "category_e_excluded_generated_database_files": [
+      "knowledge_base/index/chroma_bge_small_v1/",
+      "knowledge_base/index/chroma.sqlite3"
+    ],
+    "category_f_excluded_virtualenvs_and_caches": [
+      ".venv-rag/",
+      "**/__pycache__/",
+      ".pytest_cache/"
+    ],
+    "category_g_temporary_and_debug_files": [],
+    "category_h_unrelated_preexisting_work": [
+      "ml/models_store/",
+      "backend/app/ml/"
+    ],
+    "category_i_manual_review_items": []
+  },
+  "outstanding_limitations": {
+    "blocking_defects_count": 0,
+    "non_blocking_limitations_count": 4,
+    "non_blocking_limitations": [
+      {
+        "id": "LIMITATION-01",
+        "description": "Corpus emergency stop terminology asymmetry (E-stop vs emergency-stop lexical gap; tracked from Step 6.2.2.3)",
+        "phase_target": "Phase 4"
+      },
+      {
+        "id": "LIMITATION-02",
+        "description": "Pre-existing Phase 2 schema timestamp non-monotonicity defect (DEFECT-01 in schemas.py:86-94; preserved frozen to protect ML baseline)",
+        "phase_target": "Phase 4"
+      },
+      {
+        "id": "LIMITATION-03",
+        "description": "ChromaDB telemetry exception logging in console (capture takes 1 positional argument but 3 given; benign harmless telemetry error)",
+        "phase_target": "Phase 4"
+      },
+      {
+        "id": "LIMITATION-04",
+        "description": "Single-sentence quotation safety boundary (safety directives embedded in educational or direct quotes are evaluated conservatively)",
+        "phase_target": "Phase 4"
+      }
+    ],
+    "informational_limitations_count": 6,
+    "informational_limitations": [
+      "Synthetic demonstration corpus: all 418 documents and 400 incidents are synthetic; 123 specification placeholders preserve manufacturer unknowns.",
+      "Regex-based deterministic grounding: grounding verification is syntactic and regex-driven; no natural language inference (NLI) is performed.",
+      "Regex safety bounds: pattern matching cannot mathematically guarantee defense against all possible adversarial semantic encodings.",
+      "Conservative single-snippet range verification: numerical ranges must be supported within a single cited snippet.",
+      "Benchmark scope: 36 golden queries represent an evaluation set, not an exhaustive production operating guarantee.",
+      "Decision support boundary: ManuMind AI is an explainable decision-support system and does not execute physical machinery actuations."
+    ]
+  },
+  "governance_and_authorization_boundary": {
+    "git_operations_performed": {
+      "git_add": false,
+      "git_commit": false,
+      "git_push": false,
+      "git_reset": false,
+      "git_clean": false,
+      "git_stash": false
+    },
+    "compliance_status": "FULL COMPLIANCE (STRICTLY READ-ONLY)",
+    "recommendation": "The release scope is verified, clean, and complete. All 47 files are proposed for staging and commit only upon explicit user authorization."
+  }
+}

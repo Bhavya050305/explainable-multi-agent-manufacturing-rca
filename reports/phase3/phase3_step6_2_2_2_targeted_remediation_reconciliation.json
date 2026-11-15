@@ -1,0 +1,150 @@
+{
+  "milestone": "Phase 3 Step 6.2.2.2: Targeted Citation-Boundary and Numerical Parser Remediation",
+  "project": "ManuMind AI",
+  "institution": "Department of AI & Data Science, RMK Engineering College",
+  "evaluated_at": "2026-11-15T12:30:00+05:30",
+  "git_state": {
+    "branch": "main",
+    "head_commit": "3f0a6d08223c74741f4db3e0819b6f52a0d0f0c6",
+    "remote": "origin/main",
+    "ahead_behind": "0 0",
+    "staged_files_count": 0,
+    "modified_tracked_files": [
+      "backend/app/rag/__init__.py"
+    ]
+  },
+  "findings_resolved": [
+    {
+      "finding_id": "FINDING-STEP6.2.2.1-01",
+      "title": "Line-Level Statement Granularity in Citation Association",
+      "severity": "MEDIUM",
+      "source_file": "backend/app/rag/grounding_validator.py",
+      "resolution": "Implemented split_into_statements with sentence-boundary tokenization (.!?;) while preserving decimals, known abbreviations (e.g., Rev.), and associating trailing citations.",
+      "status": "RESOLVED"
+    },
+    {
+      "finding_id": "FINDING-STEP6.2.2.1-04",
+      "title": "Quoted Educational Safety Warnings and Prohibition Inquiries",
+      "severity": "LOW",
+      "source_file": "backend/app/rag/prompt_templates.py",
+      "resolution": "Enhanced classify_safety_intent to distinguish quoted warnings and prohibition inquiries from operational bypass directives, verifying unquoted text contains zero actuation directives.",
+      "status": "RESOLVED"
+    },
+    {
+      "finding_id": "FINDING-STEP6.2.2.1-05",
+      "title": "Numerical Grouping Parsing and Malformed Grouping Syntax",
+      "severity": "MEDIUM",
+      "source_file": "backend/app/rag/grounding_validator.py",
+      "resolution": "Extended NUM_PATTERN_STR to support both Indian and Western grouping, added (?<![\\d,]) lookbehind, and added detect_malformed_numerical_claims to reject invalid grouping syntax.",
+      "status": "RESOLVED"
+    }
+  ],
+  "sentence_isolation_results": {
+    "test_a1_unsupported_claim_on_same_line_rejected": true,
+    "test_a2_unrelated_citation_on_same_line_rejected": true,
+    "test_a3_valid_independent_claims_on_same_line_accepted": true,
+    "test_a4_same_line_range_with_insufficient_evidence_rejected": true,
+    "test_a5_complete_single_snippet_range_accepted": true,
+    "test_a6_two_citations_separate_endpoints_conservative_policy_rejected": true,
+    "test_a7_bulleted_list_statement_isolation": true,
+    "test_a8_decimal_numbers_do_not_split_sentence": true,
+    "test_a9_known_abbreviations_do_not_split_sentence": true,
+    "test_a10_attached_citation_after_period_correctly_associated": true
+  },
+  "numerical_grouping_results": {
+    "indian_grouping_lakhs_passed": true,
+    "indian_grouping_crores_passed": true,
+    "western_grouping_passed": true,
+    "malformed_grouping_two_digits_rejected": true,
+    "malformed_grouping_invalid_indian_rejected": true,
+    "negative_lookbehind_prevents_partial_match": true,
+    "non_measurement_tokens_filtered": true
+  },
+  "quoted_safety_results": {
+    "educational_quoted_interlock_warning_allowed": true,
+    "educational_quoted_never_override_allowed": true,
+    "educational_prohibition_inquiry_without_quotes_allowed": true,
+    "educational_prohibition_forbidden_inquiry_allowed": true,
+    "adversarial_quoted_with_trailing_bypass_blocked": true,
+    "adversarial_quoted_with_how_to_disable_blocked": true,
+    "adversarial_quoted_rule_with_immediate_override_blocked": true,
+    "direct_operational_interlock_bypass_blocked": true,
+    "direct_override_interlock_switch_blocked": true
+  },
+  "test_suite_reconciliation": {
+    "phase3_rag_earlier_tests": 133,
+    "phase3_step6_grounded_generation_tests": 22,
+    "phase3_step6_2_hardening_tests": 28,
+    "phase3_step6_2_2_remediation_tests": 36,
+    "phase3_step6_2_2_2_remediation_v2_tests": 28,
+    "total_phase3_rag_tests": 247,
+    "phase1_phase2_ml_regression_tests": 118,
+    "grand_total_unique_tests": 365,
+    "failures": 0,
+    "errors": 0,
+    "pass_rate": 1.0
+  },
+  "protected_invariants_verification": {
+    "source_documents": {
+      "expected": 418,
+      "actual": 418,
+      "status": "PASS"
+    },
+    "historical_incidents": {
+      "expected": 400,
+      "actual": 400,
+      "status": "PASS"
+    },
+    "chromadb_vectors": {
+      "expected": 564,
+      "actual": 564,
+      "status": "PASS"
+    },
+    "specification_placeholders": {
+      "expected": 123,
+      "actual": 123,
+      "files_count": 18,
+      "status": "PASS"
+    },
+    "canonical_chunks": {
+      "expected": 564,
+      "actual": 564,
+      "status": "PASS"
+    },
+    "ml_model_artifacts": {
+      "expected": 7,
+      "actual": 7,
+      "artifacts": [
+        "isolation_forest.joblib",
+        "isolation_forest_metadata.json",
+        "lstm_autoencoder.keras",
+        "lstm_autoencoder_metadata.json",
+        "resnet_defect_classifier.keras",
+        "resnet_defect_classifier_metadata.json",
+        "sensor_scaler.joblib"
+      ],
+      "status": "PASS"
+    },
+    "isolation_forest_threshold": {
+      "expected": 0.0269,
+      "actual": 0.0269,
+      "status": "PASS"
+    },
+    "lstm_threshold": {
+      "expected": 0.901464,
+      "actual": 0.901464,
+      "status": "PASS"
+    },
+    "bge_model_revision": {
+      "expected": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+      "actual": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+      "status": "PASS"
+    },
+    "rag_lockfile_sha256": {
+      "expected": "778FDE7658E8F5A0FD3CB039C6271FBBCCE95AB967FBECE6D29CA82E3F035AD2",
+      "actual": "778FDE7658E8F5A0FD3CB039C6271FBBCCE95AB967FBECE6D29CA82E3F035AD2",
+      "status": "PASS"
+    }
+  },
+  "overall_verdict": "PASS"
+}

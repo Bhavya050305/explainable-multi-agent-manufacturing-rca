@@ -1,0 +1,137 @@
+{
+  "milestone": "Phase 3 Step 6.2.2.4: Targeted Safety Classification and Malformed Numerical Grouping Remediation",
+  "project": "ManuMind AI",
+  "institution": "Department of AI & Data Science, RMK Engineering College",
+  "evaluated_at": "2026-11-15T13:30:00+05:30",
+  "git_state": {
+    "branch": "main",
+    "head_commit": "3f0a6d08223c74741f4db3e0819b6f52a0d0f0c6",
+    "remote": "origin/main",
+    "ahead_behind": "0 0",
+    "staged_files_count": 0,
+    "modified_tracked_files": [
+      "backend/app/rag/__init__.py"
+    ]
+  },
+  "findings_resolved": [
+    {
+      "finding_id": "FINDING-STEP6.2.2.3-01",
+      "title": "Gaps in Interlock Circumvention Regex Coverage",
+      "severity": "MEDIUM",
+      "source_file": "backend/app/rag/prompt_templates.py",
+      "resolution": "Unified safety targets into _SAFETY_TARGETS covering emergency/protective shutdowns, emergency stops, protective devices/mechanisms, interlocks, and LOTO. Expanded _INTERLOCK_VIOLATION_PATTERNS with circumvention verbs and trailing directives like 'override it anyway' and 'bypass it anyway'. Preceding educational questions never mask trailing operational circumvention directives.",
+      "status": "RESOLVED"
+    },
+    {
+      "finding_id": "FINDING-STEP6.2.2.3-02",
+      "title": "Consecutive Commas in Malformed Numerical Grouping Syntax",
+      "severity": "LOW",
+      "source_file": "backend/app/rag/grounding_validator.py",
+      "resolution": "Updated ANY_COMMA_NUM_REGEX using generalized COMMA_NUM_CHUNK pattern '(?<![\\d,])(?P<raw>\\d+[\\d,]*?,[\\d,]*?\\d+)(?:\\.\\d+)?' to detect consecutive commas ('1,,234 RPM', '12,,345 bar', '1,,,234 RPM', '12,,34,567 bar') and malformed ranges. Negative lookbehind prevents partial trailing digit extractions, and validation fails with explicit malformed grouping errors.",
+      "status": "RESOLVED"
+    },
+    {
+      "finding_id": "FINDING-STEP6.2.2.3-03",
+      "title": "Conceptual Safety Queries Triggering Retrieval Threshold Abstention",
+      "severity": "INFORMATIONAL",
+      "source_file": "data/manufacturing_knowledge",
+      "resolution": "Formally cataloged as an outstanding corpus limitation for Phase 4 corpus expansion planning. In accordance with governance constraints, no corpus documents were added and no similarity thresholds were altered in Step 6.2.2.4.",
+      "status": "DOCUMENTED_FOR_PHASE4"
+    }
+  ],
+  "safety_classification_remediation_results": {
+    "unsafe_queries_tested": 8,
+    "unsafe_queries_blocked_as_safety_interlock_violation": 8,
+    "safe_educational_queries_tested": 6,
+    "safe_educational_queries_allowed": 6,
+    "adversarial_directive_suffixes_blocked": true,
+    "mixed_intent_precedence_verified": true
+  },
+  "malformed_numerical_grouping_results": {
+    "consecutive_commas_1_comma_comma_234_rpm_detected": true,
+    "consecutive_commas_12_comma_comma_345_bar_detected": true,
+    "consecutive_commas_triple_comma_detected": true,
+    "consecutive_commas_indian_style_detected": true,
+    "exact_reproduction_1_comma_comma_234_rpm_passed": true,
+    "trailing_digits_extraction_prevented": true,
+    "valid_western_and_indian_grouping_preserved": true,
+    "non_measurement_tokens_filtered": true
+  },
+  "test_suite_reconciliation": {
+    "phase3_rag_earlier_tests": 133,
+    "phase3_step6_grounded_generation_tests": 22,
+    "phase3_step6_2_hardening_tests": 28,
+    "phase3_step6_2_2_remediation_tests": 36,
+    "phase3_step6_2_2_2_remediation_v2_tests": 28,
+    "phase3_step6_2_2_4_remediation_v3_tests": 12,
+    "total_phase3_rag_tests": 259,
+    "phase1_phase2_ml_regression_tests": 118,
+    "grand_total_unique_tests": 377,
+    "failures": 0,
+    "errors": 0,
+    "pass_rate": 1.0
+  },
+  "protected_invariants_verification": {
+    "source_documents": {
+      "expected": 418,
+      "actual": 418,
+      "status": "PASS"
+    },
+    "historical_incidents": {
+      "expected": 400,
+      "actual": 400,
+      "status": "PASS"
+    },
+    "chromadb_vectors": {
+      "expected": 564,
+      "actual": 564,
+      "status": "PASS"
+    },
+    "specification_placeholders": {
+      "expected": 123,
+      "actual": 123,
+      "files_count": 18,
+      "status": "PASS"
+    },
+    "canonical_chunks": {
+      "expected": 564,
+      "actual": 564,
+      "status": "PASS"
+    },
+    "ml_model_artifacts": {
+      "expected": 7,
+      "actual": 7,
+      "artifacts": [
+        "isolation_forest.joblib",
+        "isolation_forest_metadata.json",
+        "lstm_autoencoder.keras",
+        "lstm_autoencoder_metadata.json",
+        "resnet_defect_classifier.keras",
+        "resnet_defect_classifier_metadata.json",
+        "sensor_scaler.joblib"
+      ],
+      "status": "PASS"
+    },
+    "isolation_forest_threshold": {
+      "expected": 0.0269,
+      "actual": 0.0269,
+      "status": "PASS"
+    },
+    "lstm_threshold": {
+      "expected": 0.901464,
+      "actual": 0.901464,
+      "status": "PASS"
+    },
+    "bge_model_revision": {
+      "expected": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+      "actual": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+      "status": "PASS"
+    },
+    "rag_lockfile_sha256": {
+      "expected": "778FDE7658E8F5A0FD3CB039C6271FBBCCE95AB967FBECE6D29CA82E3F035AD2",
+      "actual": "778FDE7658E8F5A0FD3CB039C6271FBBCCE95AB967FBECE6D29CA82E3F035AD2",
+      "status": "PASS"
+    }
+  },
+  "overall_verdict": "PASS"
+}

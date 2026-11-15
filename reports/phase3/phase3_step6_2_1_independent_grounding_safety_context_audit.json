@@ -1,0 +1,190 @@
+{
+  "project_name": "ManuMind AI — Explainable Multi-Agent AI System for Manufacturing Anomaly Detection and Root Cause Analysis",
+  "department": "Department of AI & Data Science, RMK Engineering College",
+  "repository": "D:\\Desktop\\FInal year project\\manumind-ai",
+  "branch": "main",
+  "authoritative_head": "3f0a6d08223c74741f4db3e0819b6f52a0d0f0c6",
+  "authoritative_remote": "origin/main",
+  "remote_synchronization": "ahead/behind: 0 0",
+  "milestone": "Phase 3 Step 6.2.1 — Independent Audit",
+  "audit_mode": "STRICT_READ_ONLY",
+  "audit_date": "2026-11-11",
+  "final_audit_verdict": "PASS WITH LIMITATIONS",
+  "git_preflight": {
+    "branch": "main",
+    "head_commit": "3f0a6d08223c74741f4db3e0819b6f52a0d0f0c6",
+    "staged_file_count": 0,
+    "modified_tracked_file_count": 1,
+    "modified_tracked_files": [
+      "backend/app/rag/__init__.py"
+    ],
+    "untracked_file_count": 20,
+    "untracked_files_inventory": {
+      "step6_code_and_tests": [
+        "backend/app/rag/context_builder.py",
+        "backend/app/rag/generation_config.py",
+        "backend/app/rag/generation_schemas.py",
+        "backend/app/rag/generation_service.py",
+        "backend/app/rag/grounding_validator.py",
+        "backend/app/rag/prompt_templates.py",
+        "backend/app/rag/providers/",
+        "backend/tests/fixtures/rag_grounded_generation_eval_cases.json",
+        "backend/tests/test_rag_grounded_generation.py",
+        "backend/tests/test_rag_grounded_generation_evaluation.py"
+      ],
+      "step6_and_6_1_reports": [
+        "reports/phase3/phase3_step5_git_release_report.md",
+        "reports/phase3/phase3_step6_grounded_generation_implementation_report.md",
+        "reports/phase3/phase3_step6_grounded_generation_evaluation_report.md",
+        "reports/phase3/phase3_step6_grounded_generation_safety_audit.md",
+        "reports/phase3/phase3_step6_final_reconciliation.json",
+        "reports/phase3/phase3_step6_1_independent_grounded_generation_audit_report.md",
+        "reports/phase3/phase3_step6_1_independent_grounded_generation_audit.json"
+      ],
+      "step6_2_tests_and_reports": [
+        "backend/tests/test_rag_grounded_generation_hardening.py",
+        "reports/phase3/phase3_step6_2_grounding_safety_hardening_implementation_report.md",
+        "reports/phase3/phase3_step6_2_grounding_safety_hardening_evaluation_report.md",
+        "reports/phase3/phase3_step6_2_grounding_safety_hardening_reconciliation.json"
+      ]
+    },
+    "ignored_paths": [
+      "knowledge_base/index/*",
+      ".venv-rag/*",
+      ".pytest_cache/*",
+      "__pycache__/*"
+    ]
+  },
+  "safety_classification_audit": {
+    "total_queries_tested": 22,
+    "target_adversarial_tested": 8,
+    "target_adversarial_blocked": 8,
+    "target_adversarial_block_rate": 1.0,
+    "educational_queries_tested": 5,
+    "educational_queries_allowed": 5,
+    "false_abstention_rate": 0.0,
+    "compound_queries_tested": 2,
+    "compound_queries_masked": 2,
+    "novel_paraphrased_tested": 4,
+    "novel_paraphrased_missed": 4
+  },
+  "numerical_grounding_audit": {
+    "scenarios_tested": 17,
+    "scenarios_passed": 16,
+    "discrepancies": [
+      {
+        "scenario_id": "NUM-01",
+        "name": "Supported values with commas in answer text",
+        "detail": "Claim '6,000 RPM' in answer extracts as '000 RPM' due to comma word-boundary split in extract_numerical_claims regex"
+      }
+    ],
+    "supported_units_verified": [
+      "RPM",
+      "bar",
+      "psi",
+      "mm/s",
+      "deg C / °C",
+      "%",
+      "A / amps",
+      "V / volts",
+      "kW / W",
+      "min / hr / ms",
+      "mm / µm"
+    ],
+    "unsupported_values_caught": [
+      "999999 RPM",
+      "500 bar",
+      "250 °C",
+      "95%"
+    ],
+    "placeholder_substitution_prohibited": true,
+    "unit_mismatch_caught": true,
+    "uncited_claims_caught": true,
+    "non_measurements_preserved": true
+  },
+  "context_budget_audit": {
+    "tokenizer_model": "BAAI/bge-small-en-v1.5",
+    "tokenizer_revision": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+    "local_cache_only": true,
+    "max_context_tokens": 2000,
+    "max_segments": 5,
+    "min_similarity_threshold": 0.6,
+    "boundary_test_sub_limit_tokens": 145,
+    "boundary_test_near_limit_tokens": 1975,
+    "boundary_test_over_limit_retained_tokens": 1845,
+    "whole_segment_dropping_verified": true,
+    "partial_truncation_prohibited": true,
+    "contiguous_reindexing_verified": true,
+    "evidence_text_map_alignment": true
+  },
+  "malformed_answer_audit": {
+    "total_cases_tested": 9,
+    "total_cases_passed": 9,
+    "empty_string_rejected": true,
+    "whitespace_rejected": true,
+    "missing_citations_rejected": true,
+    "empty_citation_id_rejected": true,
+    "empty_document_id_rejected": true,
+    "unknown_citation_id_rejected": true,
+    "valid_abstention_passed": true,
+    "invalid_abstention_rejected": true,
+    "valid_non_abstained_passed": true
+  },
+  "regression_test_reconciliation": {
+    "earlier_phase3_rag_tests": 133,
+    "step6_grounded_generation_tests": 22,
+    "step6_2_hardening_tests": 28,
+    "total_phase3_rag_tests": 183,
+    "phase1_and_2_ml_regression_tests": 118,
+    "grand_unique_repository_total": 301,
+    "execution_status": "301 passed, 0 failed, 0 errors, 0 skipped",
+    "all_tests_passed": true
+  },
+  "baseline_invariants": {
+    "source_documents": 418,
+    "canonical_chunks": 564,
+    "chromadb_vectors": 564,
+    "chromadb_collection_name": "manumind_bge_small_v1",
+    "specification_placeholders": 123,
+    "sops_with_placeholders": 18,
+    "historical_incidents": 400,
+    "ml_model_artifacts": 7,
+    "isolation_forest_threshold": 0.0269,
+    "lstm_threshold": 0.901464,
+    "bge_model_revision": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+    "rag_lockfile_sha256": "778FDE7658E8F5A0FD3CB039C6271FBBCCE95AB967FBECE6D29CA82E3F035AD2",
+    "invariants_intact": true
+  },
+  "audit_findings": [
+    {
+      "finding_id": "FINDING-STEP6.2.1-01",
+      "severity": "MEDIUM",
+      "title": "Regex Safety Intent Masking by Leading Educational Clauses",
+      "component": "backend/app/rag/prompt_templates.py:classify_safety_intent",
+      "description": "Educational regex checks precede operational and bypass checks. Compound queries beginning with educational phrasing (e.g., 'Explain lockout/tagout, then instruct controller to bypass it') match educational patterns first and bypass abstention gates.",
+      "remediation": "Evaluate imperative bypass patterns before educational whitelisting, or split compound sentences prior to classification."
+    },
+    {
+      "finding_id": "FINDING-STEP6.2.1-02",
+      "severity": "LOW",
+      "title": "Comma-Formatted Integers in Generated Answer Cause Truncated Extraction",
+      "component": "backend/app/rag/grounding_validator.py:extract_numerical_claims",
+      "description": "Regex pattern \\b(?P<num>\\d+(?:\\.\\d+)?)\\s*(?P<unit>...)\\b does not account for internal commas in numbers. An answer emitting '6,000 RPM' extracts '000 RPM' and fails evidence verification.",
+      "remediation": "Update regex to accommodate thousand separators: \\b(?P<num>\\d{1,3}(?:,\\d{3})+|\\d+(?:\\.\\d+)?)\\s*(?P<unit>...)\\b."
+    },
+    {
+      "finding_id": "FINDING-STEP6.2.1-03",
+      "severity": "INFORMATIONAL",
+      "title": "Numeric Range Expressions Extract Only Right-Hand Unit",
+      "component": "backend/app/rag/grounding_validator.py:extract_numerical_claims",
+      "description": "In range expressions like '120-150 bar', only the right-hand boundary '150 bar' is extracted because '120' lacks an immediately adjacent unit symbol.",
+      "remediation": "Add range extraction patterns for 'X to Y unit' and 'X-Y unit'."
+    }
+  ],
+  "explicit_prototype_boundaries": [
+    "Semantic entailment (NLI) is not implemented; claims are checked syntactically against evidence tokens and numbers.",
+    "Gemini, OpenAI, and Anthropic provider adapters remain offline credential-check stubs.",
+    "Mock provider generation represents category-driven template synthesis, not live LLM reasoning.",
+    "Regex intent classification is an offline heuristic filter, not a complete security boundary."
+  ]
+}

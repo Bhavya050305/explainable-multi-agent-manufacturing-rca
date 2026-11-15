@@ -1,0 +1,294 @@
+{
+  "timestamp": "2026-11-14T23:18:00+05:30",
+  "project": "ManuMind AI — Explainable Multi-Agent AI System for Manufacturing Anomaly Detection and Root Cause Analysis",
+  "department": "Department of AI & Data Science, RMK Engineering College",
+  "milestone": "Phase 3 Step 6.2.2.1 — Independent Safety and Numerical Remediation Audit",
+  "audit_mode": "STRICT_READ_ONLY",
+  "final_verdict": "PASS WITH LIMITATIONS",
+  "git_governance": {
+    "repository_root": "D:\\Desktop\\FInal year project\\manumind-ai",
+    "branch": "main",
+    "expected_head": "3f0a6d08223c74741f4db3e0819b6f52a0d0f0c6",
+    "actual_head": "3f0a6d08223c74741f4db3e0819b6f52a0d0f0c6",
+    "remote_tracking": "origin/main",
+    "ahead_behind": {
+      "ahead": 0,
+      "behind": 0
+    },
+    "staged_files_count": 0,
+    "modified_tracked_files": [
+      "backend/app/rag/__init__.py"
+    ],
+    "untracked_files_count": 27,
+    "governance_status": "COMPLIANT"
+  },
+  "remediation_verifications": {
+    "safety_precedence_remediation": {
+      "finding_id": "FINDING-STEP6.2.1-01",
+      "status": "VERIFIED_RESOLVED",
+      "target_mixed_queries_tested": 8,
+      "target_mixed_queries_blocked": 8,
+      "block_rate_percentage": 100.0,
+      "mechanism": "Prompt injection, actuation directives, and safety interlock circumventions execute prior to educational whitelist"
+    },
+    "comma_separated_numerical_remediation": {
+      "finding_id": "FINDING-STEP6.2.1-02",
+      "status": "VERIFIED_RESOLVED",
+      "formats_tested": [
+        "6000 RPM",
+        "6,000 RPM",
+        "12,500.75 RPM",
+        "0.005 mm",
+        "1,200 bar",
+        "85 °C",
+        "85°C",
+        "1,234,567 RPM",
+        "1,234.567 RPM"
+      ],
+      "parsing_regex": "(?:\\d{1,3}(?:,\\d{3})+(?:\\.\\d+)?|\\d+(?:\\.\\d+)?)",
+      "cross_format_matching_verified": true,
+      "non_measurement_filtering_verified": true
+    },
+    "dual_endpoint_range_remediation": {
+      "finding_id": "FINDING-STEP6.2.1-03",
+      "status": "VERIFIED_RESOLVED",
+      "connectors_verified": [
+        "hyphen (-)",
+        "en-dash (–)",
+        "verbal (to)"
+      ],
+      "both_endpoints_extracted": true,
+      "dual_endpoint_support_enforced": true,
+      "partial_endpoint_rejections_verified": true
+    }
+  },
+  "citation_specific_evidence_association": {
+    "status": "VERIFIED_STATEMENT_BOUND",
+    "scenarios_evaluated": 8,
+    "scenario_results": [
+      {
+        "scenario_id": "SCENARIO-01",
+        "condition": "Split endpoints across citations, answer cites CIT-1 only",
+        "outcome": "CORRECTLY_REJECTED",
+        "detail": "CIT-1 lacks 150 bar; CIT-2 is not searched because it was not cited"
+      },
+      {
+        "scenario_id": "SCENARIO-02",
+        "condition": "Split endpoints across citations, answer cites both CIT-1 and CIT-2",
+        "outcome": "CORRECTLY_REJECTED",
+        "detail": "Requires single snippet to substantiate both range endpoints"
+      },
+      {
+        "scenario_id": "SCENARIO-03",
+        "condition": "Fabricated citation token [CIT-99]",
+        "outcome": "CORRECTLY_REJECTED",
+        "detail": "Hallucinated citation ID caught by citation map validator"
+      },
+      {
+        "scenario_id": "SCENARIO-04",
+        "condition": "Incompatible unit in cited evidence (120 bar vs 120 psi)",
+        "outcome": "CORRECTLY_REJECTED",
+        "detail": "Unit mismatch caught by numerical grounding validator"
+      },
+      {
+        "scenario_id": "SCENARIO-05",
+        "condition": "Multi-claim correctly cited across separate lines",
+        "outcome": "CORRECTLY_ACCEPTED",
+        "detail": "Each claim verified against citation on its own line"
+      },
+      {
+        "scenario_id": "SCENARIO-06A",
+        "condition": "Single-line cross-swapped citations",
+        "outcome": "ACCEPTED_VIA_LINE_POOLING",
+        "detail": "Known limitation: statement splitting by newline pools citations on same line"
+      },
+      {
+        "scenario_id": "SCENARIO-06B",
+        "condition": "Multi-line cross-swapped citations",
+        "outcome": "CORRECTLY_REJECTED",
+        "detail": "Claims strictly fail against respective cited source when separated by newline"
+      },
+      {
+        "scenario_id": "SCENARIO-07",
+        "condition": "Single snippet containing both endpoints",
+        "outcome": "CORRECTLY_ACCEPTED",
+        "detail": "Both bounds verified in single authoritative snippet"
+      }
+    ]
+  },
+  "regression_reconciliation": {
+    "grand_total_unique_tests": 337,
+    "passed": 337,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "pass_rate_percentage": 100.0,
+    "test_groups": {
+      "earlier_phase3_rag_steps_2_to_5": {
+        "modules": [
+          "test_rag_ingestion (18)",
+          "test_rag_chunking (24)",
+          "test_rag_embeddings (9)",
+          "test_rag_embedding_segmenter (16)",
+          "test_rag_tokenizer (8)",
+          "test_rag_vector_store (12)",
+          "test_rag_metadata_filter (14)",
+          "test_rag_retrieval (14)",
+          "test_rag_retrieval_evaluation (9)",
+          "test_rag_source_resolver (9)"
+        ],
+        "total_tests": 133,
+        "passed": 133,
+        "status": "PASS"
+      },
+      "step6_grounded_generation": {
+        "modules": [
+          "test_rag_grounded_generation (15)",
+          "test_rag_grounded_generation_evaluation (7)"
+        ],
+        "total_tests": 22,
+        "passed": 22,
+        "status": "PASS"
+      },
+      "step6_2_hardening": {
+        "modules": [
+          "test_rag_grounded_generation_hardening (28)"
+        ],
+        "total_tests": 28,
+        "passed": 28,
+        "status": "PASS"
+      },
+      "step6_2_2_remediation": {
+        "modules": [
+          "test_rag_grounded_generation_remediation (36)"
+        ],
+        "total_tests": 36,
+        "passed": 36,
+        "status": "PASS"
+      },
+      "phase1_and_phase2_ml_regression": {
+        "modules": [
+          "test_inference_service (25)",
+          "test_isolation_forest (10)",
+          "test_lstm_autoencoder (10)",
+          "test_ml_validation_comprehensive (16)",
+          "test_phase1_audit_and_expansion (9)",
+          "test_phase1_db_and_generator (7)",
+          "test_resnet_defect_classifier (11)",
+          "test_sensor_attribution (15)",
+          "test_sensor_preprocessing (8)",
+          "test_shap_explainability (7)"
+        ],
+        "total_tests": 118,
+        "passed": 118,
+        "status": "PASS"
+      }
+    }
+  },
+  "protected_invariants_verification": {
+    "all_invariants_preserved": true,
+    "invariants_count": 10,
+    "invariants": {
+      "source_documents": {
+        "expected": 418,
+        "actual": 418,
+        "status": "PASS"
+      },
+      "canonical_chunks": {
+        "expected": 564,
+        "actual": 564,
+        "status": "PASS"
+      },
+      "chromadb_vectors": {
+        "expected": 564,
+        "actual": 564,
+        "status": "PASS"
+      },
+      "specification_placeholders": {
+        "expected": 123,
+        "actual": 123,
+        "files_affected": 18,
+        "status": "PASS"
+      },
+      "historical_incidents": {
+        "expected": 400,
+        "actual": 400,
+        "status": "PASS"
+      },
+      "ml_artifacts": {
+        "expected": 7,
+        "actual": 7,
+        "status": "PASS"
+      },
+      "isolation_forest_threshold": {
+        "expected": 0.0269,
+        "actual": 0.0269,
+        "status": "PASS"
+      },
+      "lstm_threshold": {
+        "expected": 0.901464,
+        "actual": 0.901464,
+        "status": "PASS"
+      },
+      "bge_model_revision": {
+        "expected": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+        "actual": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+        "status": "PASS"
+      },
+      "rag_lockfile_sha256": {
+        "expected": "778FDE7658E8F5A0FD3CB039C6271FBBCCE95AB967FBECE6D29CA82E3F035AD2",
+        "actual": "778FDE7658E8F5A0FD3CB039C6271FBBCCE95AB967FBECE6D29CA82E3F035AD2",
+        "status": "PASS"
+      }
+    }
+  },
+  "audit_findings": [
+    {
+      "finding_id": "FINDING-STEP6.2.2.1-01",
+      "severity": "MEDIUM",
+      "component": "backend/app/rag/grounding_validator.py",
+      "title": "Line-level statement granularity in citation association",
+      "description": "Statements are split via newline rather than sentence boundary regex. Multiple sentences on a single line pool citations across that line.",
+      "recommendation": "Upgrade statement splitting to sentence boundary regex in Phase 4."
+    },
+    {
+      "finding_id": "FINDING-STEP6.2.2.1-02",
+      "severity": "LOW",
+      "component": "backend/app/rag/grounding_validator.py",
+      "title": "Single-snippet requirement for dual-endpoint range validation",
+      "description": "Both range endpoints must appear in at least one cited snippet. Splitting endpoints across separate citations is rejected by design.",
+      "recommendation": "Document single-snippet grounding requirement as intentional anti-conflation policy."
+    },
+    {
+      "finding_id": "FINDING-STEP6.2.2.1-03",
+      "severity": "MEDIUM",
+      "component": "backend/app/rag/prompt_templates.py",
+      "title": "Heuristic regex safety classifier vulnerability to open-ended paraphrasing",
+      "description": "Static regex patterns miss indirect semantic paraphrases and novel prompt injection metaphors.",
+      "recommendation": "Deploy a dedicated fine-tuned neural safety guardrail before production deployment."
+    },
+    {
+      "finding_id": "FINDING-STEP6.2.2.1-04",
+      "severity": "LOW",
+      "component": "backend/app/rag/prompt_templates.py",
+      "title": "Non-contextual negation and quotation false-positive blocks in safety gate",
+      "description": "Queries discussing dangerous actions in negative or quoted contexts are blocked due to substring matching without negation scope analysis.",
+      "recommendation": "Incorporate dependency parsing for negation awareness in Phase 4."
+    },
+    {
+      "finding_id": "FINDING-STEP6.2.2.1-05",
+      "severity": "LOW",
+      "component": "backend/app/rag/grounding_validator.py",
+      "title": "Non-standard thousands grouping fallback to trailing substring",
+      "description": "Numbers formatted with non-Western thousands groupings fall back to the plain integer pattern, matching trailing digits.",
+      "recommendation": "Normalize corpus numbers to Western ISO format during document ingestion."
+    }
+  ],
+  "explicit_limitations": [
+    "Semantic entailment and NLI are not implemented; lexical matching verifies presence but not logical entailment.",
+    "Regex-based safety classification is a lightweight heuristic layer, not a universal prompt injection defense.",
+    "Gemini, OpenAI, and Anthropic provider adapters remain stubs; validation was conducted with the deterministic mock provider.",
+    "Mock generation remains template-based slot filling and deterministic retrieval.",
+    "All execution is CPU-only without GPU acceleration."
+  ]
+}

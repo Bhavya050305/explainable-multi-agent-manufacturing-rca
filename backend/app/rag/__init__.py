@@ -48,6 +48,34 @@ from backend.app.rag.metadata_filter import MetadataFilterCompiler, metadata_fil
 from backend.app.rag.source_resolver import SourceResolver, source_resolver
 from backend.app.rag.retrieval_service import RetrievalService, retrieval_service
 
+from backend.app.rag.generation_config import GenerationConfig, generation_config
+from backend.app.rag.generation_schemas import (
+    ConfidenceLabel,
+    AbstentionReason,
+    Citation,
+    GroundedAnswer,
+)
+from backend.app.rag.context_builder import EvidenceContext, EvidenceContextBuilder, context_builder
+from backend.app.rag.prompt_templates import (
+    MANUFACTURING_SYSTEM_PROMPT,
+    classify_safety_intent,
+    normalize_safety_text,
+    check_prompt_injection,
+    check_operational_command,
+    check_safety_interlock_violation,
+    build_user_prompt,
+)
+from backend.app.rag.grounding_validator import (
+    ValidationResult,
+    GroundingValidator,
+    grounding_validator,
+    NumericalClaim,
+)
+from backend.app.rag.providers.base import BaseLLMProvider
+from backend.app.rag.providers.mock_provider import MockGroundedProvider, mock_grounded_provider
+from backend.app.rag.providers.factory import ProviderFactory, provider_factory
+from backend.app.rag.generation_service import GroundedGenerationService, generation_service
+
 from backend.app.rag.schemas import (
     ExecutionMode,
     DocumentType,
@@ -131,6 +159,34 @@ __all__ = [
     "source_resolver",
     "RetrievalService",
     "retrieval_service",
+    # Step 6 Grounded Generation
+    "GenerationConfig",
+    "generation_config",
+    "ConfidenceLabel",
+    "AbstentionReason",
+    "Citation",
+    "GroundedAnswer",
+    "EvidenceContext",
+    "EvidenceContextBuilder",
+    "context_builder",
+    "MANUFACTURING_SYSTEM_PROMPT",
+    "classify_safety_intent",
+    "normalize_safety_text",
+    "check_prompt_injection",
+    "check_operational_command",
+    "check_safety_interlock_violation",
+    "build_user_prompt",
+    "ValidationResult",
+    "GroundingValidator",
+    "grounding_validator",
+    "NumericalClaim",
+    "BaseLLMProvider",
+    "MockGroundedProvider",
+    "mock_grounded_provider",
+    "ProviderFactory",
+    "provider_factory",
+    "GroundedGenerationService",
+    "generation_service",
     # Schemas
     "ExecutionMode",
     "DocumentType",

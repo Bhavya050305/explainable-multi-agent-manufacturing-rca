@@ -1,0 +1,108 @@
+{
+  "project_name": "ManuMind AI — Explainable Multi-Agent AI System for Manufacturing Anomaly Detection and Root Cause Analysis",
+  "department": "Department of AI & Data Science, RMK Engineering College",
+  "repository": "D:\\Desktop\\FInal year project\\manumind-ai",
+  "branch": "main",
+  "authoritative_head": "3f0a6d08223c74741f4db3e0819b6f52a0d0f0c6",
+  "remote_sync": "origin/main (ahead/behind: 0 0)",
+  "milestone": "Phase 3 Step 6.2 — Grounding, Safety and Context-Budget Hardening",
+  "audit_date": "2026-11-11",
+  "execution_mode": "deterministic_offline_mock_cpu_only",
+  "final_verdict": "PASS",
+  "findings_resolved": [
+    {
+      "finding_id": "FINDING-STEP6-01",
+      "summary": "Safety Intent Classification & Input Normalization",
+      "resolution": "Implemented normalize_safety_text() and classify_safety_intent() distinguishing educational inquiries from operational/actuation commands and interlock bypass directives. Blocked all 8 mandatory adversarial inputs.",
+      "status": "RESOLVED"
+    },
+    {
+      "finding_id": "FINDING-STEP6-02",
+      "summary": "Numerical Claim Grounding & Verification",
+      "resolution": "Enhanced GroundingValidator with sentence-level numerical extraction across 10 engineering units (RPM, bar, psi, mm/s, deg C, amps, volts, kW, min/hr, %). Prohibits fabricated thresholds, rejects placeholder substitutions, catches unit mismatches, and enforces citation attribution.",
+      "status": "RESOLVED"
+    },
+    {
+      "finding_id": "FINDING-STEP6-04",
+      "summary": "Strict 2000-Token Context Budget Enforcement",
+      "resolution": "Integrated official BAAI/bge-small-en-v1.5 TokenizerService into EvidenceContextBuilder. Added total_tokens and evidence_text_map to EvidenceContext. Enforces strict 2000-token cap with whole-segment pruning and contiguous [CIT-1]..[CIT-k] re-indexing.",
+      "status": "RESOLVED"
+    },
+    {
+      "finding_id": "FINDING-STEP6-05",
+      "summary": "Empty and Malformed Answer Defense",
+      "resolution": "Hardened GroundingValidator to reject empty strings, whitespace answers, missing citations, and malformed citation metadata for non-abstained responses.",
+      "status": "RESOLVED"
+    }
+  ],
+  "safety_intent_evaluation": {
+    "adversarial_cases_tested": 8,
+    "adversarial_cases_blocked": 8,
+    "adversarial_block_rate": 1.0,
+    "educational_cases_tested": 4,
+    "educational_cases_allowed": 4,
+    "false_abstention_rate": 0.0
+  },
+  "numerical_grounding_evaluation": {
+    "scenarios_tested": 10,
+    "scenarios_passed": 10,
+    "supported_claims_pass": true,
+    "unsupported_rpm_caught": true,
+    "unsupported_bar_caught": true,
+    "unsupported_temp_caught": true,
+    "unsupported_percent_caught": true,
+    "placeholder_substitution_caught": true,
+    "unit_mismatch_caught": true,
+    "uncited_claim_caught": true,
+    "non_measurements_preserved": true,
+    "multi_citation_attribution_verified": true
+  },
+  "context_token_budget": {
+    "max_context_tokens": 2000,
+    "tokenizer_model": "BAAI/bge-small-en-v1.5",
+    "token_counting_service": "TokenizerService",
+    "whole_segment_dropping": true,
+    "contiguous_reindexing_guaranteed": true
+  },
+  "benchmark_evaluation_metrics": {
+    "fixture_path": "backend/tests/fixtures/rag_grounded_generation_eval_cases.json",
+    "total_evaluation_cases": 32,
+    "expected_abstentions": 6,
+    "actual_abstained": 6,
+    "expected_answers": 26,
+    "actual_answered": 26,
+    "abstention_precision": 1.0,
+    "false_abstention_rate": 0.0,
+    "unsafe_answer_rate": 0.0,
+    "citation_integrity_rate": 1.0,
+    "synthetic_disclosure_rate": 1.0,
+    "machine_boundary_consistency": 1.0,
+    "causality_compliance_rate": 1.0,
+    "mean_generation_latency_ms": 1.21
+  },
+  "test_suite_arithmetic": {
+    "earlier_phase3_rag_tests": 133,
+    "step6_grounded_generation_tests": 22,
+    "step6_2_hardening_tests": 28,
+    "total_phase3_rag_tests": 183,
+    "phase1_and_2_ml_regression_tests": 118,
+    "grand_unique_repository_total": 301,
+    "all_tests_passed": true,
+    "failures": 0,
+    "errors": 0
+  },
+  "baseline_invariants": {
+    "source_documents": 418,
+    "canonical_chunks": 564,
+    "chromadb_vectors": 564,
+    "chromadb_collection": "manumind_bge_small_v1",
+    "specification_placeholders": 123,
+    "sops_with_placeholders": 18,
+    "historical_incidents": 400,
+    "ml_model_artifacts": 7,
+    "requirements_rag_lock_hash": "778FDE7658E8F5A0FD3CB039C6271FBBCCE95AB967FBECE6D29CA82E3F035AD2",
+    "lockfile_unmodified": true,
+    "working_tree_staged_count": 0,
+    "working_tree_unstaged_compliant": true
+  }
+}

@@ -1,0 +1,108 @@
+{
+  "timestamp": "2026-11-11T13:52:00+05:30",
+  "audit_verdict": "PASS WITH LIMITATIONS",
+  "milestone": "Phase 3 Step 6.1 — Independent Grounded Generation Audit",
+  "department": "Department of AI & Data Science, RMK Engineering College",
+  "project": "ManuMind AI — Explainable Multi-Agent AI System for Manufacturing Anomaly Detection and Root Cause Analysis",
+  "repository": {
+    "path": "D:\\Desktop\\FInal year project\\manumind-ai",
+    "branch": "main",
+    "head_commit": "3f0a6d08223c74741f4db3e0819b6f52a0d0f0c6",
+    "remote_origin": "origin/main",
+    "remote_sync": "0 0",
+    "working_tree_classification": {
+      "modified_tracked_files_count": 1,
+      "modified_tracked_files": ["backend/app/rag/__init__.py"],
+      "untracked_step6_files_count": 15,
+      "staged_files_count": 0,
+      "working_tree_clean": false,
+      "governance_status": "PROPERLY_UNSTAGED_STEP6_DELIVERABLES"
+    }
+  },
+  "provider_implementation_audit": {
+    "mock": "FULLY_OPERATIONAL_OFFLINE",
+    "gemini": "CREDENTIAL_STUB_NOT_IMPLEMENTED",
+    "openai": "CREDENTIAL_STUB_NOT_IMPLEMENTED",
+    "anthropic": "CREDENTIAL_STUB_NOT_IMPLEMENTED",
+    "execution_mode_certified": "offline_deterministic_mock_only"
+  },
+  "test_reconciliation": {
+    "step6_unit_tests": 15,
+    "step6_evaluation_tests": 7,
+    "step6_total_tests": 22,
+    "earlier_phase3_rag_tests": 133,
+    "total_phase3_rag_tests_including_step6": 155,
+    "phase1_and_2_ml_regression_tests": 118,
+    "grand_total_unique_tests": 273,
+    "pass_rate": 1.0,
+    "failures": 0,
+    "errors": 0,
+    "arithmetic_reconciliation_note": "155 Phase 3 tests already include 22 Step 6 tests (133 + 22 = 155). Grand unique total is 155 + 118 = 273. Summing 15 + 7 + 155 + 118 = 295 constitutes double-counting."
+  },
+  "evaluation_benchmarks_recalculation": {
+    "total_cases": 32,
+    "expected_abstentions": 6,
+    "actual_abstained": 6,
+    "expected_answers": 26,
+    "actual_answered": 26,
+    "abstention_precision": 1.0,
+    "false_abstention_rate": 0.0,
+    "unsafe_answer_rate": 0.0,
+    "citation_integrity_rate": 1.0,
+    "synthetic_disclosure_rate": 1.0,
+    "machine_consistency_rate": 1.0,
+    "causality_compliance_rate": 1.0,
+    "mean_latency_ms": 0.08
+  },
+  "baseline_preservation_verification": {
+    "corpus_documents_count": 418,
+    "canonical_chunks_count": 564,
+    "chromadb_records_count": 564,
+    "specification_placeholders_count": 123,
+    "maintenance_incident_records_count": 400,
+    "isolation_forest_threshold": 0.0269,
+    "lstm_autoencoder_threshold": 0.901464,
+    "bge_embedding_revision": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+    "lockfile_sha256": "778FDE7658E8F5A0FD3CB039C6271FBBCCE95AB967FBECE6D29CA82E3F035AD2",
+    "ml_models_store_hashes_verified": 7,
+    "all_invariants_preserved": true
+  },
+  "findings": [
+    {
+      "finding_id": "FINDING-STEP6-01",
+      "severity": "MEDIUM",
+      "title": "Keyword-Based Pre-Retrieval Safety Gate Brittleness",
+      "affected_component": "backend/app/rag/prompt_templates.py:82-105",
+      "reproducible": true,
+      "blocks_closure": false,
+      "remediation": "Upgrade pre-retrieval safety gates with zero-shot semantic intent classification before live LLM connection."
+    },
+    {
+      "finding_id": "FINDING-STEP6-02",
+      "severity": "LOW",
+      "title": "GroundingValidator Performs Citation Syntax Verification, Not Semantic Entailment",
+      "affected_component": "backend/app/rag/grounding_validator.py:59-99",
+      "reproducible": true,
+      "blocks_closure": false,
+      "remediation": "Integrate cross-encoder NLI models for clause-level factual entailment verification in future phases."
+    },
+    {
+      "finding_id": "FINDING-STEP6-03",
+      "severity": "INFORMATIONAL",
+      "title": "External LLM Adapters Are Configuration Stubs",
+      "affected_component": "backend/app/rag/providers/factory.py:35-61",
+      "reproducible": true,
+      "blocks_closure": false,
+      "remediation": "Implement concrete live provider client adapters when cloud LLM integration is authorized."
+    },
+    {
+      "finding_id": "FINDING-STEP6-04",
+      "severity": "INFORMATIONAL",
+      "title": "MAX_CONTEXT_TOKENS Enforced via Segment Cap Rather Than Tokenizer",
+      "affected_component": "backend/app/rag/context_builder.py:78-80",
+      "reproducible": true,
+      "blocks_closure": false,
+      "remediation": "Add explicit token counting in EvidenceContextBuilder."
+    }
+  ]
+}
