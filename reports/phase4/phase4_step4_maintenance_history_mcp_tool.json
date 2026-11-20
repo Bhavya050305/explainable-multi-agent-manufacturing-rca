@@ -1,0 +1,162 @@
+{
+  "audit_metadata": {
+    "project": "ManuMind AI — Explainable Multi-Agent AI System for Manufacturing Anomaly Detection and Root Cause Analysis",
+    "institution": "Department of AI & Data Science, RMK Engineering College",
+    "milestone": "Phase 4 Step 4 — Read-Only Maintenance History MCP Tool Implementation",
+    "mode": "CONTROLLED_TOOL_IMPLEMENTATION_AND_VERIFICATION",
+    "repository": "D:\\Desktop\\FInal year project\\manumind-ai",
+    "branch": "main",
+    "head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "remote_origin": "https://github.com/Bhavya050305/explainable-multi-agent-manufacturing-rca.git",
+    "synchronization_status": "synchronized (ahead 0, behind 0)",
+    "timestamp": "2026-11-15T21:25:00+05:30",
+    "verdict": "READY FOR STEP 5"
+  },
+  "git_baseline": {
+    "branch": "main",
+    "head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "is_head_valid": true,
+    "ahead_count": 0,
+    "behind_count": 0,
+    "staged_count": 0,
+    "unstaged_count": 0,
+    "tracked_modifications": 0
+  },
+  "tool_implemented": {
+    "name": "get_maintenance_history",
+    "tool_number": 4,
+    "purpose": "Retrieve historical maintenance and service intervention records for a specific manufacturing asset from the SQLite database. Records are returned in chronological order with issues, actions, and outcomes.",
+    "input_schema": {
+      "machine_id": {
+        "type": "string",
+        "pattern": "^M1(0[1-9]|10)$",
+        "required": true,
+        "description": "Manufacturing asset identifier (M101 through M110)"
+      },
+      "limit": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 500,
+        "default": 100,
+        "required": false,
+        "description": "Maximum number of maintenance records to return (1 to 500, default 100)"
+      }
+    },
+    "output_schema": {
+      "status": "string (SUCCESS, NO_RECORDS, ERROR)",
+      "machine_id": "string",
+      "requested_limit": "integer",
+      "returned_count": "integer",
+      "records": [
+        {
+          "id": "integer",
+          "machine_id": "string",
+          "date": "string (ISO-8601)",
+          "issue": "string",
+          "action": "string",
+          "outcome": "string (Resolved, Monitoring)"
+        }
+      ],
+      "disclaimer": "string"
+    },
+    "disclaimer": "Historical maintenance log for diagnostic reference only. Not an authorized operational maintenance procedure. Verify all actions against current SOPs.",
+    "ordering": {
+      "primary_sort": "MaintenanceHistory.date.asc()",
+      "secondary_sort": "MaintenanceHistory.id.asc()",
+      "guarantee": "Strict deterministic ascending chronological order"
+    },
+    "database_engine": {
+      "type": "SQLite",
+      "file": "manumind.db",
+      "access_provider": "get_mcp_db_session()",
+      "thread_safe": true,
+      "offline_isolated": true
+    }
+  },
+  "data_reconnaissance": {
+    "table": "maintenance_history",
+    "total_records": 400,
+    "null_count": 0,
+    "date_range": {
+      "start": "2024-11-11 15:58:00",
+      "end": "2026-11-01 01:01:00"
+    },
+    "outcomes": {
+      "Resolved": 373,
+      "Monitoring": 27
+    },
+    "machine_record_counts": {
+      "M101": 35,
+      "M102": 42,
+      "M103": 36,
+      "M104": 35,
+      "M105": 46,
+      "M106": 39,
+      "M107": 28,
+      "M108": 48,
+      "M109": 49,
+      "M110": 42
+    }
+  },
+  "registered_server_tools": [
+    "ping",
+    "get_machine_data",
+    "detect_anomaly",
+    "predict_failure_risk",
+    "search_manuals",
+    "get_maintenance_history"
+  ],
+  "test_execution_summary": {
+    "step4_test_suite": {
+      "file": "backend/tests/test_mcp_maintenance_history.py",
+      "passed": 14,
+      "failed": 0,
+      "total": 14,
+      "duration_seconds": 5.44
+    },
+    "regression_suites": [
+      {
+        "file": "backend/tests/test_mcp_manufacturing_tools.py",
+        "passed": 20,
+        "failed": 0,
+        "total": 20,
+        "duration_seconds": 113.94
+      },
+      {
+        "file": "backend/tests/test_mcp_rag_retrieval.py",
+        "passed": 15,
+        "failed": 0,
+        "total": 15,
+        "duration_seconds": 74.10
+      },
+      {
+        "file": "backend/tests/test_mcp_server_skeleton.py",
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "duration_seconds": 13.03
+      }
+    ],
+    "total_passed": 53,
+    "total_failed": 0,
+    "total_tests": 53
+  },
+  "invariants_verification": {
+    "sqlite_counts": {
+      "machines": 10,
+      "sensor_readings": 40000,
+      "maintenance_history": 400,
+      "alerts": 5,
+      "tickets": 1
+    },
+    "chromadb_count": 564,
+    "chromadb_dim": 384,
+    "lockfile_sha256": "778fde7658e8f5a0fd3cb039c6271fbbcce95ab967fbece6d29ca82e3f035ad2",
+    "pip_check_base": "No broken requirements found.",
+    "pip_check_venv_rag": "No broken requirements found.",
+    "frozen_thresholds": {
+      "isolation_forest": 0.0269,
+      "lstm_autoencoder": 0.901464
+    }
+  }
+}

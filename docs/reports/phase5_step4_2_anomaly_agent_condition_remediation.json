@@ -1,0 +1,139 @@
+{
+  "report_metadata": {
+    "project": "ManuMind AI — Explainable Multi-Agent AI System for Manufacturing Anomaly Detection and Root Cause Analysis",
+    "institution": "Department of AI & Data Science, RMK Engineering College",
+    "phase": "Phase 5 — LangGraph Multi-Agent Orchestration",
+    "milestone": "Phase 5 Step 4.2 — Anomaly Agent Audit-Condition Remediation",
+    "timestamp": "2026-11-19T22:56:00+05:30",
+    "git_head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "status": "ALL_FOUR_CONDITIONS_REMEDIATED"
+  },
+  "condition_remediation_summary": {
+    "COND-1": {
+      "condition_id": "COND-1",
+      "title": "Downstream Failure Masking via AnomalyExecutionStatus and Status-Aware Supervisor Routing",
+      "severity": "CRITICAL",
+      "status": "REMEDIATED",
+      "actions_taken": [
+        "Introduced explicit AnomalyExecutionStatus Enum with SUCCESS, FAILED, and INSUFFICIENT_DATA members in backend/app/agents/enums.py.",
+        "Exported AnomalyExecutionStatus in backend/app/agents/__init__.py.",
+        "Added execution_status: AnomalyExecutionStatus field to AnomalyDetectionResult and AnomalyAssessment schemas in backend/app/agents/schemas.py.",
+        "Added Pydantic validator validate_assessment_invariants in AnomalyAssessment enforcing that FAILED and INSUFFICIENT_DATA runs cannot assert anomaly_detected=True and must have anomaly_type=NONE.",
+        "Updated AnomalyDetectionAgent.analyze() to emit execution_status=INSUFFICIENT_DATA on missing/invalid telemetry and FAILED on inference exceptions.",
+        "Updated SupervisorAgent.evaluate() with status-aware routing: FAILED routes to FAIL_WORKFLOW, INSUFFICIENT_DATA routes to ESCALATE_TO_HUMAN_GATE, SUCCESS with anomaly routes to ROUTE_TO_ROOT_CAUSE_ANALYSIS, and SUCCESS without anomaly routes to COMPLETE_WORKFLOW (only if assessment is valid and confidence > 0.0).",
+        "Added 8 dedicated COND-1 regression tests in backend/tests/test_supervisor_agent.py verifying failure and insufficient data routing paths."
+      ]
+    },
+    "COND-2": {
+      "condition_id": "COND-2",
+      "title": "Pressure Baseline Operational Envelope Alignment with Training Distribution",
+      "severity": "HIGH",
+      "status": "REMEDIATED",
+      "actions_taken": [
+        "Analyzed real training data distribution in data/processed/sensor_train.csv (N=24,500 normal records: mean=6.2023 bar, std=0.1211 bar, 3-sigma=[5.8388, 6.5657] bar, min=5.7100 bar, max=6.6700 bar).",
+        "Identified fault regimes: pressure drop in M107 drops by up to 3.8 bar to 2.4 bar; overheating in M102 rises by up to 1.9 bar to 8.1 bar.",
+        "Updated DEFAULT_BASELINE_RANGES['pressure'] from contradictory [1.0, 4.5] to operational envelope {'min': 5.0, 'max': 7.5} bar in backend/app/agents/anomaly_agent.py.",
+        "Updated MockInferenceService heuristic check to evaluate pressure < 5.0 or pressure > 7.5.",
+        "Updated test fixtures in backend/tests/test_anomaly_agent.py to use nominal 6.2 bar pressure.",
+        "Added pressure baseline envelope test verifying nominal 6.2 bar, low 3.5 bar drop, high 8.2 bar overpressure, and boundary values 5.0 and 7.5 bar."
+      ]
+    },
+    "COND-3": {
+      "condition_id": "COND-3",
+      "title": "Agent Scope and Sequence Reconstruction Documentation Rectification",
+      "severity": "MEDIUM",
+      "status": "REMEDIATED",
+      "actions_taken": [
+        "Updated module and class docstrings in backend/app/agents/anomaly_agent.py explicitly declaring that AnomalyDetectionAgent performs point-in-time tabular anomaly detection using Isolation Forest.",
+        "Documented that 30-step temporal sequence reconstruction with LSTM Autoencoder is deferred to a future dedicated temporal-anomaly triage node.",
+        "Removed misleading dead constant LSTM_AUTOENCODER_FROZEN_THRESHOLD from anomaly_agent.py without touching or deleting any underlying model weights or artifacts in ml/models_store/."
+      ]
+    },
+    "COND-4": {
+      "condition_id": "COND-4",
+      "title": "Real Model Artifact Integration and Kernel SHAP Verification Without Mocks",
+      "severity": "HIGH",
+      "status": "REMEDIATED",
+      "actions_taken": [
+        "Authored backend/tests/test_anomaly_agent_integration.py containing 6 integration tests executing the real UnifiedInferenceService and real model artifacts.",
+        "Test 1: Verified real sensor_scaler.joblib and isolation_forest.joblib load via ModelRegistry without mocks and match verified SHA-256 hashes.",
+        "Test 2: Verified StandardScaler transforms valid 5-channel vector preserving canonical feature ordering [vibration, temperature, pressure, current, rpm].",
+        "Test 3: Verified real Isolation Forest predicts continuous score and is_anomaly boolean flag.",
+        "Test 4: Verified real Kernel SHAP generates game-theoretic feature attribution satisfying additivity axiom (additivity_verified=True, error < 1e-16).",
+        "Test 5: Verified real AnomalyDetectionAgent evaluates shared state using real UnifiedInferenceService without mocks, returning SUCCESS status and SHAP metadata.",
+        "Test 6: Verified missing model artifact produces explicit FAILED status and triggers FAIL_WORKFLOW routing in SupervisorAgent, never classifying equipment as healthy."
+      ]
+    }
+  },
+  "test_regression_suite_results": {
+    "total_tests_executed": 105,
+    "total_tests_passed": 105,
+    "total_tests_failed": 0,
+    "total_duration_seconds": 53.91,
+    "file_breakdown": {
+      "backend/tests/test_agent_state.py": {
+        "passed": 10,
+        "failed": 0
+      },
+      "backend/tests/test_agent_reducers.py": {
+        "passed": 11,
+        "failed": 0
+      },
+      "backend/tests/test_agent_verification_governance.py": {
+        "passed": 23,
+        "failed": 0
+      },
+      "backend/tests/test_supervisor_agent.py": {
+        "passed": 28,
+        "failed": 0
+      },
+      "backend/tests/test_anomaly_agent.py": {
+        "passed": 27,
+        "failed": 0
+      },
+      "backend/tests/test_anomaly_agent_integration.py": {
+        "passed": 6,
+        "failed": 0
+      }
+    }
+  },
+  "environment_invariants": {
+    "python_version": "3.11.9",
+    "pydantic_version": "2.13.4",
+    "langgraph_version": "0.2.45",
+    "langchain_core_version": "0.3.15",
+    "pip_check": "No broken requirements found.",
+    "rag_lockfile": {
+      "path": "backend/requirements-rag.lock",
+      "sha256": "778fde7658e8f5a0fd3cb039c6271fbbcce95ab967fbece6d29ca82e3f035ad2",
+      "status": "VERIFIED_UNCHANGED"
+    },
+    "chromadb_store": {
+      "collection_name": "manumind_bge_small_v1",
+      "count": 564,
+      "embedding_dimension": 384,
+      "sqlite_path": "knowledge_base/index/chroma_bge_small_v1/chroma.sqlite3",
+      "status": "VERIFIED_INTACT"
+    },
+    "supabase_migration_head": {
+      "revision": "f3a9082b1c42",
+      "status": "VERIFIED_HEAD"
+    },
+    "ml_model_artifacts": {
+      "sensor_scaler.joblib": "f21f0899cd3af4d807e54f98b4627d5512650f08cad35ba17a6cd80268398faf",
+      "isolation_forest.joblib": "afdf397336f01cfe32c6d4660b3f0094bec01869ab3f8ec276a4d34ca8ac52a2",
+      "isolation_forest_metadata.json": "bbb05f4447d52c5ae0f4444649e2e59bf5f282aceb1cfd028e6309b86e8ed3d5",
+      "lstm_autoencoder.keras": "b1cae16de57b556f13b3f96e12a8c451d05f3bdd9887a65172817cd99e30e0b5",
+      "lstm_autoencoder_metadata.json": "d679e55a2b9935c2e8820d5b117a7c8fc8f84b94cd6565252255168f82fda0c1",
+      "resnet_defect_classifier.keras": "aac4b1c2d8c7ba47cef2e31b73d27ad6ff9b8be9352d6e3850c2e201e3195a98"
+    }
+  },
+  "git_repository_state": {
+    "git_head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "branch": "main",
+    "staged_changes_count": 0,
+    "tracked_modifications": [
+      "backend/app/models/__init__.py"
+    ]
+  }
+}

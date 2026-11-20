@@ -1,0 +1,219 @@
+{
+  "project": "ManuMind AI",
+  "institution": "Department of AI & Data Science, RMK Engineering College",
+  "milestone": "Phase 5 Step 4.1 — Independent Anomaly Agent Integration and Security Audit",
+  "audit_timestamp": "2026-11-19T22:16:30+05:30",
+  "audit_mode": "Strictly Read-Only",
+  "final_verdict": "APPROVED WITH CONDITIONS",
+  "verdict_summary": "The Anomaly Detection Agent successfully implements typed LangGraph node integration, canonical 5-channel feature validation, and strict write-boundary security governance via validate_agent_state_update. It genuinely integrates real Isolation Forest inference and Kernel SHAP attribution through UnifiedInferenceService when run without mocks. However, the audit revealed four significant architectural and operational deficiencies that require remediation before or alongside Step 5: (1) LSTM Autoencoder sequence window inference is not invoked in anomaly_agent.py despite being documented as integrated; (2) Fatal execution failures (missing telemetry, invalid data, or inference exceptions) output is_anomaly=False with confidence=0.0, which causes the downstream Supervisor Agent to misclassify the failed run as a healthy machine and conclude the workflow with 95% confidence; (3) Hardcoded baseline operating limits contain a severe parameter contradiction where pressure max is 4.5 bar while the synthetic training dataset mean is 6.20 bar, triggering false sensor deviations on normal telemetry; and (4) 100% of the 24 dedicated unit tests execute against MockInferenceService, leaving zero automated test coverage for the real UnifiedInferenceService in the agent test suite.",
+  "git_status": {
+    "branch": "main",
+    "baseline_head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "current_head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "staged_files_count": 0,
+    "commits_made": 0,
+    "untracked_files_preserved": true
+  },
+  "environment_invariants": {
+    "python_version": {
+      "status": "VERIFIED",
+      "value": "3.11.9"
+    },
+    "langgraph_version": {
+      "status": "VERIFIED",
+      "value": "0.2.45"
+    },
+    "langchain_core_version": {
+      "status": "VERIFIED",
+      "value": "0.3.15"
+    },
+    "pydantic_version": {
+      "status": "VERIFIED",
+      "value": "2.13.4"
+    },
+    "pip_check": {
+      "status": "VERIFIED",
+      "output": "No broken requirements found."
+    },
+    "rag_lockfile": {
+      "status": "VERIFIED",
+      "path": "backend/requirements-rag.lock",
+      "sha256": "778fde7658e8f5a0fd3cb039c6271fbbcce95ab967fbece6d29ca82e3f035ad2"
+    },
+    "chromadb_store": {
+      "status": "VERIFIED",
+      "collection_name": "manumind_bge_small_v1",
+      "count": 564,
+      "embedding_dimension": 384
+    },
+    "supabase_migration_head": {
+      "status": "VERIFIED",
+      "revision": "f3a9082b1c42"
+    },
+    "ml_model_artifacts": {
+      "status": "VERIFIED",
+      "isolation_forest_hash": "afdf397336f01cfe32c6d4660b3f0094bec01869ab3f8ec276a4d34ca8ac52a2",
+      "lstm_autoencoder_hash": "b1cae16de57b556f13b3f96e12a8c451d05f3bdd9887a65172817cd99e30e0b5",
+      "sensor_scaler_hash": "f21f0899cd3af4d807e54f98b4627d5512650f08cad35ba17a6cd80268398faf",
+      "resnet_defect_classifier_hash": "aac4b1c2d8c7ba47cef2e31b73d27ad6ff9b8be9352d6e3850c2e201e3195a98"
+    }
+  },
+  "ml_integration_findings": {
+    "isolation_forest": {
+      "status": "PARTIALLY VERIFIED",
+      "source_file": "backend/app/ml/inference/service.py",
+      "invoked_function": "predict_sensor_anomaly",
+      "execution_path": "anomaly_detection_node -> AnomalyDetectionAgent.analyze -> UnifiedInferenceService.predict_sensor_anomaly -> IsolationForestPredictor.score",
+      "model_artifact": "ml/models_store/isolation_forest.joblib",
+      "preprocessing": "StandardScaler.transform() using sensor_scaler.joblib",
+      "frozen_threshold": 0.0269,
+      "notes": "Genuinely executes real model inference in production when MANUMIND_ML_PROVIDER is unset or set to 'real'. However, 100% of unit tests used MockInferenceService, so real inference was never validated by automated tests."
+    },
+    "lstm_autoencoder": {
+      "status": "FAILED",
+      "source_file": "backend/app/ml/inference/service.py",
+      "invoked_function": "predict_sequence_anomaly",
+      "execution_path": "NOT INVOKED",
+      "notes": "LSTM Autoencoder is documented in anomaly_agent.py docstrings and has a frozen threshold constant (0.901464), but predict_sequence_anomaly is NEVER called anywhere in AnomalyDetectionAgent. The agent processes single-timestep tabular readings only."
+    },
+    "preprocessing_and_scaling": {
+      "status": "VERIFIED",
+      "source_file": "backend/app/ml/inference/service.py",
+      "invoked_function": "_extract_canonical_features",
+      "scaler_artifact": "ml/models_store/sensor_scaler.joblib",
+      "notes": "StandardScaler is loaded from disk and transforms 5 canonical features. Means match training set [1.80, 48.00, 6.20, 14.53, 1800.00]."
+    },
+    "canonical_feature_ordering": {
+      "status": "VERIFIED",
+      "features": ["vibration", "temperature", "pressure", "current", "rpm"],
+      "notes": "Canonical feature order is invariant and permutation-resistant across anomaly_agent.py, UnifiedInferenceService, and schemas."
+    },
+    "shap_explainability": {
+      "status": "PARTIALLY VERIFIED",
+      "source_file": "backend/app/ml/shap_explainability/explainer.py",
+      "invoked_function": "IsolationForestShapExplainer.explain_observation",
+      "background_dataset": "data/processed/scaled_sensor_train.csv",
+      "notes": "Real Kernel SHAP executes and computes additive attributions when UnifiedInferenceService is run with explain=True. However, in anomaly_agent.py, affected_sensors are initially determined by hardcoded rule-based thresholds on DEFAULT_BASELINE_RANGES, and SHAP is only used as a secondary threshold check (imp > 0.30)."
+    }
+  },
+  "failure_semantics_findings": {
+    "missing_telemetry_handling": {
+      "status": "FAILED",
+      "agent_behavior": "Catches exception, records AgentExecutionRecord(status=FAILED), sets confidence=0.0, but outputs anomaly_detection_result with is_anomaly=False and anomaly_type=NONE.",
+      "supervisor_impact": "Downstream SupervisorAgent checks if not is_anomaly and immediately concludes workflow with 95% confidence declaring machine HEALTHY. Fails to recognize failure state."
+    },
+    "invalid_input_handling": {
+      "status": "FAILED",
+      "agent_behavior": "Catches non-numeric / non-finite values, records execution failure, but returns is_anomaly=False.",
+      "supervisor_impact": "SupervisorAgent masks the failure and completes workflow as normal."
+    },
+    "model_inference_exception_handling": {
+      "status": "FAILED",
+      "agent_behavior": "Catches exception, records execution failure with error summary, sets is_anomaly=False.",
+      "supervisor_impact": "SupervisorAgent treats machine as healthy."
+    },
+    "zero_confidence_interpretation": {
+      "status": "FAILED",
+      "notes": "Zero confidence from failed anomaly detection does not trigger human escalation or workflow failure in Supervisor. The workflow is marked COMPLETE with 95% confidence."
+    }
+  },
+  "baseline_envelope_findings": {
+    "vibration_envelope": {
+      "status": "PARTIALLY VERIFIED",
+      "value": "0.0 - 4.5 mm/s",
+      "nature": "Hard-coded software constant",
+      "iso_claim": "4.5 mm/s matches ISO 10816 Class II Zone C/D threshold in literature, but is only an inline code comment without formal code lookup or configuration."
+    },
+    "pressure_envelope": {
+      "status": "FAILED",
+      "value": "1.0 - 4.5 bar",
+      "nature": "Hard-coded software constant",
+      "contradiction": "The synthetic training dataset mean pressure is 6.20 bar (3-sigma: [5.83, 6.57]). Setting max to 4.5 bar causes normal healthy telemetry from the dataset to be falsely flagged with affected_sensors=['pressure']."
+    },
+    "temperature_envelope": {
+      "status": "VERIFIED",
+      "value": "20.0 - 75.0 °C",
+      "nature": "Hard-coded software constant matching training distribution (mean=48°C)."
+    },
+    "current_envelope": {
+      "status": "VERIFIED",
+      "value": "5.0 - 25.0 A",
+      "nature": "Hard-coded software constant matching training distribution (mean=14.5A)."
+    },
+    "rpm_envelope": {
+      "status": "VERIFIED",
+      "value": "1000.0 - 3500.0 RPM",
+      "nature": "Hard-coded software constant matching training distribution (mean=1800 RPM)."
+    },
+    "machine_specific_limits": {
+      "status": "NOT VERIFIED",
+      "notes": "All 10 distinct machine types (lathes, presses, milling machines, conveyors, compressors) share an identical static envelope dictionary without dynamic database or profile lookups."
+    }
+  },
+  "security_and_governance_findings": {
+    "validate_agent_state_update_enforced": {
+      "status": "VERIFIED",
+      "notes": "Explicitly called before returning from analyze() across all return branches."
+    },
+    "worker_human_approval_restriction": {
+      "status": "VERIFIED",
+      "notes": "Raises PermissionError if human_approval is present in update."
+    },
+    "worker_verification_decisions_restriction": {
+      "status": "VERIFIED",
+      "notes": "Raises PermissionError if verification_decisions is present in update."
+    },
+    "worker_workflow_status_restriction": {
+      "status": "VERIFIED",
+      "notes": "Raises PermissionError if workflow_status is present in update."
+    },
+    "root_cause_self_verification_prohibited": {
+      "status": "VERIFIED",
+      "notes": "CandidateRootCause validator strictly rejects verification_status=VERIFIED."
+    },
+    "ticket_and_token_creation_prohibited": {
+      "status": "VERIFIED",
+      "notes": "Agent has no tools, HMAC keys, or database writers."
+    },
+    "input_state_immutability": {
+      "status": "VERIFIED",
+      "notes": "Deepcopy comparison confirms input state is not modified."
+    },
+    "evidence_provenance_and_synthetic_labeling": {
+      "status": "VERIFIED",
+      "notes": "EvidenceItem preserves source_type, source_reference, observed_at, source_agent, and synthetic_data_indicator."
+    },
+    "prompt_injection_resistance": {
+      "status": "VERIFIED",
+      "notes": "Tested against string injection; agent does not use an LLM, and string sanitizers neutralize malicious markup."
+    }
+  },
+  "test_quality_audit": {
+    "total_tests": 24,
+    "mock_tests_count": 24,
+    "real_model_tests_count": 0,
+    "coverage_evaluation": "Unit tests thoroughly cover schemas, validations, immutability, and boundary permissions, but completely mock out inference to achieve 5.35s execution time. Real UnifiedInferenceService is never exercised in test_anomaly_agent.py."
+  },
+  "conditions_for_approval": [
+    {
+      "condition_id": "COND-1",
+      "title": "Remediate Downstream Failure Masking in Supervisor",
+      "description": "SupervisorAgent.evaluate() must inspect agent_executions for AgentExecutionStatus.FAILED, check state_model.error_details, or verify that confidence > 0.0 before concluding that a machine is healthy. When anomaly detection fails, the workflow must be routed to FAIL_WORKFLOW or ESCALATE_TO_HUMAN_GATE."
+    },
+    {
+      "condition_id": "COND-2",
+      "title": "Correct Baseline Pressure Envelope Contradiction",
+      "description": "DEFAULT_BASELINE_RANGES['pressure'] must be adjusted from {'min': 1.0, 'max': 4.5} to match the training dataset operating regime (e.g., {'min': 4.0, 'max': 8.5}), or resolved dynamically from the machine's specific operational profile."
+    },
+    {
+      "condition_id": "COND-3",
+      "title": "Clarify LSTM Autoencoder Sequence Architecture Scope",
+      "description": "Formally document whether LSTM Autoencoder sequence reconstruction is deferred to a specialized sequence analysis node / RCA tool, or implement sequence window extraction in AnomalyDetectionAgent."
+    },
+    {
+      "condition_id": "COND-4",
+      "title": "Add Real UnifiedInferenceService Integration Test",
+      "description": "Add at least one opt-in or separate integration test in backend/tests/ that instantiates UnifiedInferenceService without mocks to prevent regression in production model loading."
+    }
+  ]
+}

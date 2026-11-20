@@ -1,0 +1,187 @@
+{
+  "project": "ManuMind AI",
+  "milestone": "Phase 5 — Supabase Security Remediation",
+  "step": "Step 3B.0 — Independent Pre-Execution Safety Audit",
+  "timestamp": "2026-11-18T20:15:00+05:30",
+  "verdict": "APPROVED WITH CONDITIONS",
+  "verdict_justification": "The proposed Alembic upgrade command (python -m alembic -c backend/alembic.ini upgrade head) will apply two migrations in sequence: c742f9a1e0b5 (ticket_proposals and consumed_tokens) followed by e4b19082a5c1 (standard RLS on public tables). Both migrations are structurally valid and schema-compatible, with zero risk of production data destruction. However, because Supabase default ACLs grant ALL privileges to anon and authenticated on newly created tables, and e4b19082a5c1 only enables RLS on the original six tables, ticket_proposals and consumed_tokens would be left in Supabase with RLS disabled, exposing them to PostgREST. Approval is conditioned on explicitly acknowledging this multi-migration execution, expanding RLS protection to the two new tables, and enforcing safe read-only post-execution verification.",
+  "preflight_summary": {
+    "git_branch": "main",
+    "git_head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "staged_files_count": 0,
+    "modified_tracked_files_count": 1,
+    "untracked_files_count": 20,
+    "live_database_current_revision": "1273f18b72a2",
+    "repository_migration_head": "e4b19082a5c1",
+    "migration_dag_topology": "<base> -> 1273f18b72a2 (live) -> c742f9a1e0b5 (pending) -> e4b19082a5c1 (head)"
+  },
+  "migration_review_e4b19082a5c1": {
+    "file_path": "backend/alembic/versions/e4b19082a5c1_enable_rls_on_public_tables.py",
+    "revision": "e4b19082a5c1",
+    "down_revision": "c742f9a1e0b5",
+    "target_tables": [
+      "machines",
+      "sensor_readings",
+      "alembic_version",
+      "maintenance_history",
+      "alerts",
+      "tickets"
+    ],
+    "upgrade_operations_count": 6,
+    "downgrade_operations_count": 6,
+    "invariants_validated": {
+      "standard_rls_only": true,
+      "force_rls_excluded": true,
+      "grant_statements_count": 0,
+      "revoke_statements_count": 0,
+      "policies_created_count": 0,
+      "unexpected_sql_count": 0,
+      "step3a_report_discrepancies_count": 0
+    }
+  },
+  "migration_review_c742f9a1e0b5": {
+    "file_path": "backend/alembic/versions/c742f9a1e0b5_ticket_proposals.py",
+    "revision": "c742f9a1e0b5",
+    "down_revision": "1273f18b72a2",
+    "tables_created": [
+      "ticket_proposals",
+      "consumed_tokens"
+    ],
+    "foreign_keys": [
+      {
+        "table": "ticket_proposals",
+        "column": "machine_id",
+        "references": "machines.id"
+      },
+      {
+        "table": "ticket_proposals",
+        "column": "alert_id",
+        "references": "alerts.id"
+      },
+      {
+        "table": "ticket_proposals",
+        "column": "ticket_id",
+        "references": "tickets.id"
+      },
+      {
+        "table": "consumed_tokens",
+        "column": "proposal_id",
+        "references": "ticket_proposals.id"
+      }
+    ],
+    "existing_table_alterations_count": 0,
+    "data_migration_operations_count": 0,
+    "destructive_operations_count": 0,
+    "reversibility_confirmed": true,
+    "rls_enabled_in_migration": false
+  },
+  "live_database_state": {
+    "current_user": "postgres",
+    "session_user": "postgres",
+    "rolsuper": false,
+    "rolbypassrls": true,
+    "rolcanlogin": true,
+    "active_alembic_revisions": [
+      "1273f18b72a2"
+    ],
+    "ticket_proposals_exists": false,
+    "consumed_tokens_exists": false,
+    "target_tables_state": [
+      {
+        "table_name": "machines",
+        "rls_enabled": false,
+        "force_rls_enabled": false,
+        "table_owner": "postgres"
+      },
+      {
+        "table_name": "sensor_readings",
+        "rls_enabled": false,
+        "force_rls_enabled": false,
+        "table_owner": "postgres"
+      },
+      {
+        "table_name": "alembic_version",
+        "rls_enabled": false,
+        "force_rls_enabled": false,
+        "table_owner": "postgres"
+      },
+      {
+        "table_name": "maintenance_history",
+        "rls_enabled": false,
+        "force_rls_enabled": false,
+        "table_owner": "postgres"
+      },
+      {
+        "table_name": "alerts",
+        "rls_enabled": false,
+        "force_rls_enabled": false,
+        "table_owner": "postgres"
+      },
+      {
+        "table_name": "tickets",
+        "rls_enabled": false,
+        "force_rls_enabled": false,
+        "table_owner": "postgres"
+      }
+    ]
+  },
+  "critical_risks_identified": [
+    {
+      "risk_id": "RISK-01",
+      "title": "Dual-Migration Execution via upgrade head",
+      "severity": "MEDIUM",
+      "description": "Executing upgrade head will apply both c742f9a1e0b5 and e4b19082a5c1, creating two new tables in Supabase in addition to enabling RLS on the original six tables."
+    },
+    {
+      "risk_id": "RISK-02",
+      "title": "PostgREST API Exposure of New Tables under Supabase Default ACLs",
+      "severity": "HIGH",
+      "description": "Supabase default ACL grants ALL privileges to anon and authenticated on newly created public tables. Because e4b19082a5c1 only enables RLS on 6 tables, ticket_proposals and consumed_tokens will be created with RLS disabled and accessible to the public PostgREST API unless secured."
+    },
+    {
+      "risk_id": "RISK-03",
+      "title": "Test Suite Production Pollution Risk",
+      "severity": "MEDIUM",
+      "description": "test_mcp_ticket_creation.py creates, consumes, and verifies maintenance tickets. It must NEVER be executed against production Supabase; it must run only in an isolated environment with an explicit SQLite URL."
+    }
+  ],
+  "test_safety_assessment": {
+    "test_connection.py": "SAFE READ-ONLY",
+    "verify_migration.py": "SAFE READ-ONLY",
+    "test_mcp_defect_image.py": "SAFE WITH ISOLATED FIXTURES",
+    "test_mcp_maintenance_history.py": "SAFE READ-ONLY (LOCAL SQLITE)",
+    "test_mcp_manufacturing_tools.py": "SAFE READ-ONLY (LOCAL SQLITE)",
+    "test_mcp_rag_retrieval.py": "SAFE WITH ISOLATED FIXTURES",
+    "test_mcp_server_skeleton.py": "SAFE READ-ONLY",
+    "test_mcp_ticket_creation.py": "SAFE ONLY WITH TEST DATABASE (NOT SAFE FOR PRODUCTION)"
+  },
+  "postgrest_verification_plan": {
+    "personas": {
+      "postgres_backend": {
+        "channel": "Direct TCP Port 5432 / Pooler",
+        "rolbypassrls": true,
+        "expected_access": "Full query and mutation access across all tables"
+      },
+      "anon_public": {
+        "channel": "PostgREST HTTPS API with anon key",
+        "rolbypassrls": false,
+        "expected_access": "Default-deny: 200 OK with empty array [] on SELECT; 401/403 on mutation for tables with RLS enabled"
+      },
+      "authenticated_users": {
+        "channel": "PostgREST HTTPS API with user JWT",
+        "rolbypassrls": false,
+        "expected_access": "Default-deny: 200 OK with empty array [] on SELECT; 401/403 on mutation for tables with RLS enabled"
+      },
+      "service_role": {
+        "channel": "PostgREST HTTPS API with service_role secret key",
+        "rolbypassrls": true,
+        "expected_access": "Administrative bypass of RLS (must remain strictly secret)"
+      }
+    }
+  },
+  "conditions_for_execution": [
+    "1. Explicit human authorization acknowledging that upgrade head will apply both c742f9a1e0b5 and e4b19082a5c1.",
+    "2. Remediation of RLS coverage for ticket_proposals and consumed_tokens (either amending e4b19082a5c1 to include them or planning an immediate subsequent migration).",
+    "3. Mandatory restriction of post-execution verification to safe read-only scripts (test_connection.py, verify_migration.py, read-only SQL queries), prohibiting mutating pytest suites against the live database."
+  ]
+}

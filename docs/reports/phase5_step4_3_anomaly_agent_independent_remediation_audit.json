@@ -1,0 +1,217 @@
+{
+  "audit_metadata": {
+    "project": "ManuMind AI — Explainable Multi-Agent AI System for Manufacturing Anomaly Detection and Root Cause Analysis",
+    "institution": "Department of AI & Data Science, RMK Engineering College",
+    "phase": "Phase 5 — LangGraph Multi-Agent Orchestration",
+    "milestone": "Phase 5 Step 4.3 — Independent Verification of Anomaly Agent Remediation",
+    "timestamp": "2026-11-19T23:06:00+05:30",
+    "auditor": "Independent Security & Architecture Verifier",
+    "audit_mode": "STRICTLY_READ_ONLY",
+    "final_verdict": "APPROVED FOR STEP5"
+  },
+  "repository_state": {
+    "git_head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "branch": "main",
+    "staged_changes_count": 0,
+    "tracked_modifications": [
+      "backend/app/models/__init__.py"
+    ],
+    "untracked_files_preserved": true,
+    "supabase_alembic_head": "f3a9082b1c42",
+    "modifications_performed_during_audit": 0
+  },
+  "condition_verifications": {
+    "COND-1": {
+      "condition_id": "COND-1",
+      "title": "Downstream Failure Masking via AnomalyExecutionStatus and Status-Aware Supervisor Routing",
+      "verdict": "VERIFIED_REMEDIATED",
+      "key_findings": [
+        "Explicit AnomalyExecutionStatus enum ('SUCCESS', 'FAILED', 'INSUFFICIENT_DATA') correctly defined in backend/app/agents/enums.py and exported in backend/app/agents/__init__.py.",
+        "Both AnomalyDetectionResult and AnomalyAssessment include execution_status field defaulting to SUCCESS.",
+        "Pydantic model validator validate_assessment_invariants strictly forbids anomaly_detected=True and requires anomaly_type=NONE when execution_status is FAILED or INSUFFICIENT_DATA.",
+        "SupervisorAgent.evaluate() enforces 4 explicit status-aware routing branches: FAILED routes to FAIL_WORKFLOW, INSUFFICIENT_DATA routes to ESCALATE_TO_HUMAN_GATE, SUCCESS with anomaly routes to ROUTE_TO_ROOT_CAUSE_ANALYSIS, and SUCCESS with no anomaly routes to COMPLETE_WORKFLOW only if confidence > 0.0 and assessment is valid.",
+        "Stale failure records cannot mask a later failure; stale success records cannot mask a later failure because anom_res.execution_status == FAILED directly triggers FAIL_WORKFLOW."
+      ],
+      "evaluation_matrix_10_cases": {
+        "case_1_missing_telemetry": {
+          "status": "INSUFFICIENT_DATA",
+          "assessment_anomaly_detected": false,
+          "execution_record": "FAILED",
+          "supervisor_action": "FAIL_WORKFLOW",
+          "healthy_completion_prevented": true
+        },
+        "case_2_insufficient_telemetry": {
+          "status": "INSUFFICIENT_DATA",
+          "assessment_anomaly_detected": false,
+          "execution_record": "FAILED",
+          "supervisor_action": "FAIL_WORKFLOW",
+          "healthy_completion_prevented": true
+        },
+        "case_3_non_numeric_telemetry": {
+          "status": "INSUFFICIENT_DATA",
+          "assessment_anomaly_detected": false,
+          "execution_record": "FAILED",
+          "supervisor_action": "FAIL_WORKFLOW",
+          "healthy_completion_prevented": true
+        },
+        "case_4_nan_and_infinity": {
+          "status": "INSUFFICIENT_DATA",
+          "assessment_anomaly_detected": false,
+          "execution_record": "FAILED",
+          "supervisor_action": "FAIL_WORKFLOW",
+          "healthy_completion_prevented": true
+        },
+        "case_5_model_artifact_missing": {
+          "status": "FAILED",
+          "assessment_anomaly_detected": false,
+          "execution_record": "FAILED",
+          "supervisor_action": "FAIL_WORKFLOW",
+          "healthy_completion_prevented": true
+        },
+        "case_6_model_loading_exception": {
+          "status": "FAILED",
+          "assessment_anomaly_detected": false,
+          "execution_record": "FAILED",
+          "supervisor_action": "FAIL_WORKFLOW",
+          "healthy_completion_prevented": true
+        },
+        "case_7_inference_exception": {
+          "status": "FAILED",
+          "assessment_anomaly_detected": false,
+          "execution_record": "FAILED",
+          "supervisor_action": "FAIL_WORKFLOW",
+          "healthy_completion_prevented": true
+        },
+        "case_8_invalid_model_output": {
+          "status": "FAILED",
+          "assessment_anomaly_detected": false,
+          "execution_record": "FAILED",
+          "supervisor_action": "ESCALATE_TO_HUMAN_GATE",
+          "healthy_completion_prevented": true
+        },
+        "case_9_successful_inference_normal": {
+          "status": "SUCCESS",
+          "assessment_anomaly_detected": false,
+          "execution_record": "COMPLETED",
+          "supervisor_action": "COMPLETE_WORKFLOW",
+          "healthy_completion_authorized": true
+        },
+        "case_10_successful_inference_anomaly": {
+          "status": "SUCCESS",
+          "assessment_anomaly_detected": true,
+          "execution_record": "COMPLETED",
+          "supervisor_action": "ROUTE_TO_ROOT_CAUSE_ANALYSIS",
+          "healthy_completion_prevented": true
+        }
+      }
+    },
+    "COND-2": {
+      "condition_id": "COND-2",
+      "title": "Pressure Baseline Operational Envelope Alignment with Training Distribution",
+      "verdict": "VERIFIED_REMEDIATED",
+      "classification": "STATISTICALLY_JUSTIFIED",
+      "empirical_training_statistics": {
+        "dataset": "data/processed/sensor_train.csv",
+        "sample_count": 28000,
+        "machine_count": 10,
+        "samples_per_machine": 2800,
+        "mean_pressure_bar": 6.2017,
+        "std_pressure_bar": 0.1222,
+        "min_pressure_bar": 5.6600,
+        "max_pressure_bar": 6.6700,
+        "three_sigma_range_bar": [5.8351, 6.5684],
+        "six_sigma_range_bar": [5.4684, 6.9351],
+        "quantiles_bar": {
+          "0.1%": 5.82,
+          "1.0%": 5.91,
+          "50.0%": 6.20,
+          "99.0%": 6.49,
+          "99.9%": 6.57
+        }
+      },
+      "test_dataset_excursions": {
+        "dataset": "data/processed/sensor_test.csv",
+        "sample_count": 6000,
+        "min_pressure_bar": 2.1700,
+        "max_pressure_bar": 8.3500
+      },
+      "envelope_evaluation": {
+        "configured_range_bar": [5.0, 7.5],
+        "false_positive_on_training_data": 0,
+        "false_positive_rate_on_training": 0.0,
+        "detects_pressure_drop_faults": true,
+        "detects_overpressure_faults": true,
+        "machine_uniformity_verified": true
+      }
+    },
+    "COND-3": {
+      "condition_id": "COND-3",
+      "title": "Agent Scope and Sequence Reconstruction Documentation Rectification",
+      "verdict": "VERIFIED_REMEDIATED",
+      "key_findings": [
+        "AnomalyDetectionAgent docstring and module header accurately state point-in-time tabular Isolation Forest scope.",
+        "No misleading claims of active 30-step sequence reconstruction exist in anomaly_agent.py.",
+        "Dead constant LSTM_AUTOENCODER_FROZEN_THRESHOLD removed from anomaly_agent.py.",
+        "Existing LSTM Autoencoder artifact ml/models_store/lstm_autoencoder.keras remains intact and verified (SHA256: b1cae16de57b556f13b3f96e12a8c451d05f3bdd9887a65172817cd99e30e0b5).",
+        "Future contract for deferred TemporalSequenceAgent clearly documented."
+      ]
+    },
+    "COND-4": {
+      "condition_id": "COND-4",
+      "title": "Real Model Artifact Integration and Kernel SHAP Verification Without Mocks",
+      "verdict": "VERIFIED_REMEDIATED",
+      "real_model_inference_verified": true,
+      "real_shap_verified": true,
+      "shap_additivity_verified": true,
+      "ci_execution_verified": false,
+      "additivity_error": 1.3877787807814457e-17,
+      "additivity_notes": "Mathematical exactness is achieved because 5 features evaluate the full 2^5 = 32 coalition lattice (nsamples=32), yielding floating-point precision additivity.",
+      "ci_status_note": "No GitHub Actions CI workflow is configured in the repository; integration was independently verified in the Windows Python 3.11.9 runtime."
+    }
+  },
+  "regression_suite_verification": {
+    "total_tests_collected": 105,
+    "total_tests_passed": 105,
+    "total_tests_failed": 0,
+    "total_tests_skipped": 0,
+    "execution_duration_seconds": 21.98,
+    "suite_breakdown": {
+      "backend/tests/test_agent_state.py": {"passed": 10, "failed": 0},
+      "backend/tests/test_agent_reducers.py": {"passed": 11, "failed": 0},
+      "backend/tests/test_agent_verification_governance.py": {"passed": 23, "failed": 0},
+      "backend/tests/test_supervisor_agent.py": {"passed": 28, "failed": 0},
+      "backend/tests/test_anomaly_agent.py": {"passed": 27, "failed": 0},
+      "backend/tests/test_anomaly_agent_integration.py": {"passed": 6, "failed": 0}
+    }
+  },
+  "security_and_environment_invariants": {
+    "python_version": "3.11.9",
+    "pydantic_version": "2.13.4",
+    "langgraph_version": "0.2.45",
+    "langchain_core_version": "0.3.15",
+    "pip_check_status": "No broken requirements found.",
+    "rag_lockfile_sha256": "778fde7658e8f5a0fd3cb039c6271fbbcce95ab967fbece6d29ca82e3f035ad2",
+    "chromadb_collection": "manumind_bge_small_v1",
+    "chromadb_embeddings_count": 564,
+    "chromadb_dimension": 384,
+    "supabase_migration_head": "f3a9082b1c42",
+    "model_artifacts": {
+      "sensor_scaler.joblib": "f21f0899cd3af4d807e54f98b4627d5512650f08cad35ba17a6cd80268398faf",
+      "isolation_forest.joblib": "afdf397336f01cfe32c6d4660b3f0094bec01869ab3f8ec276a4d34ca8ac52a2",
+      "isolation_forest_metadata.json": "bbb05f4447d52c5ae0f4444649e2e59bf5f282aceb1cfd028e6309b86e8ed3d5",
+      "lstm_autoencoder.keras": "b1cae16de57b556f13b3f96e12a8c451d05f3bdd9887a65172817cd99e30e0b5",
+      "lstm_autoencoder_metadata.json": "d679e55a2b9935c2e8820d5b117a7c8fc8f84b94cd6565252255168f82fda0c1",
+      "resnet_defect_classifier.keras": "aac4b1c2d8c7ba47cef2e31b73d27ad6ff9b8be9352d6e3850c2e201e3195a98"
+    }
+  },
+  "non_blocking_observations": [
+    {
+      "category": "Supervisor Architecture",
+      "observation": "SupervisorAgent.evaluate() checks has_failed_execution = any(rec.execution_status == FAILED for rec in anom_execs). In the current single-pass DAG this correctly forces failure routing. If multi-turn retry loops within the same graph run are implemented in later phases, evaluation should check the latest execution record rather than historical attempts."
+    },
+    {
+      "category": "CI/CD Pipeline",
+      "observation": "Real model integration tests were verified in the local Python 3.11 Windows runtime. No remote GitHub Actions workflow is currently configured in the repository; automated CI execution should be established in Phase 6 deployment packaging."
+    }
+  ]
+}

@@ -1,0 +1,152 @@
+{
+  "project": "ManuMind AI",
+  "institution": "Department of AI & Data Science, RMK Engineering College",
+  "milestone": "Phase 5 Step 5 — Root Cause Analysis Agent Implementation",
+  "timestamp": "2026-11-20T12:00:00+05:30",
+  "verdict": "SUCCESS",
+  "verdict_justification": "The ManuMind Root Cause Analysis (RCA) Agent has been fully implemented, integrated with the shared state architecture, and verified as a LangGraph StateGraph node function (root_cause_analysis_node). The agent ingests Anomaly Detection Agent assessments, sensor telemetry, and feature attributions; queries historical maintenance work orders via MCP tool handle_get_maintenance_history; queries manufacturing SOPs and technical manuals via RAG retrieval bridge handle_search_manuals while preserving [CIT-X] citations and neutralizing prompt injections; formulates multiple competing diagnostic hypotheses via the provider-independent ManuMindLLMClient protocol; and computes transparent evidence-corroboration support scores strictly bounded in [0.05, 0.95]. It enforces that same-source citations and same-observation sensors do NOT count as independent source types, caps synthetic evidence corroboration at 0.70, and discloses scores as corroboration indices rather than physical probabilities. Critical security and governance invariants are strictly maintained: CandidateRootCause cannot self-assert VERIFIED status, worker update validation strictly blocks modifications to human_approval, verification_decisions, or workflow_status, and no tickets or approval tokens can be minted. All 40 dedicated unit and integration tests in backend/tests/test_rca_agent.py pass (100%), and the complete 145-test Phase 5 regression suite passes with zero failures.",
+  "git_status": {
+    "branch": "main",
+    "baseline_head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "current_head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "staged_files_count": 0,
+    "commits_made": 0,
+    "untracked_files_preserved": true
+  },
+  "environment_invariants": {
+    "python_version": "3.11.9",
+    "langgraph_version": "0.2.45",
+    "langchain_core_version": "0.3.15",
+    "pydantic_version": "2.13.4",
+    "pip_check_status": "No broken requirements found.",
+    "rag_lockfile_path": "backend/requirements-rag.lock",
+    "rag_lockfile_sha256": "778fde7658e8f5a0fd3cb039c6271fbbcce95ab967fbece6d29ca82e3f035ad2",
+    "chroma_store_path": "knowledge_base/index/chroma_bge_small_v1",
+    "chroma_document_count": 564,
+    "alembic_head": "f3a9082b1c42"
+  },
+  "rca_agent_architecture": {
+    "agent_module": "backend/app/agents/rca_agent.py",
+    "agent_class": "RootCauseAnalysisAgent",
+    "langgraph_node": "root_cause_analysis_node",
+    "result_schema": "RootCauseAnalysisResult (backend/app/agents/schemas.py:250-282)",
+    "hypothesis_schema": "CandidateRootCause (backend/app/agents/schemas.py:135-188)",
+    "state_channels": [
+      "candidate_root_causes",
+      "supporting_evidence",
+      "contradicting_evidence",
+      "maintenance_history_references",
+      "relevant_rag_citation_ids",
+      "root_cause_hypothesis",
+      "root_cause_analysis_result",
+      "rca_execution_status"
+    ],
+    "evidence_sources": [
+      "TELEMETRY",
+      "SHAP_ANALYSIS",
+      "MAINTENANCE_LOG",
+      "RAG_DOCUMENT"
+    ],
+    "source_availability_states": [
+      "AVAILABLE",
+      "EMPTY",
+      "UNAVAILABLE",
+      "FAILED"
+    ],
+    "scoring_rubric": {
+      "prior_baseline": 0.50,
+      "telemetry_consistency": 0.15,
+      "shap_attribution": 0.10,
+      "rag_manual_alignment": 0.15,
+      "maintenance_pattern": 0.10,
+      "recent_replacement_penalty": -0.20,
+      "contradicting_evidence_penalty_per_item": -0.15,
+      "missing_source_penalty_per_source": -0.05,
+      "synthetic_data_cap": 0.70,
+      "score_range": [0.05, 0.95]
+    }
+  },
+  "security_governance": {
+    "worker_restricted_channels": [
+      "human_approval",
+      "verification_decisions",
+      "workflow_status"
+    ],
+    "boundary_validator": "validate_agent_state_update",
+    "permission_error_raised_on_human_approval_write": true,
+    "permission_error_raised_on_verification_decisions_write": true,
+    "permission_error_raised_on_workflow_status_write": true,
+    "candidate_root_cause_self_verification_prohibited": true,
+    "supervisor_verification_rubric_unmodified": true,
+    "ticket_or_token_generation_prohibited": true,
+    "prompt_injection_safety_verified": true,
+    "input_state_immutability_preserved": true,
+    "non_fabricating_llm_fallback_guaranteed": true
+  },
+  "test_execution": {
+    "test_files": [
+      "backend/tests/test_agent_state.py",
+      "backend/tests/test_agent_reducers.py",
+      "backend/tests/test_agent_verification_governance.py",
+      "backend/tests/test_supervisor_agent.py",
+      "backend/tests/test_anomaly_agent.py",
+      "backend/tests/test_anomaly_agent_integration.py",
+      "backend/tests/test_rca_agent.py"
+    ],
+    "counts_by_file": {
+      "test_agent_state.py": 10,
+      "test_agent_reducers.py": 11,
+      "test_agent_verification_governance.py": 19,
+      "test_supervisor_agent.py": 28,
+      "test_anomaly_agent.py": 24,
+      "test_anomaly_agent_integration.py": 13,
+      "test_rca_agent.py": 40
+    },
+    "total_tests": 145,
+    "passed_tests": 145,
+    "failed_tests": 0,
+    "skipped_tests": 0
+  },
+  "verified_test_scenarios": [
+    "1. Valid anomaly assessment triggers investigation",
+    "2. Failed anomaly assessment (execution_status=FAILED) rejected as trigger",
+    "3. Insufficient-data assessment (execution_status=INSUFFICIENT_DATA or anomaly_detected=False) rejected",
+    "4. Missing or invalid machine ID rejected",
+    "5. Missing telemetry or assessment rejected without crash",
+    "6. Synthetic evidence flag (is_synthetic=True) preserved across hypotheses and evidence",
+    "7. Maintenance history available (EvidenceSourceAvailability.AVAILABLE)",
+    "8. Maintenance history empty (EvidenceSourceAvailability.EMPTY)",
+    "9. Maintenance service unavailable/fails (EvidenceSourceAvailability.FAILED, partial run)",
+    "10. RAG citations returned, sanitized, and preserved ([CIT-1], etc.)",
+    "11. RAG retrieval failure handled gracefully (EvidenceSourceAvailability.FAILED)",
+    "12. Prompt injection instructions in manual excerpts sanitized, ignored, and not executed",
+    "13. Invalid/unknown citation IDs handled safely",
+    "14. Contradictory evidence detected (recent replacement penalizes hypothesis and creates contra evidence)",
+    "15. Single supported hypothesis formulated",
+    "16. Multiple competing hypotheses generated and ranked by score",
+    "17. Unknown root cause formulated when anomaly signature is ambiguous",
+    "18. Malformed LLM output handled safely without crash",
+    "19. LLM timeout handled safely (sets FAILED execution status)",
+    "20. LLM provider unavailable handled safely",
+    "21. Deterministic mock response validation",
+    "22. Same-source citations do NOT count as multiple independent source types",
+    "23. Synthetic evidence does NOT count as real corroboration and caps support at 0.70",
+    "24. Contradicting evidence reduces support score appropriately",
+    "25. Missing sources (RAG/maintenance unavailable) apply missing source penalty",
+    "26. Confidence scores are finite and strictly bounded in [0.05, 0.95]",
+    "27. Scores are explicitly labeled as evidence-corroboration indices, not calibrated probabilities",
+    "28. RCA Agent cannot write to human_approval (validate_agent_state_update raises PermissionError)",
+    "29. RCA Agent cannot write to verification_decisions (PermissionError)",
+    "30. RCA Agent cannot write to workflow_status (PermissionError)",
+    "31. Candidate root causes cannot self-assert verification_status=VERIFIED (raises ValueError)",
+    "32. RCA Agent cannot create or mint HMAC approval tokens",
+    "33. RCA Agent cannot call create_maintenance_ticket",
+    "34. Verification governance rules remain intact (all candidate hypotheses UNVERIFIED)",
+    "35. State reducers maintain immutability",
+    "36. Evidence deduplication in merge_evidence",
+    "37. Citation preservation in merge_rag_citations",
+    "38. Error-state handling produces valid execution records",
+    "39. Repeated execution does not corrupt existing evidence",
+    "40. LangGraph StateGraph node execution works (root_cause_analysis_node(state))"
+  ]
+}

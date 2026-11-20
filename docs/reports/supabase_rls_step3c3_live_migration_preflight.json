@@ -1,0 +1,65 @@
+{
+  "project": "ManuMind AI",
+  "milestone": "Phase 5 — Supabase Security Remediation",
+  "step": "Step 3C.3 — Controlled Live Migration Preflight",
+  "timestamp": "2026-11-18T21:30:00+05:30",
+  "verdict": "READY FOR EXPLICIT HUMAN EXECUTION AUTHORIZATION",
+  "verdict_justification": "Live database baseline is confirmed at revision 1273f18b72a2 with zero uncommitted mutations. Alembic and backend connection identity is verified as postgres (rolbypassrls=True, table owner). The linear three-migration chain (c742f9a1e0b5 -> e4b19082a5c1 -> f3a9082b1c42) is unified, statically validated, and will execute within a single atomic PostgreSQL transaction. Operational runbook, prerequisites, stop conditions, ten post-migration catalog verification queries, and failure handling protocols are documented. No live database changes have occurred during preflight.",
+  "baseline_verification": {
+    "connecting_database": "postgres",
+    "current_user": "postgres",
+    "session_user": "postgres",
+    "rolbypassrls": true,
+    "live_revision": "1273f18b72a2",
+    "ticket_proposals_exists": false,
+    "consumed_tokens_exists": false,
+    "rls_enabled_existing_tables": false,
+    "force_rls_enabled_existing_tables": false,
+    "table_owner": "postgres",
+    "existing_api_table_grants": 84,
+    "existing_api_sequence_grants": 4
+  },
+  "execution_runbook": {
+    "working_directory": "D:\\Desktop\\FInal year project\\manumind-ai",
+    "python_binary": "C:\\Users\\PR BHAYA SREE\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+    "command": "python -m alembic -c backend/alembic.ini upgrade head",
+    "expected_revisions_applied": [
+      "c742f9a1e0b5",
+      "e4b19082a5c1",
+      "f3a9082b1c42"
+    ],
+    "target_head_revision": "f3a9082b1c42",
+    "atomicity": "SINGLE_POSTGRESQL_TRANSACTION",
+    "stop_conditions": [
+      "Any exception or timeout during execution halts immediately",
+      "No immediate retry without inspecting alembic_version",
+      "Zero alembic downgrade attempts"
+    ]
+  },
+  "post_migration_verification_suite": {
+    "query_1_alembic_version": "SELECT version_num FROM public.alembic_version;",
+    "query_2_table_existence": "SELECT tablename FROM pg_tables WHERE schemaname = 'public' AND tablename IN ('ticket_proposals', 'consumed_tokens') ORDER BY tablename;",
+    "query_3_rls_activation": "SELECT c.relname, c.relrowsecurity FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace WHERE n.nspname = 'public' AND c.relname IN ('machines', 'sensor_readings', 'alembic_version', 'maintenance_history', 'alerts', 'tickets', 'ticket_proposals', 'consumed_tokens') ORDER BY c.relname;",
+    "query_4_force_rls_invariance": "SELECT count(*) FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace WHERE n.nspname = 'public' AND c.relforcerowsecurity = true AND c.relname IN ('machines', 'sensor_readings', 'alembic_version', 'maintenance_history', 'alerts', 'tickets', 'ticket_proposals', 'consumed_tokens');",
+    "query_5_zero_policies": "SELECT count(*) FROM pg_policy p JOIN pg_class c ON c.oid = p.polrelid JOIN pg_namespace n ON n.oid = c.relnamespace WHERE n.nspname = 'public' AND c.relname IN ('machines', 'sensor_readings', 'alembic_version', 'maintenance_history', 'alerts', 'tickets', 'ticket_proposals', 'consumed_tokens');",
+    "query_6_table_grants_revocation": "SELECT count(*) FROM information_schema.role_table_grants WHERE table_schema = 'public' AND table_name IN ('machines', 'sensor_readings', 'alembic_version', 'maintenance_history', 'alerts', 'tickets', 'ticket_proposals', 'consumed_tokens') AND grantee IN ('anon', 'authenticated');",
+    "query_7_sequence_grants_revocation": "SELECT count(*) FROM information_schema.role_usage_grants WHERE object_schema = 'public' AND object_name IN ('sensor_readings_id_seq', 'maintenance_history_id_seq') AND grantee IN ('anon', 'authenticated');",
+    "query_8_retained_privileges": "SELECT grantee, table_name, count(privilege_type) FROM information_schema.role_table_grants WHERE table_schema = 'public' AND table_name IN ('machines', 'sensor_readings', 'alembic_version', 'maintenance_history', 'alerts', 'tickets', 'ticket_proposals', 'consumed_tokens') AND grantee IN ('postgres', 'service_role') GROUP BY grantee, table_name ORDER BY table_name, grantee;",
+    "query_9_default_privileges": "SELECT d.defaclobjtype, d.defaclacl FROM pg_default_acl d JOIN pg_namespace n ON n.oid = d.defaclnamespace WHERE pg_get_userbyid(d.defaclrole) = 'postgres' AND n.nspname = 'public' AND d.defaclobjtype IN ('r', 'S');",
+    "query_10_ownership_invariance": "SELECT c.relname, r.rolname as owner FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace JOIN pg_roles r ON r.oid = c.relowner WHERE n.nspname = 'public' AND c.relname IN ('machines', 'sensor_readings', 'alembic_version', 'maintenance_history', 'alerts', 'tickets', 'ticket_proposals', 'consumed_tokens', 'sensor_readings_id_seq', 'maintenance_history_id_seq') ORDER BY c.relname;"
+  },
+  "failure_and_recovery_protocol": {
+    "migration_error_before_commit": "Automatic PostgreSQL rollback to 1273f18b72a2",
+    "connection_drop_during_ddl": "Automatic PostgreSQL rollback to 1273f18b72a2",
+    "connection_drop_post_commit": "Database committed at f3a9082b1c42; inspect alembic_version without re-upgrading",
+    "alembic_downgrade_permitted": false,
+    "manual_grant_all_permitted": false
+  },
+  "git_preservation": {
+    "branch": "main",
+    "head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "staged_files_count": 0,
+    "modified_tracked_files_count": 1,
+    "untracked_files_count": 22
+  }
+}

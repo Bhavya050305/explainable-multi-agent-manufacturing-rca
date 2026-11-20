@@ -1,0 +1,158 @@
+{
+  "audit_target": "ManuMind AI Backend Supabase Connection Architecture",
+  "audit_type": "Strictly Read-Only Connection & RLS Readiness Audit",
+  "step": "Step 1",
+  "timestamp": "2026-11-18T19:25:00+05:30",
+  "verdict": "READY FOR RLS POLICY DESIGN",
+  "verdict_summary": "The ManuMind AI backend connects exclusively via direct PostgreSQL connections (port 5432 session pooler) using the privileged 'postgres' role via SQLAlchemy and psycopg. There is zero usage of Supabase Data API (PostgREST), Supabase Python client SDK, or Supabase Auth. The frontend currently contains no code and has no direct Supabase connection. Enabling RLS on the six affected tables will eliminate the critical public PostgREST exposure without impacting the backend application, because the 'postgres' table owner role bypasses RLS by default.",
+  "affected_tables": [
+    {
+      "schema": "public",
+      "table_name": "machines",
+      "owner": "postgres",
+      "rls_enabled": false,
+      "policy_count": 0,
+      "orm_model": "backend/app/models/machine.py:Machine",
+      "accessing_modules": [
+        "backend/app/mcp_server/tools.py",
+        "backend/app/mcp_server/server.py",
+        "backend/app/mcp_server/schemas.py",
+        "backend/migrate_sqlite_to_supabase.py",
+        "backend/verify_migration.py",
+        "backend/verify_step1.py"
+      ],
+      "access_type": "Direct PostgreSQL / SQLAlchemy ORM"
+    },
+    {
+      "schema": "public",
+      "table_name": "sensor_readings",
+      "owner": "postgres",
+      "rls_enabled": false,
+      "policy_count": 0,
+      "orm_model": "backend/app/models/sensor_reading.py:SensorReading",
+      "accessing_modules": [
+        "backend/app/mcp_server/tools.py",
+        "backend/migrate_sqlite_to_supabase.py",
+        "backend/verify_migration.py",
+        "backend/verify_step1.py"
+      ],
+      "access_type": "Direct PostgreSQL / SQLAlchemy ORM"
+    },
+    {
+      "schema": "public",
+      "table_name": "alembic_version",
+      "owner": "postgres",
+      "rls_enabled": false,
+      "policy_count": 0,
+      "orm_model": null,
+      "accessing_modules": [
+        "backend/alembic/env.py",
+        "backend/verify_step1.py"
+      ],
+      "access_type": "Alembic DDL migration tool / Raw SQL version query"
+    },
+    {
+      "schema": "public",
+      "table_name": "maintenance_history",
+      "owner": "postgres",
+      "rls_enabled": false,
+      "policy_count": 0,
+      "orm_model": "backend/app/models/maintenance_history.py:MaintenanceHistory",
+      "accessing_modules": [
+        "backend/app/mcp_server/tools.py",
+        "backend/app/mcp_server/schemas.py",
+        "backend/app/database.py",
+        "backend/migrate_sqlite_to_supabase.py",
+        "backend/verify_migration.py",
+        "backend/verify_step1.py"
+      ],
+      "access_type": "Direct PostgreSQL / SQLAlchemy ORM"
+    },
+    {
+      "schema": "public",
+      "table_name": "alerts",
+      "owner": "postgres",
+      "rls_enabled": false,
+      "policy_count": 0,
+      "orm_model": "backend/app/models/alert.py:Alert",
+      "accessing_modules": [
+        "backend/app/mcp_server/tools.py",
+        "backend/app/services/ticket_service.py",
+        "backend/migrate_sqlite_to_supabase.py",
+        "backend/verify_migration.py",
+        "backend/verify_step1.py"
+      ],
+      "access_type": "Direct PostgreSQL / SQLAlchemy ORM"
+    },
+    {
+      "schema": "public",
+      "table_name": "tickets",
+      "owner": "postgres",
+      "rls_enabled": false,
+      "policy_count": 0,
+      "orm_model": "backend/app/models/ticket.py:Ticket",
+      "accessing_modules": [
+        "backend/app/services/ticket_service.py",
+        "backend/app/mcp_server/tools.py",
+        "backend/app/mcp_server/server.py",
+        "backend/app/mcp_server/approval.py",
+        "backend/migrate_sqlite_to_supabase.py",
+        "backend/verify_migration.py",
+        "backend/verify_step1.py"
+      ],
+      "access_type": "Direct PostgreSQL / SQLAlchemy ORM"
+    }
+  ],
+  "connection_architecture": {
+    "protocol": "Direct PostgreSQL Connection (TCP / TLS)",
+    "host": "aws-0-ap-southeast-2.pooler.supabase.com",
+    "port": 5432,
+    "pooler_type": "Supabase Session Pooler",
+    "sslmode": "require",
+    "sqlalchemy_driver": "psycopg2 / psycopg (v3 fallback)",
+    "engine_configuration": {
+      "pool_pre_ping": true,
+      "pool_recycle_seconds": 300,
+      "pool_size": 10,
+      "max_overflow": 20,
+      "connect_timeout_seconds": 10
+    },
+    "postgrest_data_api_used": false,
+    "supabase_client_sdk_used": false
+  },
+  "security_and_auth_findings": {
+    "supabase_auth_implemented": false,
+    "supabase_jwt_validation": false,
+    "application_level_tokens": {
+      "type": "HMAC-SHA256 (HS256)",
+      "module": "backend/app/mcp_server/approval.py",
+      "purpose": "Human-in-the-Loop maintenance ticket approval token verification",
+      "secret_env_var": "MANUMIND_APPROVAL_SECRET_KEY",
+      "independent_of_supabase_auth": true
+    },
+    "runtime_database_role": "postgres",
+    "runtime_role_privilege": "Superuser / Table Owner (BYPASSRLS by default)",
+    "application_access_pattern": "100% Server-side Privileged Database Access",
+    "frontend_direct_access": false,
+    "frontend_code_status": "Empty directory (uninitialized)"
+  },
+  "alembic_version_isolation": {
+    "managed_strictly_by_migration_tooling": true,
+    "application_data_access": false,
+    "risk_if_rls_enabled": "Zero risk to migrations as long as migrations connect as 'postgres' role without FORCE ROW LEVEL SECURITY."
+  },
+  "compatibility_risk_analysis": {
+    "risk_level": "LOW",
+    "analysis": "Because the backend connects via SQLAlchemy as the table owner 'postgres', standard 'ALTER TABLE <name> ENABLE ROW LEVEL SECURITY;' does not restrict the backend queries (PostgreSQL table owners bypass RLS by default). However, 'ALTER TABLE <name> FORCE ROW LEVEL SECURITY;' must NOT be used, as it would enforce RLS on the table owner. Enabling RLS immediately denies all unauthorized PostgREST/Data API access via the public anon key."
+  },
+  "recommendations": {
+    "remediation_approach": "Enable RLS on all 6 tables using standard 'ALTER TABLE public.<table_name> ENABLE ROW LEVEL SECURITY;'.",
+    "policy_design": "Since the backend accesses PostgreSQL directly as 'postgres' and no frontend or external client should access the Supabase Data API directly, define an explicit default-deny policy for 'anon' and 'authenticated' roles, while granting access to 'service_role' if REST API access is ever needed in future phases.",
+    "avoid": "DO NOT use 'FORCE ROW LEVEL SECURITY' on these tables."
+  },
+  "dashboard_verification_items": [
+    "Confirm that PostgREST / Data API is active in Supabase Project Settings > API.",
+    "Verify that no external systems or webhook integrations rely on the Supabase PostgREST REST API with the anon key.",
+    "Confirm that the database user configured in DATABASE_URL remains the table owner ('postgres')."
+  ]
+}

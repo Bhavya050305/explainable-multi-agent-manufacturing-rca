@@ -1,0 +1,155 @@
+{
+  "project": "ManuMind AI",
+  "milestone": "Phase 5 — Supabase Security Remediation",
+  "step": "Step 3C.4 — Independent Post-Migration Privilege Verification",
+  "timestamp": "2026-11-18T21:45:00+05:30",
+  "verdict": "PASS — ALL PRIVILEGES INDEPENDENTLY VERIFIED",
+  "verdict_justification": "All eight tables and both sequences were independently verified using has_table_privilege, has_sequence_privilege, aclexplode, and pg_auth_members. API roles anon and authenticated possess zero table privileges across all 8 supported types (SELECT, INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER, MAINTAIN) and zero sequence privileges (SELECT, USAGE, UPDATE). Zero indirect privilege paths exist via PUBLIC grants or role memberships. The privilege-count discrepancy was reconciled: PostgreSQL 17's MAINTAIN privilege (m) accounts for 128 native catalog grants in aclexplode vs. 112 SQL-standard grants in information_schema.role_table_grants. All 8 tables have standard RLS enabled with zero policies (default-deny), FORCE RLS is disabled, and all objects are owned by postgres. Default ACLs for role postgres in schema public exclude API roles.",
+  "database_metadata": {
+    "engine": "PostgreSQL",
+    "version": "PostgreSQL 17.11 on x86_64-pc-linux-gnu, compiled by gcc (GCC) 15.2.0, 64-bit",
+    "server_version_num": 170011,
+    "current_user": "postgres",
+    "session_user": "postgres",
+    "current_database": "postgres",
+    "alembic_revision": "f3a9082b1c42"
+  },
+  "table_privileges_verification": {
+    "tables_checked": [
+      "machines",
+      "sensor_readings",
+      "alembic_version",
+      "maintenance_history",
+      "alerts",
+      "tickets",
+      "ticket_proposals",
+      "consumed_tokens"
+    ],
+    "tested_privilege_types": [
+      "SELECT",
+      "INSERT",
+      "UPDATE",
+      "DELETE",
+      "TRUNCATE",
+      "REFERENCES",
+      "TRIGGER",
+      "MAINTAIN"
+    ],
+    "effective_privileges": {
+      "anon": {
+        "SELECT": 0,
+        "INSERT": 0,
+        "UPDATE": 0,
+        "DELETE": 0,
+        "TRUNCATE": 0,
+        "REFERENCES": 0,
+        "TRIGGER": 0,
+        "MAINTAIN": 0
+      },
+      "authenticated": {
+        "SELECT": 0,
+        "INSERT": 0,
+        "UPDATE": 0,
+        "DELETE": 0,
+        "TRUNCATE": 0,
+        "REFERENCES": 0,
+        "TRIGGER": 0,
+        "MAINTAIN": 0
+      },
+      "postgres": {
+        "SELECT": 8,
+        "INSERT": 8,
+        "UPDATE": 8,
+        "DELETE": 8,
+        "TRUNCATE": 8,
+        "REFERENCES": 8,
+        "TRIGGER": 8,
+        "MAINTAIN": 8
+      },
+      "service_role": {
+        "SELECT": 8,
+        "INSERT": 8,
+        "UPDATE": 8,
+        "DELETE": 8,
+        "TRUNCATE": 8,
+        "REFERENCES": 8,
+        "TRIGGER": 8,
+        "MAINTAIN": 8
+      }
+    },
+    "public_grants_count": 0,
+    "status": "PASS"
+  },
+  "privilege_discrepancy_reconciliation": {
+    "acl_string": "arwdDxtm",
+    "acl_letter_count": 8,
+    "privilege_breakdown": {
+      "a": "INSERT",
+      "r": "SELECT",
+      "w": "UPDATE",
+      "d": "DELETE",
+      "D": "TRUNCATE",
+      "x": "REFERENCES",
+      "t": "TRIGGER",
+      "m": "MAINTAIN"
+    },
+    "postgresql_version_feature": "MAINTAIN introduced in PostgreSQL 16; active on PostgreSQL 17.11",
+    "native_aclexplode_total_grants": 128,
+    "native_grants_calculation": "8 tables * 2 roles (postgres, service_role) * 8 privileges = 128",
+    "information_schema_total_grants": 112,
+    "information_schema_calculation": "8 tables * 2 roles (postgres, service_role) * 7 standard SQL privileges = 112",
+    "reconciliation_explanation": "information_schema follows ANSI SQL standards and excludes PostgreSQL-specific MAINTAIN privilege. Both counts are completely accurate representations of their respective catalog scopes.",
+    "status": "RECONCILED"
+  },
+  "sequence_privileges_verification": {
+    "sequences_checked": [
+      "sensor_readings_id_seq",
+      "maintenance_history_id_seq"
+    ],
+    "effective_privileges": {
+      "anon": {
+        "SELECT": false,
+        "USAGE": false,
+        "UPDATE": false
+      },
+      "authenticated": {
+        "SELECT": false,
+        "USAGE": false,
+        "UPDATE": false
+      },
+      "postgres": {
+        "SELECT": true,
+        "USAGE": true,
+        "UPDATE": true
+      },
+      "service_role": {
+        "SELECT": true,
+        "USAGE": true,
+        "UPDATE": true
+      }
+    },
+    "native_catalog_acl": "{postgres=rwU/postgres,service_role=rwU/postgres}",
+    "status": "PASS"
+  },
+  "rls_and_ownership_verification": {
+    "relrowsecurity_all_true": true,
+    "relforcerowsecurity_all_false": true,
+    "rls_policies_count": 0,
+    "table_owner": "postgres",
+    "sequence_owner": "postgres",
+    "status": "PASS"
+  },
+  "future_default_privileges_verification": {
+    "postgres_in_public_tables": "{postgres=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+    "postgres_in_public_sequences": "{postgres=rwU/postgres,service_role=rwU/postgres}",
+    "anon_authenticated_granted": false,
+    "supabase_admin_defaults_documented": true,
+    "status": "PASS"
+  },
+  "git_preservation": {
+    "branch": "main",
+    "head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "staged_files_count": 0,
+    "modified_tracked_files_count": 1
+  }
+}

@@ -1,0 +1,323 @@
+{
+  "audit_metadata": {
+    "project": "ManuMind AI — Explainable Multi-Agent AI System for Manufacturing Anomaly Detection and Root Cause Analysis",
+    "institution": "Department of AI & Data Science, RMK Engineering College",
+    "milestone": "Phase 4 Step 3.1 — Independent RAG MCP Bridge and Retrieval Closure Audit",
+    "audit_type": "INDEPENDENT_READ_ONLY_AUDIT",
+    "audit_target": "Phase 4 Step 3 (search_manuals Read-Only RAG Retrieval MCP Tool)",
+    "repository": "D:\\Desktop\\FInal year project\\manumind-ai",
+    "branch": "main",
+    "head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "remote_origin": "https://github.com/Bhavya050305/explainable-multi-agent-manufacturing-rca.git",
+    "synchronization_status": "synchronized (ahead 0, behind 0)",
+    "timestamp": "2026-11-15T18:26:00+05:30",
+    "verdict": "APPROVED FOR STEP 4"
+  },
+  "git_baseline": {
+    "branch": "main",
+    "head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "is_head_valid": true,
+    "ahead_count": 0,
+    "behind_count": 0,
+    "staged_count": 0,
+    "unstaged_count": 0,
+    "untracked_count": 24,
+    "untracked_files": [
+      "backend/app/mcp_server/__init__.py",
+      "backend/app/mcp_server/__main__.py",
+      "backend/app/mcp_server/rag_bridge.py",
+      "backend/app/mcp_server/schemas.py",
+      "backend/app/mcp_server/server.py",
+      "backend/app/mcp_server/tools.py",
+      "backend/app/rag/bridge_runner.py",
+      "backend/requirements-mcp.txt",
+      "backend/tests/test_mcp_manufacturing_tools.py",
+      "backend/tests/test_mcp_rag_retrieval.py",
+      "backend/tests/test_mcp_server_skeleton.py",
+      "reports/phase3/phase3_step9_independent_staged_release_audit.json",
+      "reports/phase3/phase3_step9_independent_staged_release_audit_report.md",
+      "reports/phase4/phase4_step0_mcp_readiness_audit.json",
+      "reports/phase4/phase4_step0_mcp_readiness_audit_report.md",
+      "reports/phase4/phase4_step1a_mcp_architecture_reconciliation.json",
+      "reports/phase4/phase4_step1a_mcp_architecture_reconciliation_report.md",
+      "reports/phase4/phase4_step1b_mcp_dependency_installation.json",
+      "reports/phase4/phase4_step1b_mcp_dependency_installation_report.md",
+      "reports/phase4/phase4_step1c_mcp_server_skeleton.json",
+      "reports/phase4/phase4_step1c_mcp_server_skeleton_report.md",
+      "reports/phase4/phase4_step2_read_only_tools_implementation.json",
+      "reports/phase4/phase4_step2_read_only_tools_implementation_report.md",
+      "reports/phase4/phase4_step3_rag_retrieval_mcp_tool.json",
+      "reports/phase4/phase4_step3_rag_retrieval_mcp_tool_report.md"
+    ]
+  },
+  "subprocess_bridge_security_audit": {
+    "target_interpreter": {
+      "path_resolution": ".venv-rag\\Scripts\\python.exe",
+      "resolution_type": "application_controlled_relative_path",
+      "user_controllable": false,
+      "exists_and_verified": true,
+      "status": "PASS"
+    },
+    "shell_injection_protection": {
+      "shell_flag": false,
+      "invocation_style": "argument_list_direct_exec",
+      "user_query_transfer": "sys.stdin (JSON serialized payload)",
+      "command_interpolation": false,
+      "status": "PASS"
+    },
+    "working_directory": {
+      "explicit_cwd": "D:\\Desktop\\FInal year project\\manumind-ai (repo_root)",
+      "status": "PASS"
+    },
+    "stream_isolation": {
+      "child_stdout": "Single-line JSON response only; telemetry disabled; strict error mapping",
+      "child_stderr": "All diagnostic logs and telemetry directed to sys.stderr",
+      "parent_stdout_protection": "proc.stdout captured by pipe; not emitted to server stdout",
+      "extraneous_stdout_rejection": "Verified: json.loads fails on multi-line or extra data",
+      "status": "PASS"
+    },
+    "memory_boundedness": {
+      "max_k": 20,
+      "average_chunk_size_bytes": 600,
+      "max_expected_payload_bytes": 50000,
+      "unbounded_growth_risk": false,
+      "status": "PASS"
+    },
+    "timeout_and_process_cleanup": {
+      "timeout_seconds": 30.0,
+      "timeout_enforcement": "subprocess.TimeoutExpired handled with RAGBridgeTimeoutError",
+      "standard_library_cleanup": "subprocess.run calls process.kill() and process.wait() on TimeoutExpired",
+      "status": "PASS"
+    },
+    "secret_exposure_protection": {
+      "error_messages_contain_env_dumps": false,
+      "status": "PASS"
+    }
+  },
+  "retrieval_and_score_semantics_audit": {
+    "embedding_model": {
+      "model_name": "BAAI/bge-small-en-v1.5",
+      "pinned_revision": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+      "dimensions": 384,
+      "normalization": true,
+      "status": "MATCH"
+    },
+    "chromadb_collection": {
+      "collection_name": "manumind_bge_small_v1",
+      "path": "knowledge_base/index/chroma_bge_small_v1",
+      "record_count": 564,
+      "distance_space": "cosine",
+      "status": "MATCH"
+    },
+    "similarity_score_transformation": {
+      "distance_metric": "HNSW Cosine Distance (range [0.0, 2.0])",
+      "transformation_formula": "similarity_score = max(0.0, min(1.0, 1.0 - raw_distance))",
+      "mathematical_meaning": "Derived cosine similarity (cos theta) clipped to [0.0, 1.0]",
+      "monotonicity": "Larger values strictly indicate greater semantic vector alignment",
+      "probabilistic_claim": "None. Labeled as 'Derived cosine similarity score [0.0, 1.0]', NOT probability or verified defect likelihood",
+      "mandatory_disclaimer": "Enforced in Pydantic schema and response payload",
+      "status": "VERIFIED_ACCURATE"
+    },
+    "provenance_and_metadata_preservation": {
+      "document_id": "PRESERVED",
+      "parent_chunk_id": "PRESERVED",
+      "category": "PRESERVED",
+      "section_heading": "PRESERVED",
+      "source_path": "PRESERVED",
+      "content": "PRESERVED",
+      "content_hash": "PRESERVED (SHA-256)",
+      "is_synthetic": "PRESERVED (boolean)",
+      "is_safety_related": "PRESERVED (boolean)",
+      "synthetic_disclosure_notice": "PRESERVED (> **SAFETY NOTICE: SYNTHETIC DEMONSTRATION...**)",
+      "provenance_validated": "PRESERVED (True)"
+    }
+  },
+  "protected_invariant_reconciliation": {
+    "sqlite_machines": {
+      "expected": 10,
+      "observed": 10,
+      "status": "EXACT_MATCH"
+    },
+    "sqlite_sensor_readings": {
+      "expected": 40000,
+      "observed": 40000,
+      "status": "EXACT_MATCH"
+    },
+    "sqlite_alerts": {
+      "expected": 5,
+      "observed": 5,
+      "status": "EXACT_MATCH"
+    },
+    "sqlite_tickets": {
+      "expected": 1,
+      "observed": 1,
+      "status": "EXACT_MATCH"
+    },
+    "chromadb_collection_name": {
+      "expected": "manumind_bge_small_v1",
+      "observed": "manumind_bge_small_v1",
+      "status": "EXACT_MATCH"
+    },
+    "chromadb_records": {
+      "expected": 564,
+      "observed": 564,
+      "status": "EXACT_MATCH"
+    },
+    "chromadb_dimensions": {
+      "expected": 384,
+      "observed": 384,
+      "status": "EXACT_MATCH"
+    },
+    "phase3_source_documents": {
+      "expected": 418,
+      "observed": 418,
+      "status": "EXACT_MATCH"
+    },
+    "canonical_chunks": {
+      "expected": 564,
+      "observed": 564,
+      "status": "EXACT_MATCH"
+    },
+    "synthetic_placeholders": {
+      "expected": 123,
+      "observed": 123,
+      "status": "EXACT_MATCH"
+    },
+    "isolation_forest_threshold": {
+      "expected": 0.0269,
+      "observed": 0.0269,
+      "status": "EXACT_MATCH"
+    },
+    "lstm_autoencoder_threshold": {
+      "expected": 0.901464,
+      "observed": 0.901464,
+      "status": "EXACT_MATCH"
+    },
+    "requirements_rag_lock_sha256": {
+      "expected": "778fde7658e8f5a0fd3cb039c6271fbbcce95ab967fbece6d29ca82e3f035ad2",
+      "observed": "778fde7658e8f5a0fd3cb039c6271fbbcce95ab967fbece6d29ca82e3f035ad2",
+      "status": "EXACT_MATCH"
+    },
+    "environment_separation": {
+      "base_python_pip_check": "PASSED (No broken requirements found)",
+      "venv_rag_pip_check": "PASSED (No broken requirements found)",
+      "status": "PASS"
+    },
+    "mcp_server_registered_tools": {
+      "expected_count": 5,
+      "observed_count": 5,
+      "tools": [
+        "ping",
+        "get_machine_data",
+        "detect_anomaly",
+        "predict_failure_risk",
+        "search_manuals"
+      ],
+      "status": "EXACT_MATCH"
+    }
+  },
+  "test_evidence_audit": {
+    "suites_audited": {
+      "test_mcp_rag_retrieval.py": {
+        "suite_description": "MCP RAG Retrieval Tool Unit & Subprocess Integration Tests",
+        "total_tests": 15,
+        "passed": 15,
+        "failed": 0,
+        "execution_time_seconds": 32.63,
+        "status": "PASS"
+      },
+      "test_mcp_manufacturing_tools.py": {
+        "suite_description": "MCP Manufacturing Tools Unit & Subprocess Integration Tests (Tools 1–3)",
+        "total_tests": 20,
+        "passed": 20,
+        "failed": 0,
+        "execution_time_seconds": 73.09,
+        "status": "PASS"
+      },
+      "test_mcp_server_skeleton.py": {
+        "suite_description": "MCP Server Skeleton and Core Lifecycle Tests",
+        "total_tests": 4,
+        "passed": 4,
+        "failed": 0,
+        "execution_time_seconds": 6.34,
+        "status": "PASS"
+      },
+      "test_rag_retrieval.py": {
+        "suite_description": "Phase 3 Retrieval Service Unit & Integration Tests (venv-rag)",
+        "total_tests": 14,
+        "passed": 14,
+        "failed": 0,
+        "execution_time_seconds": 2.32,
+        "status": "PASS"
+      },
+      "test_rag_source_resolver.py": {
+        "suite_description": "Phase 3 Source Provenance Resolver Tests (venv-rag)",
+        "total_tests": 9,
+        "passed": 9,
+        "failed": 0,
+        "execution_time_seconds": 0.03,
+        "status": "PASS"
+      }
+    },
+    "total_tests_verified": 62,
+    "total_tests_passed": 62,
+    "total_tests_failed": 0
+  },
+  "findings": [
+    {
+      "id": "F-PHASE4-S3-001",
+      "title": "Physical Location of Bridge Runner in RAG Package",
+      "severity": "INFO",
+      "file_path": "backend/app/rag/bridge_runner.py",
+      "line_range": "1-132",
+      "reproducible_evidence": "Audit prompt references backend/app/mcp_server/bridge_runner.py, but file is located at backend/app/rag/bridge_runner.py.",
+      "impact": "None. Structurally cleaner to keep bridge_runner in backend.app.rag where Phase 3 imports reside.",
+      "blocks_step4": false,
+      "recommended_remediation": "Document path explicitly in audit reports and architecture references."
+    },
+    {
+      "id": "F-PHASE4-S3-002",
+      "title": "Derived Cosine Similarity Semantics Accurately Documented",
+      "severity": "INFO",
+      "file_path": "backend/app/rag/retrieval_service.py",
+      "line_range": "163-167",
+      "reproducible_evidence": "derived_sim = max(0.0, min(1.0, 1.0 - raw_dist_float)) is accurately described as derived cosine similarity score, not probability.",
+      "impact": "Positive. Prevents hallucinated or misattributed statistical confidence.",
+      "blocks_step4": false,
+      "recommended_remediation": "Maintain consistent wording in future agent prompt templates."
+    },
+    {
+      "id": "F-PHASE4-S3-003",
+      "title": "Subprocess Cold-Start Latency for On-Demand CPU Retrieval",
+      "severity": "LOW",
+      "file_path": "backend/app/mcp_server/rag_bridge.py",
+      "line_range": "146-154",
+      "reproducible_evidence": "Subprocess execution takes ~9.8s to 10.5s per retrieval call due to PyTorch and BGE model loading on CPU.",
+      "impact": "Guarantees complete memory isolation and stream hygiene, but is noticeable in interactive multi-turn loops.",
+      "blocks_step4": false,
+      "recommended_remediation": "Acceptable for Phase 4 tool integration. Consider persistent worker daemon in future production hardening."
+    },
+    {
+      "id": "F-PHASE4-S3-004",
+      "title": "Single-Line JSON Protocol Safely Rejects Extraneous Output",
+      "severity": "INFO",
+      "file_path": "backend/app/mcp_server/rag_bridge.py",
+      "line_range": "179-188",
+      "reproducible_evidence": "json.loads(stdout_text) raises JSONDecodeError on any extra data or multi-line stdout, triggering RAGBridgeProcessError.",
+      "impact": "Positive. Prevents corrupted or partial data from entering tool responses.",
+      "blocks_step4": false,
+      "recommended_remediation": "Preserve strict single-line JSON parsing pattern."
+    },
+    {
+      "id": "F-PHASE4-S3-005",
+      "title": "Windows Loopback Socket Creation in Standard Sandbox Mode",
+      "severity": "INFO",
+      "file_path": "backend/tests/test_mcp_rag_retrieval.py",
+      "line_range": "378-435",
+      "reproducible_evidence": "Real stdio subprocess lifecycle tests on Windows require loopback socket creation; standard sandbox mode blocks self-pipes, requiring elevated execution.",
+      "impact": "None on runtime production deployment; verified passing under BypassSandbox: true.",
+      "blocks_step4": false,
+      "recommended_remediation": "Document Windows loopback testing requirements in test documentation."
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "project": "ManuMind AI",
+  "milestone": "Phase 5 Step 2.1 — Focused Security and Acceptance-Gap Verification",
+  "timestamp": "2026-11-19T21:18:00+05:30",
+  "verdict": "PASS WITH DOCUMENTED LIMITATIONS",
+  "verdict_justification": "Core security invariants are verified. The hard-coded 0.5 verification threshold and absence of verified_by in CandidateRootCause allow an agent/LLM to mark a hypothesis as VERIFIED if evidence IDs are provided. This diverges from the Step 0.1 multi-modal consensus rubric and is documented with a recommended minimum correction for Step 3. Human approval governance and reducer immutability are verified, with documented test coverage gaps.",
+  "root_cause_verification_investigation": {
+    "primary_threshold_location": "backend/app/agents/schemas.py:166-170",
+    "state_guard_location": "backend/app/agents/state.py:176-184",
+    "threshold_value": 0.5,
+    "is_hard_coded": true,
+    "allows_agent_self_verification": true,
+    "separate_verification_decision_exists": false,
+    "step_0_1_alignment": "DIVERGENT (Step 0.1 establishes 0.60 human escalation cutoff and 0.80 multi-modal consensus rubric)",
+    "recommended_correction": "Restrict RCA agent proposals to UNVERIFIED or HYPOTHESIS_PENDING; add verified_by and verification_method to CandidateRootCause; reserve VERIFIED status for Supervisor Tier 1/2 consensus evaluation in Step 3."
+  },
+  "human_approval_governance": {
+    "all_five_statuses_present": true,
+    "statuses": [
+      "NOT_REQUIRED",
+      "PENDING",
+      "APPROVED",
+      "REJECTED",
+      "EXPIRED"
+    ],
+    "agent_self_authorization_rejected": true,
+    "approval_status_alone_authorizes_ticket": false,
+    "secrets_stored_in_state": false,
+    "distinguishes_metadata_from_auth_token": true,
+    "implementation_references": {
+      "enums": "backend/app/agents/enums.py:105-111",
+      "schema_validator": "backend/app/agents/schemas.py:234-251",
+      "state_validator": "backend/app/agents/state.py:167-173",
+      "unit_test": "backend/tests/test_agent_state.py:160-193"
+    },
+    "test_coverage_gaps": [
+      "No dedicated unit test for REJECTED, EXPIRED, or NOT_REQUIRED lifecycle states",
+      "No state-machine transition guard in reducers (e.g. REJECTED -> APPROVED)",
+      "Channel write-gating for human_approval needs enforcement in Step 3 node definitions"
+    ]
+  },
+  "reducer_protection": {
+    "supervisor_overwrite_semantics": "EXPLICIT (overwrite_supervisor_field)",
+    "candidate_root_causes_immutability": "PRESERVED (Never deletes existing causes; appends competing causes with __alt_N)",
+    "evidence_conflict_preservation": "PRESERVED (Disambiguates with __conflict_N)",
+    "input_immutability_verified": true
+  },
+  "git_status": {
+    "branch": "main",
+    "head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "head_matches_expected": true,
+    "staged_files_count": 0,
+    "modified_tracked_files_count": 1,
+    "untracked_files_preserved": true
+  }
+}

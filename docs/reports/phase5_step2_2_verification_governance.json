@@ -1,0 +1,101 @@
+{
+  "project": "ManuMind AI",
+  "institution": "Department of AI & Data Science, RMK Engineering College",
+  "milestone": "Phase 5 Step 2.2 — Root-Cause Verification Governance Hardening",
+  "timestamp": "2026-11-19T21:35:00+05:30",
+  "verdict": "PASS — FULLY HARDENED",
+  "verdict_justification": "All security and governance gaps identified in Step 2.1 have been resolved. Candidate root causes can no longer directly self-assert VERIFIED status, resolving the LLM hallucination and self-verification vulnerability. Authoritative verification is enforced via a distinct RootCauseVerificationDecision model governed by the Step 0.1 multi-modal rubric (corroboration score >= 0.60, source diversity count >= 2, non-empty evidence IDs, worker agent exclusion). The human approval lifecycle state machine prevents illegal transitions from terminal states. Multi-agent write boundaries forbid worker agents from mutating approval, verification, or workflow status channels. All 44 tests pass with zero failures.",
+  "root_cause_verification_hardening": {
+    "hypothesis_candidate_separation": {
+      "candidate_model": "CandidateRootCause (backend/app/agents/schemas.py:125-171)",
+      "self_assertion_blocked": true,
+      "allowed_candidate_statuses": ["UNVERIFIED", "HYPOTHESIS_PENDING"],
+      "hardcoded_0_5_removed": true,
+      "validation_rule": "Direct instantiation with verification_status=VERIFIED raises Security Invariant Violation ValueError."
+    },
+    "verification_decision_model": {
+      "model": "RootCauseVerificationDecision (backend/app/agents/schemas.py:174-232)",
+      "corroboration_score_threshold": 0.60,
+      "source_diversity_min_count": 2,
+      "requires_evidence_ids": true,
+      "worker_agent_exclusion": ["ANOMALY_DETECTION", "ROOT_CAUSE_ANALYSIS"],
+      "authorized_authorities": ["SUPERVISOR_CORROBORATION_ENGINE", "HUMAN_MAINTENANCE_ENGINEER"],
+      "rubric_version": "STEP_0_1_TIERED_RUBRIC_v1"
+    },
+    "state_cross_field_governance": {
+      "state_channel": "verification_decisions: Annotated[List[RootCauseVerificationDecision], merge_verification_decisions]",
+      "state_validator": "backend/app/agents/state.py:180-213",
+      "requires_matching_verified_decision": true,
+      "validates_candidate_reference": true,
+      "validates_evidence_provenance_in_state": true
+    }
+  },
+  "human_approval_state_machine": {
+    "model": "HumanApprovalDetails (backend/app/agents/schemas.py:263-350)",
+    "lifecycle_validator": "validate_transition_to (backend/app/agents/schemas.py:294-328)",
+    "valid_transitions": {
+      "PENDING": ["APPROVED", "REJECTED", "EXPIRED", "PENDING"]
+    },
+    "terminal_states": ["APPROVED", "REJECTED", "EXPIRED"],
+    "illegal_transitions_blocked": [
+      "APPROVED -> REJECTED",
+      "APPROVED -> PENDING",
+      "REJECTED -> APPROVED",
+      "REJECTED -> PENDING",
+      "EXPIRED -> APPROVED",
+      "NOT_REQUIRED -> APPROVED"
+    ],
+    "agent_self_authorization_rejected": true,
+    "reducer_channel": "human_approval: Annotated[HumanApprovalDetails, merge_human_approval]"
+  },
+  "write_boundary_governance": {
+    "validator": "validate_agent_state_update (backend/app/agents/reducers.py:321-352)",
+    "restricted_fields": ["human_approval", "verification_decisions", "workflow_status"],
+    "enforced_agents": ["ANOMALY_DETECTION", "ROOT_CAUSE_ANALYSIS"],
+    "action_on_violation": "PermissionError with explicit Security Write-Boundary Violation"
+  },
+  "reducer_enhancements": {
+    "merge_verification_decisions": {
+      "deduplication": true,
+      "conflict_preservation_suffix": "__alt_N",
+      "chronological_ordering": "verified_at ascending",
+      "supports_dict_and_model": true,
+      "input_immutability": true
+    },
+    "merge_human_approval": {
+      "lifecycle_transition_enforcement": true,
+      "supports_dict_and_model": true,
+      "input_immutability": true
+    }
+  },
+  "test_execution": {
+    "test_files": [
+      "backend/tests/test_agent_state.py",
+      "backend/tests/test_agent_reducers.py",
+      "backend/tests/test_agent_verification_governance.py"
+    ],
+    "total_tests": 44,
+    "passed": 44,
+    "failed": 0,
+    "skipped": 0,
+    "duration_seconds": 5.50
+  },
+  "environment_invariants": {
+    "python_version": "3.11.9",
+    "langgraph_version": "0.2.45",
+    "langchain_core_version": "0.3.15",
+    "pip_check": "Clean (No broken requirements found)",
+    "requirements_rag_lock_sha256": "778fde7658e8f5a0fd3cb039c6271fbbcce95ab967fbece6d29ca82e3f035ad2",
+    "chromadb_collection": "manumind_bge_small_v1",
+    "chromadb_embeddings_count": 564,
+    "chromadb_embedding_dim": 384,
+    "supabase_alembic_head": "f3a9082b1c42"
+  },
+  "git_status": {
+    "branch": "main",
+    "head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "staged_files_count": 0,
+    "commits_made": 0,
+    "untracked_files_preserved": true
+  }
+}

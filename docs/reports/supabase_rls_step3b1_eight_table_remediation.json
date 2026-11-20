@@ -1,0 +1,94 @@
+{
+  "project": "ManuMind AI",
+  "milestone": "Phase 5 — Supabase Security Remediation",
+  "step": "Step 3B.1 — Eight-Table RLS Coverage Remediation",
+  "timestamp": "2026-11-18T20:36:00+05:30",
+  "verdict": "READY FOR STEP 3B EXECUTION REVIEW",
+  "verdict_justification": "The unexecuted Alembic migration e4b19082a5c1 has been remediated to enable standard Row Level Security across all eight public tables (machines, sensor_readings, alembic_version, maintenance_history, alerts, tickets, ticket_proposals, consumed_tokens). Upgrade and downgrade operations are completely symmetrical. Zero GRANT, REVOKE, FORCE ROW LEVEL SECURITY, or permissive policies are present. Static AST and syntax validation passed cleanly, confirming linear Alembic DAG continuity. Live database verification confirmed that the live cluster remains strictly at baseline revision 1273f18b72a2 with zero database mutations.",
+  "preflight_summary": {
+    "git_branch": "main",
+    "git_head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "staged_files_count": 0,
+    "modified_tracked_files_count": 1,
+    "untracked_files_count": 20,
+    "live_database_current_revision": "1273f18b72a2",
+    "repository_migration_head": "e4b19082a5c1",
+    "migration_dag_topology": "<base> -> 1273f18b72a2 (live) -> c742f9a1e0b5 (pending) -> e4b19082a5c1 (head)"
+  },
+  "remediated_migration_specification": {
+    "file_path": "backend/alembic/versions/e4b19082a5c1_enable_rls_on_public_tables.py",
+    "revision": "e4b19082a5c1",
+    "down_revision": "c742f9a1e0b5",
+    "target_tables_count": 8,
+    "target_tables": [
+      "machines",
+      "sensor_readings",
+      "alembic_version",
+      "maintenance_history",
+      "alerts",
+      "tickets",
+      "ticket_proposals",
+      "consumed_tokens"
+    ],
+    "upgrade_operations": [
+      "ALTER TABLE public.machines ENABLE ROW LEVEL SECURITY;",
+      "ALTER TABLE public.sensor_readings ENABLE ROW LEVEL SECURITY;",
+      "ALTER TABLE public.alembic_version ENABLE ROW LEVEL SECURITY;",
+      "ALTER TABLE public.maintenance_history ENABLE ROW LEVEL SECURITY;",
+      "ALTER TABLE public.alerts ENABLE ROW LEVEL SECURITY;",
+      "ALTER TABLE public.tickets ENABLE ROW LEVEL SECURITY;",
+      "ALTER TABLE public.ticket_proposals ENABLE ROW LEVEL SECURITY;",
+      "ALTER TABLE public.consumed_tokens ENABLE ROW LEVEL SECURITY;"
+    ],
+    "downgrade_operations": [
+      "ALTER TABLE public.consumed_tokens DISABLE ROW LEVEL SECURITY;",
+      "ALTER TABLE public.ticket_proposals DISABLE ROW LEVEL SECURITY;",
+      "ALTER TABLE public.tickets DISABLE ROW LEVEL SECURITY;",
+      "ALTER TABLE public.alerts DISABLE ROW LEVEL SECURITY;",
+      "ALTER TABLE public.maintenance_history DISABLE ROW LEVEL SECURITY;",
+      "ALTER TABLE public.alembic_version DISABLE ROW LEVEL SECURITY;",
+      "ALTER TABLE public.sensor_readings DISABLE ROW LEVEL SECURITY;",
+      "ALTER TABLE public.machines DISABLE ROW LEVEL SECURITY;"
+    ]
+  },
+  "security_invariants_validation": {
+    "standard_rls_only": true,
+    "force_rls_excluded": true,
+    "grant_statements_count": 0,
+    "revoke_statements_count": 0,
+    "policies_created_count": 0,
+    "policies_dropped_count": 0,
+    "broad_permission_restoration_count": 0,
+    "unexpected_sql_count": 0,
+    "hardcoded_secrets_count": 0,
+    "preceding_migration_modified": false
+  },
+  "alembic_transaction_analysis": {
+    "env_file": "backend/alembic/env.py",
+    "transaction_context_manager": "with context.begin_transaction(): context.run_migrations()",
+    "transaction_per_migration_configured": false,
+    "transaction_execution_behavior": "SINGLE_ATOMIC_TRANSACTION",
+    "atomic_rollback_guarantee": "Both c742f9a1e0b5 and e4b19082a5c1 execute inside a single PostgreSQL transaction block. Failure of any DDL statement triggers a full rollback to revision 1273f18b72a2."
+  },
+  "backend_role_compatibility": {
+    "role_name": "postgres",
+    "rolsuper": false,
+    "rolbypassrls": true,
+    "rolcanlogin": true,
+    "table_owner": "postgres",
+    "compatibility_evaluation": "Direct SQLAlchemy/psycopg2 queries bypass standard RLS because postgres has rolbypassrls=True and FORCE ROW LEVEL SECURITY is disabled. Zero backend query degradation."
+  },
+  "static_validation_summary": {
+    "py_compile_status": "PASSED",
+    "ast_syntax_status": "PASSED",
+    "alembic_heads": "e4b19082a5c1 (head)",
+    "alembic_history": "<base> -> 1273f18b72a2 -> c742f9a1e0b5 -> e4b19082a5c1 (head)"
+  },
+  "verification_plan_summary": {
+    "catalog_check_targets": 8,
+    "expected_relrowsecurity": true,
+    "expected_relforcerowsecurity": false,
+    "expected_alembic_version": "e4b19082a5c1",
+    "postgrest_verification_strategy": "Anonymous HTTP GET requests to PostgREST endpoints (/rest/v1/<table_name>) using public anon key must return HTTP 200 with empty array []. Mutations must be rejected."
+  }
+}

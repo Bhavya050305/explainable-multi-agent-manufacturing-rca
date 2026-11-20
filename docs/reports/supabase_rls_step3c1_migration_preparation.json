@@ -1,0 +1,75 @@
+{
+  "project": "ManuMind AI",
+  "milestone": "Phase 5 — Supabase Security Remediation",
+  "step": "Step 3C.1 — Least-Privilege Migration Preparation",
+  "timestamp": "2026-11-18T21:20:00+05:30",
+  "verdict": "READY FOR STEP 3C.2 INDEPENDENT MIGRATION REVIEW",
+  "verdict_justification": "Alembic migration f3a9082b1c42_harden_least_privilege_grants.py was prepared and statically verified to implement least-privilege privilege hardening. The migration revokes all table privileges on all eight public tables and sequence privileges on both public sequences from anon and authenticated, and alters future default table and sequence privileges for role postgres in schema public. Downgrade is configured to fail closed, raising NotImplementedError to prevent automated restoration of dangerous privileges (including TRUNCATE). Static AST compilation, token scan, and Alembic DAG checks passed with 100% success. Live database verification confirmed that the live cluster remains untouched at baseline revision 1273f18b72a2.",
+  "preflight_summary": {
+    "git_branch": "main",
+    "git_head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "staged_files_count": 0,
+    "modified_tracked_files_count": 1,
+    "untracked_files_count": 21,
+    "live_database_current_revision": "1273f18b72a2",
+    "repository_migration_head": "f3a9082b1c42",
+    "migration_dag_topology": "<base> -> 1273f18b72a2 (live) -> c742f9a1e0b5 -> e4b19082a5c1 -> f3a9082b1c42 (head)"
+  },
+  "migration_specification": {
+    "file_path": "backend/alembic/versions/f3a9082b1c42_harden_least_privilege_grants.py",
+    "revision": "f3a9082b1c42",
+    "down_revision": "e4b19082a5c1",
+    "target_tables_count": 8,
+    "target_tables": [
+      "public.machines",
+      "public.sensor_readings",
+      "public.alembic_version",
+      "public.maintenance_history",
+      "public.alerts",
+      "public.tickets",
+      "public.ticket_proposals",
+      "public.consumed_tokens"
+    ],
+    "target_sequences_count": 2,
+    "target_sequences": [
+      "public.sensor_readings_id_seq",
+      "public.maintenance_history_id_seq"
+    ],
+    "upgrade_operations": [
+      "REVOKE ALL ON TABLE public.machines, public.sensor_readings, public.alembic_version, public.maintenance_history, public.alerts, public.tickets, public.ticket_proposals, public.consumed_tokens FROM anon, authenticated;",
+      "REVOKE ALL ON SEQUENCE public.sensor_readings_id_seq, public.maintenance_history_id_seq FROM anon, authenticated;",
+      "ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public REVOKE ALL ON TABLES FROM anon, authenticated;",
+      "ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public REVOKE ALL ON SEQUENCES FROM anon, authenticated;"
+    ],
+    "downgrade_behavior": {
+      "fail_closed": true,
+      "exception_raised": "NotImplementedError",
+      "rationale": "Automated rollback must never restore broad table privileges (such as full grants) to API roles, as broad permissions reintroduce critical database-level vulnerabilities including unrestricted TRUNCATE capabilities."
+    }
+  },
+  "security_invariants_validation": {
+    "grants_to_anon_or_authenticated_count": 0,
+    "force_rls_used": false,
+    "policies_created_count": 0,
+    "prohibited_tokens_found_count": 0,
+    "service_role_privileges_modified": false,
+    "postgres_privileges_modified": false,
+    "supabase_admin_privileges_modified": false,
+    "public_role_privileges_modified": false,
+    "preceding_migrations_modified": false
+  },
+  "transaction_and_atomicity_analysis": {
+    "env_file": "backend/alembic/env.py",
+    "transaction_mode": "SINGLE_ATOMIC_TRANSACTION",
+    "transaction_per_migration": false,
+    "execution_plan": "python -m alembic -c backend/alembic.ini upgrade head executes c742f9a1e0b5, e4b19082a5c1, and f3a9082b1c42 in one single atomic transaction with zero window of exposure.",
+    "rollback_guarantee": "Failure of any statement triggers a full automatic rollback to revision 1273f18b72a2."
+  },
+  "static_validation_summary": {
+    "py_compile_status": "PASSED",
+    "ast_syntax_status": "PASSED",
+    "alembic_heads": "f3a9082b1c42 (head)",
+    "alembic_history": "<base> -> 1273f18b72a2 -> c742f9a1e0b5 -> e4b19082a5c1 -> f3a9082b1c42 (head)",
+    "live_database_mutation_check": "ZERO MUTATIONS (Active revision remains ['1273f18b72a2'])"
+  }
+}

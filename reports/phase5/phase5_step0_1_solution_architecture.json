@@ -1,0 +1,269 @@
+{
+  "audit_metadata": {
+    "project": "ManuMind AI",
+    "institution": "Department of AI & Data Science, RMK Engineering College",
+    "milestone": "Phase 5 Step 0.1 — Comprehensive Risk Investigation, Root Cause Analysis, and Solution Architecture",
+    "audit_date": "2026-11-17",
+    "repository": "D:\\Desktop\\FInal year project\\manumind-ai",
+    "branch": "main",
+    "baseline_head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "predecessor_verdict": "READY WITH CONDITIONS"
+  },
+  "issues_investigated": [
+    {
+      "issue_id": "ISSUE-01",
+      "topic": "LangGraph Dependency and Environment Compatibility",
+      "severity": "HIGH",
+      "root_cause": "Phase 4 used isolated subprocess bridges for ML and RAG tools; the Base Python 3.11 environment lacks orchestration dependencies (langgraph, langchain-core, langchain).",
+      "empirical_evidence": "Base Python 3.11.9 hosts pydantic 2.13.4, mcp 2.3.0, sqlalchemy 2.0.52, alembic 1.19.1, fastapi 0.141.1, tensorflow 2.21.0. langgraph and langchain-core are NOT installed.",
+      "candidate_strategies": [
+        {
+          "name": "Strategy A: Install into Base Python 3.11",
+          "evaluation": "Optimal. Pure Python libraries; zero C++ conflicts; unified in-process dispatch (<1ms); preserves clean 2-tier architecture."
+        },
+        {
+          "name": "Strategy B: Dedicated .venv-orchestration",
+          "evaluation": "Rejected. Creates a 3-venv architecture; introduces 15-30s Windows subprocess cold-start latency per agent turn."
+        }
+      ],
+      "selected_solution": {
+        "strategy": "Strategy A (Base Python Integration)",
+        "requirements_file": "backend/requirements-phase5.txt",
+        "pinned_packages": [
+          "langgraph==0.2.45",
+          "langchain-core==0.3.15",
+          "langchain==0.3.7",
+          "langchain-community==0.3.7",
+          "tenacity>=8.2.0,<10.0.0"
+        ]
+      },
+      "pydantic_compatibility": "Fully compatible with Pydantic V2 (pydantic==2.13.4).",
+      "target_step": "Step 1",
+      "blocks_implementation": true
+    },
+    {
+      "issue_id": "ISSUE-02",
+      "topic": "Database Transaction Integrity and Atomicity",
+      "severity": "HIGH",
+      "root_cause": "Two-phase commit window: create_ticket_with_approval_gate commits at line 67 in ticket_service.py; handle_create_maintenance_ticket commits token consumption at line 931 in tools.py.",
+      "empirical_evidence": "ticket_service.py db.commit() followed by tools.py db.commit(). Failure between commits leaves active ticket while token JTI is not recorded in consumed_tokens.",
+      "candidate_strategies": [
+        {
+          "name": "Strategy A: Caller-Controlled Single Atomic Transaction",
+          "evaluation": "Optimal. Pass commit=False to ticket_service; execute ticket insert, proposal update, and token insert inside single with db.begin() block."
+        },
+        {
+          "name": "Strategy B: Nested Savepoints (begin_nested)",
+          "evaluation": "Rejected. Does not resolve the fundamental two-commit separation."
+        },
+        {
+          "name": "Strategy C: Idempotency Coordinator Table",
+          "evaluation": "Rejected. Massive over-engineering for local SQLite architecture."
+        }
+      ],
+      "selected_solution": {
+        "strategy": "Strategy A (Caller-Controlled Single Atomic Transaction)",
+        "files_to_modify": [
+          "backend/app/services/ticket_service.py",
+          "backend/app/mcp_server/tools.py"
+        ],
+        "mechanism": "ticket_service.py flushes without committing; tools.py wraps entire operation in atomic with db.begin() block."
+      },
+      "target_step": "Step 7",
+      "blocks_implementation": false
+    },
+    {
+      "issue_id": "ISSUE-03",
+      "topic": "Human Authentication and Approval Security",
+      "severity": "MEDIUM",
+      "root_cause": "DevelopmentHumanApprovalAdapter uses in-memory dictionary with static plaintext PINs. Lacks enterprise SSO and WebAuthn hardware binding.",
+      "empirical_evidence": "backend/app/mcp_server/approval.py APPROVED_ENGINEERS dictionary containing mock credentials.",
+      "candidate_strategies": [
+        {
+          "name": "Strategy A: Dev Adapter with Strict Environment Gate",
+          "evaluation": "Selected for Phase 5 development. Fails closed if MANUMIND_ENV=production."
+        },
+        {
+          "name": "Strategy B: Enterprise OAuth2/OIDC SSO",
+          "evaluation": "Selected for Production Roadmap. Keycloak / Azure AD PKCE integration."
+        },
+        {
+          "name": "Strategy C: WebAuthn / FIDO2 Hardware Tokens",
+          "evaluation": "Selected for Production Roadmap. Phishing-proof hardware token challenge."
+        }
+      ],
+      "selected_solution": {
+        "strategy": "Pluggable Approval Gate with Environment Fail-Closed Guard",
+        "dev_mode": "DevelopmentHumanApprovalAdapter with mock registry for local CI/CD",
+        "production_gate": "Throws ApprovalConfigurationError if MANUMIND_ENV=production without EnterpriseSSOProvider",
+        "cryptographic_binding": "HMAC-SHA256 (HS256) bound to proposal ID and canonical payload SHA-256 hash"
+      },
+      "target_step": "Step 7 & Step 10",
+      "blocks_implementation": false
+    },
+    {
+      "issue_id": "ISSUE-04",
+      "topic": "LLM Provider Availability and Offline Operation",
+      "severity": "MEDIUM",
+      "root_cause": "Multi-agent graph requires LLM reasoning; exclusive reliance on cloud API risks rate limits, air-gapped test failures, and nondeterministic outputs.",
+      "empirical_evidence": "Sandbox has no outbound network access ([Errno 11001] getaddrinfo failed). External LLM calls will fail without local/mock fallback.",
+      "candidate_strategies": [
+        {
+          "name": "Strategy A: Cloud API Only",
+          "evaluation": "Rejected as sole strategy. Fails completely in offline/sandboxed academic test environments."
+        },
+        {
+          "name": "Strategy B: Deterministic Mock LLM",
+          "evaluation": "Selected for Automated Testing. Schema-conformant pre-calibrated diagnostic responses."
+        },
+        {
+          "name": "Strategy C: Multi-Provider Client Interface (ManuMindLLMClient)",
+          "evaluation": "Selected as Primary Architecture. Configurable provider (Gemini / OpenAI / Mock) with retry and non-hallucinating fallback."
+        }
+      ],
+      "selected_solution": {
+        "strategy": "Strategy C (ManuMindLLMClient with Deterministic Mock Fallback)",
+        "non_hallucination_guarantee": "If all LLM calls fail, system never fabricates root causes; outputs workflow_status=FAILED, confidence=0.0, and presents raw evidence to engineer."
+      },
+      "target_step": "Step 6",
+      "blocks_implementation": false
+    },
+    {
+      "issue_id": "ISSUE-05",
+      "topic": "Confidence Scoring and Evidence Governance",
+      "severity": "HIGH",
+      "root_cause": "System produces 5 incommensurable numerical scores (IF density score, LSTM MSE error, ResNet softmax, RAG cosine distance, Agent confidence). Mathematical averaging is invalid.",
+      "empirical_evidence": "IF score in [-0.5, 0.5]; LSTM error in [0, inf); ResNet in [0, 1]; RAG in [0.60, 1.0].",
+      "candidate_strategies": [
+        {
+          "name": "Strategy A: Weighted Arithmetic Average",
+          "evaluation": "Rejected. Mathematically invalid; conflates anomaly divergence with failure probability."
+        },
+        {
+          "name": "Strategy B: Deterministic Tiered Evidence Rubric",
+          "evaluation": "Selected. Clear categorical evaluation (High >=0.80, Moderate 0.60-0.79, Low <0.60). Human review enforced for Low confidence."
+        }
+      ],
+      "selected_solution": {
+        "strategy": "Tiered Evidence Rubric with 0.60 Human Escalation Threshold",
+        "threshold_definitions": {
+          "rag_cutoff": "0.60 minimum cosine similarity for manual relevance",
+          "human_escalation_cutoff": "0.60 synthesized confidence below which requires_human_review=True is enforced"
+        },
+        "four_diagnostic_states": [
+          "ANOMALY_DETECTED",
+          "FAILURE_SUSPECTED",
+          "ROOT_CAUSE_HYPOTHESIZED",
+          "ROOT_CAUSE_VERIFIED"
+        ]
+      },
+      "target_step": "Step 8",
+      "blocks_implementation": false
+    },
+    {
+      "issue_id": "ISSUE-06",
+      "topic": "RAG Prompt Injection and Citation Safety",
+      "severity": "HIGH",
+      "root_cause": "Retrieved manual chunks injected into RCA Agent prompt could contain adversarial override instructions; XML tags alone can be escaped.",
+      "empirical_evidence": "Corpus contains 564 canonical chunks and 123 synthetic placeholders. Malicious text could hijack LLM system directives.",
+      "candidate_strategies": [
+        {
+          "name": "Strategy A: XML Tags Alone",
+          "evaluation": "Rejected. Vulnerable to XML breakout payloads."
+        },
+        {
+          "name": "Strategy B: Multi-Layered Context Defense Pipeline",
+          "evaluation": "Selected. XML tag stripping, structural quarantine, instruction invariance directives, deterministic citation validation, synthetic labeling."
+        }
+      ],
+      "selected_solution": {
+        "strategy": "Multi-Layered Context Defense Pipeline",
+        "defenses": [
+          "Tag sanitization and escaping before prompt insertion",
+          "System prompt instruction invariance directives",
+          "Post-generation [CIT-X] citation validation against retrieved chunk IDs",
+          "Mandatory [SYNTHETIC DOCUMENTATION] labeling for 123 placeholder chunks"
+        ]
+      },
+      "target_step": "Step 5 & Step 8",
+      "blocks_implementation": false
+    },
+    {
+      "issue_id": "ISSUE-07",
+      "topic": "MCP Tool Permissions and Agent Isolation",
+      "severity": "HIGH",
+      "root_cause": "All 9 MCP tools are registered on one server instance. Relying solely on prompt instructions to prevent unauthorized tool calls is vulnerable to jailbreaks.",
+      "empirical_evidence": "server.py registers all tools. An agent given full server client could call propose_maintenance_ticket or create_maintenance_ticket without permission.",
+      "candidate_strategies": [
+        {
+          "name": "Strategy A: Prompt-Based Tool Instructions",
+          "evaluation": "Rejected. Unreliable; susceptible to model confusion and prompt injection."
+        },
+        {
+          "name": "Strategy B: Role-Based MCP Client Adapters",
+          "evaluation": "Selected. Python-level wrapper classes exposing only permitted tool methods per agent role."
+        }
+      ],
+      "selected_solution": {
+        "strategy": "Role-Based MCP Client Adapters",
+        "permission_matrix": {
+          "supervisor_agent": ["get_machine_data", "predict_failure_risk", "propose_maintenance_ticket"],
+          "anomaly_agent": ["get_machine_data", "detect_anomaly", "check_defect_image"],
+          "rca_agent": ["search_manuals", "get_maintenance_history"],
+          "human_approval_node": ["create_maintenance_ticket"]
+        },
+        "anti_self_authorization": "Tool 9 is physically excluded from all agent adapters; callable only by Human Approval Node with valid HMAC token."
+      },
+      "target_step": "Step 3",
+      "blocks_implementation": false
+    },
+    {
+      "issue_id": "ISSUE-08",
+      "topic": "System-Wide Failure Handling and Workflow Recovery",
+      "severity": "MEDIUM",
+      "root_cause": "Multi-agent workflows cross multiple process boundaries (stdio MCP, TF bridge, RAG bridge, SQLite DB, LLM APIs); lack of unified recovery causes unhandled crashes.",
+      "empirical_evidence": "Subprocess bridges have explicit 60s and 120s timeouts; failure recovery must be standardized across all graph nodes.",
+      "selected_solution": {
+        "strategy": "Deterministic Failure Handling Matrix",
+        "scenarios_handled": 13,
+        "core_invariants": [
+          "MCP failure aborts workflow cleanly; zero tickets created",
+          "RAG bridge failure falls back to telemetry + maintenance history with confidence <= 0.45",
+          "Defect bridge timeout skips visual analysis and flags warning",
+          "LLM outage triggers deterministic rule-based fallback without hallucinating causes",
+          "Token replay or expiry rejects immediately; zero database mutations"
+        ]
+      },
+      "target_step": "Step 6 & Step 8",
+      "blocks_implementation": false
+    },
+    {
+      "issue_id": "ISSUE-09",
+      "topic": "Testing and Validation Strategy",
+      "severity": "MEDIUM",
+      "root_cause": "Complex multi-agent graph requires rigorous verification across state validation, routing, prompt injection, atomicity, and performance benchmarking.",
+      "empirical_evidence": "Phase 4 verified 154 tests; Phase 5 introduces asynchronous graph transitions requiring dedicated test fixtures.",
+      "selected_solution": {
+        "strategy": "16-Suite Multi-Agent Verification Framework",
+        "key_suites": [
+          "Unified Transaction Atomicity Suite (Simulated rollback, concurrent replay)",
+          "MCP Adapter Permission Enforcement Suite",
+          "Supervisor Conditional Routing Suite",
+          "Prompt Injection Resistance Suite",
+          "Deterministic Mock LLM Offline Suite",
+          "End-to-End RCA 10-Machine Benchmark (M101-M110)"
+        ]
+      },
+      "target_step": "Step 9",
+      "blocks_implementation": false
+    }
+  ],
+  "remediation_summary": {
+    "priority_0_count": 3,
+    "priority_1_count": 5,
+    "priority_2_count": 2,
+    "total_action_items": 10,
+    "next_immediate_action": "Phase 5 Step 1: Install pinned orchestration dependencies in Base Python 3.11"
+  },
+  "final_verdict": "SOLUTION DESIGN COMPLETE"
+}

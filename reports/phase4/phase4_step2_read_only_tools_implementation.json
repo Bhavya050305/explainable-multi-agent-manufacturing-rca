@@ -1,0 +1,233 @@
+{
+  "audit_metadata": {
+    "project": "ManuMind AI — Explainable Multi-Agent AI System for Manufacturing Anomaly Detection and Root Cause Analysis",
+    "institution": "Department of AI & Data Science, RMK Engineering College",
+    "milestone": "Phase 4 Step 2 — Read-Only Manufacturing MCP Tools Implementation (Tools 1–3)",
+    "mode": "CONTROLLED_TOOL_IMPLEMENTATION_AND_VERIFICATION",
+    "repository": "D:\\Desktop\\FInal year project\\manumind-ai",
+    "branch": "main",
+    "head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "remote_origin": "https://github.com/Bhavya050305/explainable-multi-agent-manufacturing-rca.git",
+    "synchronization_status": "synchronized (ahead 0, behind 0)",
+    "timestamp": "2026-11-15T16:45:00+05:30",
+    "verdict": "READY FOR STEP 3"
+  },
+  "git_baseline": {
+    "branch": "main",
+    "head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "is_head_valid": true,
+    "ahead_count": 0,
+    "behind_count": 0,
+    "staged_count": 0,
+    "unstaged_count": 0,
+    "untracked_count": 18,
+    "untracked_files": [
+      "backend/app/mcp_server/__init__.py",
+      "backend/app/mcp_server/__main__.py",
+      "backend/app/mcp_server/schemas.py",
+      "backend/app/mcp_server/server.py",
+      "backend/app/mcp_server/tools.py",
+      "backend/requirements-mcp.txt",
+      "backend/tests/test_mcp_manufacturing_tools.py",
+      "backend/tests/test_mcp_server_skeleton.py",
+      "reports/phase3/phase3_step9_independent_staged_release_audit.json",
+      "reports/phase3/phase3_step9_independent_staged_release_audit_report.md",
+      "reports/phase4/phase4_step0_mcp_readiness_audit.json",
+      "reports/phase4/phase4_step0_mcp_readiness_audit_report.md",
+      "reports/phase4/phase4_step1a_mcp_architecture_reconciliation.json",
+      "reports/phase4/phase4_step1a_mcp_architecture_reconciliation_report.md",
+      "reports/phase4/phase4_step1b_mcp_dependency_installation.json",
+      "reports/phase4/phase4_step1b_mcp_dependency_installation_report.md",
+      "reports/phase4/phase4_step1c_mcp_server_skeleton.json",
+      "reports/phase4/phase4_step1c_mcp_server_skeleton_report.md"
+    ]
+  },
+  "tools_implemented": {
+    "tool_1": {
+      "name": "get_machine_data",
+      "purpose": "Retrieve machine profile information and historical sensor telemetry from SQLite database",
+      "input_schema": {
+        "machine_id": {
+          "type": "string",
+          "pattern": "^M1(0[1-9]|10)$",
+          "required": true,
+          "description": "Validated machine identifier (M101-M110)"
+        },
+        "window": {
+          "type": "string",
+          "required": false,
+          "default": null,
+          "description": "Optional time window: ISO interval 'start/end' or trailing relative duration ('1h', '6h', '24h', '7d')"
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 500,
+          "default": 100,
+          "required": false,
+          "description": "Maximum records to return (1-500)"
+        }
+      },
+      "database_integration": {
+        "models_used": ["Machine", "SensorReading"],
+        "session_lifecycle": "get_db() with deterministic try...finally session.close()",
+        "query_constraints": "machine_id filter, parameterized timestamp bounds, ascending chronological ordering, maximum 500 limit",
+        "zero_writes_verified": true
+      }
+    },
+    "tool_2": {
+      "name": "detect_anomaly",
+      "purpose": "Perform manufacturing anomaly inference using UnifiedInferenceService",
+      "input_schema": {
+        "machine_id": {
+          "type": "string",
+          "pattern": "^M1(0[1-9]|10)$",
+          "required": true
+        },
+        "readings": {
+          "type": "array",
+          "required": false,
+          "default": null,
+          "description": "Optional telemetry readings (falls back to latest 30 DB records if omitted)"
+        },
+        "window": {
+          "type": "string",
+          "required": false,
+          "default": null
+        },
+        "include_explainability": {
+          "type": "boolean",
+          "required": false,
+          "default": false
+        }
+      },
+      "ml_model_integration": {
+        "isolation_forest": {
+          "frozen_threshold": 0.0269,
+          "modality": "tabular point-in-time anomaly scoring",
+          "score_formula": "-decision_function(X)"
+        },
+        "lstm_autoencoder": {
+          "frozen_threshold": 0.901464,
+          "modality": "temporal sequence reconstruction error",
+          "sequence_length_required": 30,
+          "graceful_degradation": "Skipped with explicit warning when sequence < 30 observations"
+        },
+        "interpretation_safeguards": {
+          "failure_probability_claim": false,
+          "root_cause_claim": false,
+          "disclaimer_present": true
+        }
+      }
+    },
+    "tool_3": {
+      "name": "predict_failure_risk",
+      "purpose": "Formal capability status stub documenting Phase 2 Step 5 NO-GO decision",
+      "input_schema": {
+        "machine_id": {
+          "type": "string",
+          "pattern": "^M1(0[1-9]|10)$",
+          "required": true
+        },
+        "horizon_hours": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 720,
+          "default": 288,
+          "required": false
+        }
+      },
+      "response_contract": {
+        "status": "NOT_AVAILABLE",
+        "model_available": false,
+        "reason": "Phase 2 Step 5 recorded a formal NO-GO decision for the H=288 failure-risk regression task. Quantitative evaluation demonstrated insufficient calibration (R^2 < 0.20, high forecast uncertainty), failing feasibility criteria for automated failure risk prediction.",
+        "recommendation": "Use the 'detect_anomaly' tool for unsupervised statistical and sequence-level anomaly detection.",
+        "disclaimer": "The absence of a failure risk model does not imply that the machine is healthy or free of defects.",
+        "zero_calls_to_anomaly_models": true,
+        "zero_fabricated_probabilities": true
+      }
+    }
+  },
+  "source_artifacts": [
+    {
+      "path": "backend/app/mcp_server/__init__.py",
+      "sha256": "a8142efa1b92a6be7eb213bd0d089a2ae7a5aa3304f89c971c2e08f26cde75cc",
+      "purpose": "Package exports including new tools and schemas"
+    },
+    {
+      "path": "backend/app/mcp_server/server.py",
+      "sha256": "4268e531ffa04e7bac1ccc5faabce7ebfabea53737184f0580483c6d4a943a80",
+      "purpose": "MCPServer definition registering ping + Tools 1-3"
+    },
+    {
+      "path": "backend/app/mcp_server/schemas.py",
+      "sha256": "5c2349659b6890a77e9961e2310c62826e6da1015530e5acf4cb2bfdd4658561",
+      "purpose": "Pydantic v2 schemas for Tools 1, 2, and 3"
+    },
+    {
+      "path": "backend/app/mcp_server/tools.py",
+      "sha256": "57abc54cfb634622d5f9262cf9aac51cdc2a4babdf8858da7380be61775ec690",
+      "purpose": "Tool implementation handlers with DB access and ML inference"
+    },
+    {
+      "path": "backend/tests/test_mcp_manufacturing_tools.py",
+      "sha256": "132dac03646f47d29ca98a6680946b83a27f7863032ea8d80f7b115cd9f4c556",
+      "purpose": "Comprehensive 20-test unit and real stdio subprocess integration suite"
+    },
+    {
+      "path": "backend/tests/test_mcp_server_skeleton.py",
+      "sha256": "480cd89d3aa6e741d88b17926cbfb2628c43675db05cd5aed22ce2c291ef3c31",
+      "purpose": "Step 1C server skeleton test suite"
+    }
+  ],
+  "test_execution_summary": {
+    "manufacturing_tools_suite": {
+      "command": "python -m pytest backend/tests/test_mcp_manufacturing_tools.py -v",
+      "total_tests": 20,
+      "passed": 20,
+      "failed": 0,
+      "skipped": 0,
+      "status": "ALL_PASSED"
+    },
+    "server_skeleton_suite": {
+      "command": "python -m pytest backend/tests/test_mcp_server_skeleton.py -v",
+      "total_tests": 4,
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0,
+      "status": "ALL_PASSED"
+    },
+    "regression_suite": {
+      "command": "python -m pytest backend/tests/test_sensor_preprocessing.py -v",
+      "total_tests": 8,
+      "passed": 8,
+      "failed": 0,
+      "skipped": 0,
+      "status": "ALL_PASSED"
+    },
+    "environment_health": {
+      "command": "pip check",
+      "status": "No broken requirements found."
+    }
+  },
+  "invariants_and_limitations_audit": {
+    "rag_virtualenv_isolated": true,
+    "rag_lockfile_sha256": "778fde7658e8f5a0fd3cb039c6271fbbcce95ab967fbece6d29ca82e3f035ad2",
+    "rag_lockfile_status": "IDENTICAL_TO_PHASE3_BASELINE",
+    "database_state": {
+      "sqlite_db": "manumind.db",
+      "machines_count": 10,
+      "readings_count": 40000,
+      "alerts_count": 5,
+      "tickets_count": 1,
+      "mutations_detected": 0
+    },
+    "zero_ml_retraining": true,
+    "isolation_forest_threshold": 0.0269,
+    "lstm_autoencoder_threshold": 0.901464,
+    "zero_autonomous_ticket_creation": true,
+    "zero_git_staged_modifications": true,
+    "tools_4_to_7_excluded": true
+  },
+  "verdict": "READY FOR STEP 3"
+}

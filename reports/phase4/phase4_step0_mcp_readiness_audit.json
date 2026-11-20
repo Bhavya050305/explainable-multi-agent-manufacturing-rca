@@ -1,0 +1,398 @@
+{
+  "audit_metadata": {
+    "project": "ManuMind AI — Explainable Multi-Agent AI System for Manufacturing Anomaly Detection and Root Cause Analysis",
+    "institution": "Department of AI & Data Science, RMK Engineering College",
+    "milestone": "Phase 4 Step 0 — Independent MCP Integration Readiness Audit",
+    "mode": "STRONGLY_READ_ONLY_ARCHITECTURAL_AUDIT",
+    "repository": "D:\\Desktop\\FInal year project\\manumind-ai",
+    "branch": "main",
+    "expected_head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "actual_head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "remote_origin": "https://github.com/Bhavya050305/explainable-multi-agent-manufacturing-rca.git",
+    "synchronization_status": "synchronized (ahead 0, behind 0)",
+    "audit_timestamp": "2026-11-15T14:41:00+05:30",
+    "verdict": "READY WITH CONDITIONS"
+  },
+  "git_baseline": {
+    "branch": "main",
+    "head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "is_head_valid": true,
+    "ahead_count": 0,
+    "behind_count": 0,
+    "staged_count": 0,
+    "unstaged_count": 0,
+    "untracked_count": 2,
+    "untracked_files": [
+      "reports/phase3/phase3_step9_independent_staged_release_audit.json",
+      "reports/phase3/phase3_step9_independent_staged_release_audit_report.md"
+    ],
+    "working_tree_clean_except_step9_reports": true
+  },
+  "architecture_assessment": {
+    "database_subsystem": {
+      "configuration_file": "backend/app/database.py",
+      "engine_type": "SQLAlchemy 2.0 (SQLite local fallback + PostgreSQL/Supabase Pooler)",
+      "session_lifecycle": "SessionLocal generator pattern (get_db) with guaranteed cleanup",
+      "sqlite_database_path": "manumind.db",
+      "sqlite_database_size_bytes": 7495680,
+      "tables_verified": [
+        {"table": "machines", "row_count": 10, "status": "READY"},
+        {"table": "sensor_readings", "row_count": 40000, "status": "READY"},
+        {"table": "maintenance_history", "row_count": 400, "status": "READY"},
+        {"table": "alerts", "row_count": 5, "status": "READY"},
+        {"table": "tickets", "row_count": 1, "status": "READY"}
+      ]
+    },
+    "ml_inference_facade": {
+      "source_file": "backend/app/ml/inference/service.py",
+      "class_name": "UnifiedInferenceService",
+      "tabular_model": {
+        "model_id": "isolation_forest_v1",
+        "artifact_path": "ml/models_store/isolation_forest.joblib",
+        "threshold": 0.0269,
+        "input_features": ["vibration", "temperature", "pressure", "current", "rpm"],
+        "status": "READY"
+      },
+      "sequence_model": {
+        "model_id": "lstm_autoencoder_v1",
+        "artifact_path": "ml/models_store/lstm_autoencoder.keras",
+        "threshold": 0.901464,
+        "sequence_length": 30,
+        "features": 5,
+        "status": "READY"
+      },
+      "defect_vision_model": {
+        "model_id": "resnet_defect_classifier_v1",
+        "artifact_path": "ml/models_store/resnet_defect_classifier.keras",
+        "classes": 6,
+        "image_size": [128, 128],
+        "status": "READY"
+      },
+      "explainability": {
+        "shap_model": "kernel_shap_v1",
+        "attribution_method": "analytical_mse_reconstruction",
+        "thread_safety": "guaranteed via _shap_lock and _tf_lock",
+        "status": "READY"
+      },
+      "failure_risk_regression": {
+        "status": "NO_GO_PRESERVED",
+        "reason": "Phase 2 Step 5 NO-GO constraint due to synthetic coverage limitations; no model artifact exists",
+        "action_required": "Expose Tool 3 as formal unsupported capability stub returning NOT_AVAILABLE"
+      }
+    },
+    "rag_subsystem": {
+      "vector_store": "ChromaDB PersistentClient (cosine metric)",
+      "index_directory": "knowledge_base/index/chroma_bge_small_v1",
+      "collection_name": "manumind_bge_small_v1",
+      "vector_count": 564,
+      "embedding_model": "BAAI/bge-small-en-v1.5",
+      "embedding_revision": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+      "corpus_documents": 418,
+      "historical_incidents": 400,
+      "safety_gates": [
+        "PROMPT_INJECTION_DETECTED",
+        "SAFETY_INTERLOCK_VIOLATION",
+        "UNAUTHORIZED_OPERATIONAL_COMMAND",
+        "MACHINE_MISMATCH"
+      ],
+      "status": "READY"
+    },
+    "dependency_environment": {
+      "base_python_executable": "C:\\Users\\PR BHAYA SREE\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+      "base_python_stack": "TensorFlow 2.15, SHAP 0.42, Scikit-learn 1.3, SQLAlchemy 2.0, FastAPI 0.100",
+      "rag_venv_executable": "D:\\Desktop\\FInal year project\\manumind-ai\\.venv-rag\\Scripts\\python.exe",
+      "rag_venv_stack": "PyTorch 2.5.1+cpu, ChromaDB 0.5.23, Transformers 4.46.3, Sentence-Transformers 3.4.1",
+      "rag_lockfile_hash": "778fde7658e8f5a0fd3cb039c6271fbbcce95ab967fbece6d29ca82e3f035ad2",
+      "mcp_sdk_installed_base_python": false,
+      "mcp_sdk_installed_rag_venv": false,
+      "environment_resolution_required": true
+    }
+  },
+  "seven_tool_feasibility_matrix": [
+    {
+      "id": 1,
+      "tool_name": "get_machine_data",
+      "functional_scope": "Retrieve metadata, criticality, and recent 5-channel telemetry for specific machine assets",
+      "underlying_source": "backend/app/models/machine.py & backend/app/models/sensor_reading.py",
+      "input_schema": {
+        "machine_id": "string (pattern: ^M1(0[1-9]|10)$)",
+        "start_time": "optional datetime",
+        "end_time": "optional datetime",
+        "limit": "integer (default: 100, max: 500)"
+      },
+      "output_schema": {
+        "machine_profile": "object (id, name, type, criticality, production_impact)",
+        "readings_count": "integer",
+        "readings": "array of sensor readings [vibration, temperature, pressure, current, rpm, timestamp]"
+      },
+      "feasibility_status": "FEASIBLE",
+      "security_boundaries": "Machine ID regex validation, maximum row limit (500), read-only transaction"
+    },
+    {
+      "id": 2,
+      "tool_name": "detect_anomaly",
+      "functional_scope": "Run real-time tabular or sequence anomaly detection with optional SHAP/attribution explainability",
+      "underlying_source": "backend/app/ml/inference/service.py (UnifiedInferenceService)",
+      "input_schema": {
+        "machine_id": "string",
+        "mode": "string (enum: point, sequence)",
+        "readings": "array/object conforming to SensorReadingInput or SequenceWindowInput",
+        "explain": "boolean (default: false)"
+      },
+      "output_schema": {
+        "is_anomaly": "boolean",
+        "anomaly_score": "float",
+        "calibrated_threshold": "float",
+        "model_id": "string",
+        "explanation": "optional object (SHAP values or feature MSE attribution)"
+      },
+      "feasibility_status": "FEASIBLE",
+      "security_boundaries": "Canonical feature order enforcement, non-finite float rejection, strict 30-step window length"
+    },
+    {
+      "id": 3,
+      "tool_name": "predict_failure_risk",
+      "functional_scope": "Query machine multi-step failure probability or remaining useful life (FORMAL STUB)",
+      "underlying_source": "Formal unsupported capability stub honoring Phase 2 Step 5 NO-GO constraint",
+      "input_schema": {
+        "machine_id": "string",
+        "horizon_steps": "integer (default: 288)"
+      },
+      "output_schema": {
+        "status": "string (NOT_AVAILABLE)",
+        "supported": false,
+        "message": "Failure risk regression was formally decommissioned in Phase 2 Step 5 due to synthetic coverage limits",
+        "alternative_recommendation": "Use detect_anomaly for current equipment condition assessment"
+      },
+      "feasibility_status": "FEASIBLE_AS_FORMAL_STUB",
+      "security_boundaries": "Zero uncalibrated risk fabrication, explicit documentation of baseline invariant"
+    },
+    {
+      "id": 4,
+      "tool_name": "get_maintenance_history",
+      "functional_scope": "Query past maintenance incidents, technician actions, and outcomes for machine assets",
+      "underlying_source": "backend/app/models/maintenance_history.py",
+      "input_schema": {
+        "machine_id": "optional string",
+        "outcome": "optional string",
+        "limit": "integer (default: 50, max: 100)"
+      },
+      "output_schema": {
+        "records_count": "integer",
+        "records": "array of objects (id, machine_id, date, issue, action, outcome)"
+      },
+      "feasibility_status": "FEASIBLE",
+      "security_boundaries": "Machine ID validation, bounded pagination, read-only session"
+    },
+    {
+      "id": 5,
+      "tool_name": "search_manuals",
+      "functional_scope": "Perform dense semantic vector search across 418 technical SOPs and historical incidents with citations",
+      "underlying_source": "backend/app/rag/retrieval_service.py & backend/app/rag/generation_service.py",
+      "input_schema": {
+        "query": "string (1 to 500 chars)",
+        "machine_id": "optional string",
+        "category": "optional string (SOP, TROUBLESHOOTING, SAFETY, INCIDENT)",
+        "top_k": "integer (default: 5, max: 20)",
+        "grounded_answer": "boolean (default: false)"
+      },
+      "output_schema": {
+        "results": "array of ranked evidence segments with source citations and similarity scores",
+        "synthetic_provenance_flag": "boolean (true)",
+        "grounded_response": "optional GroundedAnswer object with safety validation metadata"
+      },
+      "feasibility_status": "FEASIBLE",
+      "security_boundaries": "Pre-retrieval safety gates (prompt injection, safety interlock circumvention, operational commands)"
+    },
+    {
+      "id": 6,
+      "tool_name": "check_defect_image",
+      "functional_scope": "Classify optical workpiece surface defects using ResNet-18 vision classifier",
+      "underlying_source": "backend/app/ml/inference/service.py (predict_defect_image)",
+      "input_schema": {
+        "image_path": "optional string",
+        "image_bytes_base64": "optional string",
+        "image_name": "optional string"
+      },
+      "output_schema": {
+        "defect_type": "string",
+        "is_defective": "boolean",
+        "confidence": "float",
+        "class_probabilities": "object",
+        "affected_machine_id": "optional string",
+        "recommendation": "string"
+      },
+      "feasibility_status": "FEASIBLE",
+      "security_boundaries": "Path traversal defense (resolved path must reside in DEFECT_IMAGES_DIR), 5MB buffer cap, PIL image verification"
+    },
+    {
+      "id": 7,
+      "tool_name": "create_ticket",
+      "functional_scope": "Create formal maintenance work order linked to an alert with mandatory human authorization",
+      "underlying_source": "backend/app/services/ticket_service.py (create_ticket_with_approval_gate)",
+      "input_schema": {
+        "alert_id": "string",
+        "recommendation": "string",
+        "evidence": "object",
+        "confidence": "float (0.0 to 1.0)",
+        "approved_by": "string (MANDATORY, non-empty engineer sign-off)"
+      },
+      "output_schema": {
+        "ticket_id": "string (e.g. TCK-2026-002)",
+        "alert_id": "string",
+        "approval_status": "string (APPROVED)",
+        "approved_by": "string",
+        "created_at": "datetime"
+      },
+      "feasibility_status": "FEASIBLE_STRICTLY_HUMAN_GATED",
+      "security_boundaries": "Service-layer enforcement: raises TicketApprovalError if approved_by is missing/blank. No autonomous self-approval."
+    }
+  ],
+  "ticket_approval_security_assessment": {
+    "service_function": "backend.app.services.ticket_service.create_ticket_with_approval_gate",
+    "gate_type": "SERVICE_LAYER_ENFORCED",
+    "approval_field": "approved_by",
+    "validation_rules": [
+      "approved_by must not be None or whitespace-only",
+      "alert_id must correspond to existing Alert record",
+      "idempotent: returns existing Ticket if already created for alert",
+      "updates alert.status to APPROVED atomically upon ticket creation"
+    ],
+    "bypass_prevention": "MCP tool parameter approved_by will be required with no default value; tool documentation explicitly prohibits autonomous agent sign-off"
+  },
+  "concurrency_and_transport_assessment": {
+    "protocol": "Model Context Protocol (JSON-RPC 2.0)",
+    "transport": "stdio",
+    "transport_rationale": "Standard for local IDE and multi-agent harness integrations; eliminates network exposure and port management",
+    "tensorflow_thread_safety": "Serialized via self._tf_lock inside UnifiedInferenceService",
+    "shap_thread_safety": "Serialized via self._shap_lock inside UnifiedInferenceService",
+    "chromadb_concurrency": "PersistentClient SQLite read concurrency supported; pre-warmed singleton instance prevents contention",
+    "database_concurrency": "Scoped SessionLocal per MCP request prevents cross-request session leakage"
+  },
+  "phase4_implementation_roadmap": [
+    {
+      "step": 0,
+      "title": "Independent MCP Integration Readiness Audit",
+      "status": "COMPLETED",
+      "deliverables": [
+        "reports/phase4/phase4_step0_mcp_readiness_audit_report.md",
+        "reports/phase4/phase4_step0_mcp_readiness_audit.json"
+      ]
+    },
+    {
+      "step": 1,
+      "title": "MCP Environment, Dependency & Architecture Setup",
+      "status": "PENDING_AUTHORIZATION",
+      "primary_tasks": "Install MCP SDK, configure dual-stack bridge/venv, setup mcp_server layout"
+    },
+    {
+      "step": 2,
+      "title": "MCP Server Core Skeleton & Lifecycle",
+      "status": "PLANNED",
+      "primary_tasks": "Implement stdio protocol handler, tool routing, logging, health check"
+    },
+    {
+      "step": 3,
+      "title": "Machine Data Tool Implementation",
+      "status": "PLANNED",
+      "primary_tasks": "Expose get_machine_data with telemetry filtering and asset validation"
+    },
+    {
+      "step": 4,
+      "title": "ML Sensor Anomaly Detection Tool",
+      "status": "PLANNED",
+      "primary_tasks": "Expose detect_anomaly wrapping Isolation Forest, LSTM Autoencoder, and SHAP"
+    },
+    {
+      "step": 5,
+      "title": "Maintenance History Exploration Tool",
+      "status": "PLANNED",
+      "primary_tasks": "Expose get_maintenance_history with filtering and bounded limits"
+    },
+    {
+      "step": 6,
+      "title": "RAG Manual Search & Grounded Generation Tool",
+      "status": "PLANNED",
+      "primary_tasks": "Expose search_manuals wrapping ChromaDB, BGE embeddings, and safety gates"
+    },
+    {
+      "step": 7,
+      "title": "Defect Vision Classification Tool",
+      "status": "PLANNED",
+      "primary_tasks": "Expose check_defect_image wrapping ResNet-18 with path traversal guards"
+    },
+    {
+      "step": 8,
+      "title": "Failure Risk Capability Boundary Tool",
+      "status": "PLANNED",
+      "primary_tasks": "Expose predict_failure_risk as formal NOT_AVAILABLE stub honoring Phase 2 Step 5"
+    },
+    {
+      "step": 9,
+      "title": "Human-Gated Maintenance Ticket Tool",
+      "status": "PLANNED",
+      "primary_tasks": "Expose create_ticket strictly enforcing mandatory approved_by authorization"
+    },
+    {
+      "step": 10,
+      "title": "E2E Integration, Concurrency & Security Testing",
+      "status": "PLANNED",
+      "primary_tasks": "Comprehensive integration suite, security fuzzing, concurrency verification"
+    },
+    {
+      "step": 11,
+      "title": "Final Phase 4 Independent Closure Audit & Release",
+      "status": "PLANNED",
+      "primary_tasks": "Read-only release audit, manifest reconciliation, release commit & push"
+    }
+  ],
+  "baseline_invariants_preserved": {
+    "corpus_documents_count": 418,
+    "historical_incidents_count": 400,
+    "canonical_chunks_count": 564,
+    "chromadb_vectors_count": 564,
+    "specification_placeholders_count": 123,
+    "serialized_ml_models_count": 7,
+    "isolation_forest_threshold": 0.0269,
+    "lstm_autoencoder_threshold": 0.901464,
+    "bge_revision_commit": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+    "rag_lockfile_sha256": "778fde7658e8f5a0fd3cb039c6271fbbcce95ab967fbece6d29ca82e3f035ad2",
+    "phase3_limitations_retained": [
+      "LIMITATION-P3-01",
+      "LIMITATION-P3-02",
+      "LIMITATION-P3-03",
+      "LIMITATION-P3-04",
+      "LIMITATION-P3-05",
+      "LIMITATION-P3-06",
+      "LIMITATION-P3-07"
+    ],
+    "untracked_step9_reports_preserved": true
+  },
+  "conditions_for_phase4": [
+    {
+      "condition_id": "COND-01",
+      "title": "MCP SDK Installation in Dedicated/Managed Environment",
+      "description": "Install mcp Python SDK in Phase 4 Step 1 under a dedicated requirements specification without mutating the frozen RAG lockfile.",
+      "severity": "BLOCKING_FOR_IMPLEMENTATION"
+    },
+    {
+      "condition_id": "COND-02",
+      "title": "Environment Dual-Stack Execution Strategy",
+      "description": "Establish a process bridge or reconciled virtual environment to allow tools to communicate across ML (TensorFlow/SHAP) and RAG (ChromaDB/PyTorch).",
+      "severity": "BLOCKING_FOR_IMPLEMENTATION"
+    },
+    {
+      "condition_id": "COND-03",
+      "title": "Human-in-the-Loop Ticket Approval Gate Enforcement",
+      "description": "Tool 7 (create_ticket) must make approved_by strictly mandatory with zero autonomous bypass or default values.",
+      "severity": "CRITICAL_GOVERNANCE"
+    },
+    {
+      "condition_id": "COND-04",
+      "title": "Failure Risk NO-GO Invariant Preservation",
+      "description": "Tool 3 (predict_failure_risk) must return NOT_AVAILABLE and document the Phase 2 Step 5 constraint; no risk scores may be fabricated.",
+      "severity": "CRITICAL_GOVERNANCE"
+    }
+  ],
+  "final_verdict": "READY WITH CONDITIONS"
+}

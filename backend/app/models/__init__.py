@@ -7,11 +7,14 @@ from backend.app.models.sensor_reading import SensorReading
 from backend.app.models.maintenance_history import MaintenanceHistory
 from backend.app.models.alert import Alert
 from backend.app.models.ticket import Ticket
+from backend.app.models.ticket_proposal import TicketProposal, ConsumedToken
 
 __all__ = [
     "Machine",
     "SensorReading",
     "MaintenanceHistory",
     "Alert",
-    "Ticket"
+    "Ticket",
+    "TicketProposal",
+    "ConsumedToken"
 ]

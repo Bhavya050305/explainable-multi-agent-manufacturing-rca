@@ -1,0 +1,261 @@
+{
+  "timestamp": "2026-11-15T14:19:00+05:30",
+  "project": "ManuMind AI — Explainable Multi-Agent AI System for Manufacturing Anomaly Detection and Root Cause Analysis",
+  "department": "Department of AI & Data Science, RMK Engineering College",
+  "milestone": "Phase 3 Step 9: Independent Staged Release Audit — Read-Only Verification",
+  "mode": "STRICTLY READ-ONLY AUDIT",
+  "final_verdict": "APPROVED WITH LIMITATIONS",
+  "commit_authorization": "NOT GRANTED",
+  "push_authorization": "NOT GRANTED",
+  "git_state_verification": {
+    "active_branch": "main",
+    "expected_head": "3f0a6d08223c74741f4db3e0819b6f52a0d0f0c6",
+    "actual_head": "3f0a6d08223c74741f4db3e0819b6f52a0d0f0c6",
+    "head_matches_expected": true,
+    "origin_head": "3f0a6d08223c74741f4db3e0819b6f52a0d0f0c6",
+    "ahead_behind": {
+      "ahead": 0,
+      "behind": 0
+    },
+    "expected_staged_files_count": 50,
+    "actual_staged_files_count": 50,
+    "staged_count_matches_expected": true,
+    "unstaged_modifications_count": 0,
+    "untracked_files_pre_step9_reports_count": 0,
+    "staged_files_by_category": {
+      "category_a_source_files": 11,
+      "category_b_test_files_and_fixtures": 7,
+      "category_c_reports_and_audit_evidence": 32
+    }
+  },
+  "exact_staged_paths": [
+    "backend/app/rag/__init__.py",
+    "backend/app/rag/context_builder.py",
+    "backend/app/rag/generation_config.py",
+    "backend/app/rag/generation_schemas.py",
+    "backend/app/rag/generation_service.py",
+    "backend/app/rag/grounding_validator.py",
+    "backend/app/rag/prompt_templates.py",
+    "backend/app/rag/providers/__init__.py",
+    "backend/app/rag/providers/base.py",
+    "backend/app/rag/providers/factory.py",
+    "backend/app/rag/providers/mock_provider.py",
+    "backend/tests/fixtures/rag_grounded_generation_eval_cases.json",
+    "backend/tests/test_rag_grounded_generation.py",
+    "backend/tests/test_rag_grounded_generation_evaluation.py",
+    "backend/tests/test_rag_grounded_generation_hardening.py",
+    "backend/tests/test_rag_grounded_generation_remediation.py",
+    "backend/tests/test_rag_grounded_generation_remediation_v2.py",
+    "backend/tests/test_rag_grounded_generation_remediation_v3.py",
+    "reports/phase3/phase3_step5_git_release_report.md",
+    "reports/phase3/phase3_step6_1_independent_grounded_generation_audit.json",
+    "reports/phase3/phase3_step6_1_independent_grounded_generation_audit_report.md",
+    "reports/phase3/phase3_step6_2_1_independent_grounding_safety_context_audit.json",
+    "reports/phase3/phase3_step6_2_1_independent_grounding_safety_context_audit_report.md",
+    "reports/phase3/phase3_step6_2_2_1_independent_remediation_audit.json",
+    "reports/phase3/phase3_step6_2_2_1_independent_remediation_audit_report.md",
+    "reports/phase3/phase3_step6_2_2_2_targeted_remediation_evaluation_report.md",
+    "reports/phase3/phase3_step6_2_2_2_targeted_remediation_implementation_report.md",
+    "reports/phase3/phase3_step6_2_2_2_targeted_remediation_reconciliation.json",
+    "reports/phase3/phase3_step6_2_2_3_independent_remediation_audit.json",
+    "reports/phase3/phase3_step6_2_2_3_independent_remediation_audit_report.md",
+    "reports/phase3/phase3_step6_2_2_4_targeted_remediation.json",
+    "reports/phase3/phase3_step6_2_2_4_targeted_remediation_report.md",
+    "reports/phase3/phase3_step6_2_2_5_independent_remediation_audit.json",
+    "reports/phase3/phase3_step6_2_2_5_independent_remediation_audit_report.md",
+    "reports/phase3/phase3_step6_2_2_targeted_remediation_evaluation_report.md",
+    "reports/phase3/phase3_step6_2_2_targeted_remediation_implementation_report.md",
+    "reports/phase3/phase3_step6_2_2_targeted_remediation_reconciliation.json",
+    "reports/phase3/phase3_step6_2_grounding_safety_hardening_evaluation_report.md",
+    "reports/phase3/phase3_step6_2_grounding_safety_hardening_implementation_report.md",
+    "reports/phase3/phase3_step6_2_grounding_safety_hardening_reconciliation.json",
+    "reports/phase3/phase3_step6_final_reconciliation.json",
+    "reports/phase3/phase3_step6_grounded_generation_evaluation_report.md",
+    "reports/phase3/phase3_step6_grounded_generation_implementation_report.md",
+    "reports/phase3/phase3_step6_grounded_generation_safety_audit.md",
+    "reports/phase3/phase3_step7_final_independent_closure_audit.json",
+    "reports/phase3/phase3_step7_final_independent_closure_audit_report.md",
+    "reports/phase3/phase3_step8_1_manifest_reconciliation.json",
+    "reports/phase3/phase3_step8_1_manifest_reconciliation_report.md",
+    "reports/phase3/phase3_step8_release_manifest.json",
+    "reports/phase3/phase3_step8_release_preparation_report.md"
+  ],
+  "patch_integrity_verification": {
+    "whitespace_or_conflict_errors": 0,
+    "accidental_deletions": 0,
+    "binary_files_staged": 0,
+    "permission_or_mode_changes": 0,
+    "total_insertions": 11676,
+    "total_deletions": 0,
+    "net_change_lines": 11676,
+    "diff_check_status": "CLEAN"
+  },
+  "security_audit_results": {
+    "secrets_detected": 0,
+    "credentials_detected": 0,
+    "api_keys_detected": 0,
+    "private_keys_detected": 0,
+    "env_files_staged": 0,
+    "virtualenvs_or_caches_staged": 0,
+    "database_files_staged": 0,
+    "finding": "Zero real secrets or sensitive artifacts detected across all 50 staged files."
+  },
+  "test_verification_results": {
+    "total_test_modules": 26,
+    "total_collected_tests": 377,
+    "total_passed_tests": 377,
+    "total_failed_tests": 0,
+    "total_errored_tests": 0,
+    "total_skipped_tests": 0,
+    "overall_pass_rate_percentage": 100.0,
+    "rag_tests_subtotal": {
+      "modules_count": 16,
+      "environment": "D:\\Desktop\\FInal year project\\manumind-ai\\.venv-rag\\Scripts\\python.exe",
+      "collected": 259,
+      "passed": 259,
+      "failed": 0,
+      "errors": 0
+    },
+    "ml_tests_subtotal": {
+      "modules_count": 10,
+      "environment": "C:\\Users\\PR BHAYA SREE\\AppData\\Local\\Programs\\Python\\Python311\\python.exe (pytest 9.1.1)",
+      "collected": 118,
+      "passed": 118,
+      "failed": 0,
+      "errors": 0,
+      "warnings": 10
+    }
+  },
+  "preservation_invariants": {
+    "total_invariants_audited": 10,
+    "invariants_passed": 10,
+    "invariants_failed": 0,
+    "checks": [
+      {
+        "id": 1,
+        "name": "Synthetic Source Documents",
+        "expected": 418,
+        "actual": 418,
+        "status": "PASS"
+      },
+      {
+        "id": 2,
+        "name": "Historical Incidents",
+        "expected": 400,
+        "actual": 400,
+        "status": "PASS"
+      },
+      {
+        "id": 3,
+        "name": "Canonical Chunks",
+        "expected": 564,
+        "actual": 564,
+        "status": "PASS"
+      },
+      {
+        "id": 4,
+        "name": "ChromaDB Persistent Vectors",
+        "expected": 564,
+        "actual": 564,
+        "status": "PASS"
+      },
+      {
+        "id": 5,
+        "name": "Specification Placeholders",
+        "expected": 123,
+        "actual": 123,
+        "status": "PASS"
+      },
+      {
+        "id": 6,
+        "name": "Phase 2 ML Model Artifacts",
+        "expected": 7,
+        "actual": 7,
+        "status": "PASS"
+      },
+      {
+        "id": 7,
+        "name": "Isolation Forest Calibrated Threshold",
+        "expected": 0.0269,
+        "actual": 0.0269,
+        "status": "PASS"
+      },
+      {
+        "id": 8,
+        "name": "LSTM Autoencoder Calibrated Threshold",
+        "expected": 0.901464,
+        "actual": 0.901464,
+        "status": "PASS"
+      },
+      {
+        "id": 9,
+        "name": "BGE Model Revision Commit Hash",
+        "expected": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+        "actual": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+        "status": "PASS"
+      },
+      {
+        "id": 10,
+        "name": "RAG Dependency Lockfile SHA-256",
+        "expected": "778FDE7658E8F5A0FD3CB039C6271FBBCCE95AB967FBECE6D29CA82E3F035AD2",
+        "actual": "778FDE7658E8F5A0FD3CB039C6271FBBCCE95AB967FBECE6D29CA82E3F035AD2",
+        "status": "PASS"
+      }
+    ]
+  },
+  "report_consistency_audit": {
+    "cross_report_contradictions_detected": 0,
+    "test_total_consistency": "Consistent across all reports (133 retrieval + 126 generation = 259 RAG; 118 ML; 377 total).",
+    "finding_identifiers_consistency": "Consistent. All Step 6.1 and Step 6.2.2.3 actionable findings documented as resolved and verified; informational limitations preserved.",
+    "git_commit_consistency": "HEAD consistently referenced as 3f0a6d08223c74741f4db3e0819b6f52a0d0f0c6."
+  },
+  "findings_and_limitations": {
+    "blocking_findings_count": 0,
+    "blocking_findings": [],
+    "non_blocking_limitations_count": 7,
+    "non_blocking_limitations": [
+      {
+        "id": "DEFECT-01",
+        "description": "Partial timestamp arrays can bypass chronological monotonicity validation in backend/app/ml/inference/schemas.py:86-94; preserved frozen to protect ML baseline; deferred to Phase 4.",
+        "status": "PRESERVED_FROZEN"
+      },
+      {
+        "id": "LIMITATION-CORPUS-ESTOP",
+        "description": "Emergency-stop retrieval corpus coverage remains limited due to abbreviation asymmetry (E-stop vs emergency-stop); deferred to Phase 4 corpus normalization.",
+        "status": "DOCUMENTED"
+      },
+      {
+        "id": "LIMITATION-PROVIDER-STUBS",
+        "description": "Gemini, OpenAI, and Anthropic provider adapters in backend/app/rag/providers/ are credential-validating stubs; the mock provider is the sole operational provider.",
+        "status": "DOCUMENTED"
+      },
+      {
+        "id": "LIMITATION-DETERMINISTIC-MOCK",
+        "description": "Mock generation is deterministic and template-based, deriving answers strictly from retrieved evidence blocks.",
+        "status": "DOCUMENTED"
+      },
+      {
+        "id": "LIMITATION-SYNTHETIC-CORPUS",
+        "description": "The corpus is entirely synthetic demonstration data containing 123 explicit specification placeholders.",
+        "status": "DOCUMENTED"
+      },
+      {
+        "id": "LIMITATION-REGEX-BOUNDS",
+        "description": "Regex-based safety intent classification and numerical claim extraction controls are deterministic and syntactic; they are not exhaustive against all adversarial encodings.",
+        "status": "DOCUMENTED"
+      },
+      {
+        "id": "LIMITATION-NO-NLI",
+        "description": "Natural Language Inference (NLI) and semantic entailment are not implemented in the deterministic offline pipeline.",
+        "status": "DOCUMENTED"
+      }
+    ]
+  },
+  "governance_and_release_boundary": {
+    "git_commit_executed": false,
+    "git_push_executed": false,
+    "staging_index_modified_by_audit": false,
+    "step9_audit_reports_staged": false,
+    "release_readiness_verdict": "APPROVED WITH LIMITATIONS — READY FOR EXPLICIT COMMIT AUTHORIZATION"
+  }
+}

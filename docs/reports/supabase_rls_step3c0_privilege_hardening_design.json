@@ -1,0 +1,105 @@
+{
+  "project": "ManuMind AI",
+  "milestone": "Phase 5 — Supabase Security Remediation",
+  "step": "Step 3C.0 — Independent Least-Privilege Privilege-Hardening Design Audit",
+  "timestamp": "2026-11-18T21:11:00+05:30",
+  "verdict": "APPROVED FOR STEP 3C MIGRATION PREPARATION",
+  "verdict_justification": "The live PostgreSQL catalog was comprehensively inspected, establishing that exactly eight tables and two sequences in schema public require privilege hardening. PostgreSQL Row Level Security does not protect against TRUNCATE, which is currently granted to anon and authenticated via Supabase default ACLs (arwdDxtm). Zero grants exist to pseudo-role PUBLIC, and zero global default ACLs exist. The backend application connects exclusively via SQLAlchemy directly as postgres (rolbypassrls=True) and has zero dependency on PostgREST or API roles. The proposed Step 3C migration design safely revokes all table and sequence privileges from anon and authenticated and alters future default privileges for role postgres in schema public, guaranteeing complete non-regression for backend queries. Preparing the Step 3C migration will enable a unified, atomic three-migration upgrade with zero window of exposure.",
+  "preflight_summary": {
+    "git_branch": "main",
+    "git_head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "staged_files_count": 0,
+    "modified_tracked_files_count": 1,
+    "untracked_files_count": 20,
+    "live_database_current_revision": "1273f18b72a2",
+    "repository_migration_head": "e4b19082a5c1",
+    "migration_dag_topology": "<base> -> 1273f18b72a2 (live) -> c742f9a1e0b5 (pending) -> e4b19082a5c1 (head)"
+  },
+  "target_inventory": {
+    "tables_count": 8,
+    "tables": [
+      "machines",
+      "sensor_readings",
+      "alembic_version",
+      "maintenance_history",
+      "alerts",
+      "tickets",
+      "ticket_proposals",
+      "consumed_tokens"
+    ],
+    "sequences_count": 2,
+    "sequences": [
+      {
+        "name": "sensor_readings_id_seq",
+        "owning_table": "sensor_readings",
+        "owning_column": "id",
+        "owner": "postgres",
+        "active_acl": "{postgres=rwU,anon=rwU,authenticated=rwU,service_role=rwU}"
+      },
+      {
+        "name": "maintenance_history_id_seq",
+        "owning_table": "maintenance_history",
+        "owning_column": "id",
+        "owner": "postgres",
+        "active_acl": "{postgres=rwU,anon=rwU,authenticated=rwU,service_role=rwU}"
+      }
+    ]
+  },
+  "table_privileges_assessment": {
+    "direct_grants_to_anon": "arwdDxtm (ALL PRIVILEGES, including TRUNCATE, REFERENCES, TRIGGER)",
+    "direct_grants_to_authenticated": "arwdDxtm (ALL PRIVILEGES, including TRUNCATE, REFERENCES, TRIGGER)",
+    "grants_to_public": [],
+    "role_memberships": {
+      "anon_member_of": [],
+      "authenticated_member_of": [],
+      "authenticator_member_of": [
+        "anon",
+        "authenticated",
+        "service_role"
+      ]
+    },
+    "residual_privilege_path_risk": "None. Revoking directly from anon and authenticated removes 100% of their table privileges."
+  },
+  "default_acl_assessment": {
+    "global_default_acls_count": 0,
+    "public_schema_creators": [
+      "postgres",
+      "supabase_admin"
+    ],
+    "application_object_creator": "postgres",
+    "default_privilege_remediation_sufficiency": "Altering default privileges for role postgres in schema public is 100% sufficient for all application objects created via Alembic."
+  },
+  "proposed_step3c_migration_design": {
+    "revision_ancestry": "e4b19082a5c1 -> Step 3C",
+    "upgrade_operations": [
+      "REVOKE ALL ON TABLE public.machines, public.sensor_readings, public.alembic_version, public.maintenance_history, public.alerts, public.tickets, public.ticket_proposals, public.consumed_tokens FROM anon, authenticated;",
+      "REVOKE ALL ON SEQUENCE public.sensor_readings_id_seq, public.maintenance_history_id_seq FROM anon, authenticated;",
+      "ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public REVOKE ALL ON TABLES FROM anon, authenticated;",
+      "ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public REVOKE ALL ON SEQUENCES FROM anon, authenticated;"
+    ],
+    "downgrade_strategy": {
+      "rule": "Downgrade must NEVER execute GRANT ALL TO anon, authenticated.",
+      "implementation": "Optionally restore default privileges for role postgres, but leave table-level grants restricted or require DBA authorization for grant restoration."
+    }
+  },
+  "backend_impact_classification": {
+    "direct_anon_connections_dependency": false,
+    "direct_authenticated_connections_dependency": false,
+    "postgrest_dependency": false,
+    "supabase_client_dependency": false,
+    "runtime_connecting_role": "postgres",
+    "rolbypassrls": true,
+    "overall_classification": "SAFE FOR CURRENT BACKEND"
+  },
+  "recommended_execution_sequence": {
+    "strategy": "UNIFIED_ATOMIC_THREE_MIGRATION_UPGRADE",
+    "execution_command": "python -m alembic -c backend/alembic.ini upgrade head",
+    "applied_revisions": [
+      "c742f9a1e0b5",
+      "e4b19082a5c1",
+      "Step 3C"
+    ],
+    "transaction_behavior": "SINGLE_ATOMIC_TRANSACTION",
+    "exposure_window": "ZERO (Atomic transition from baseline to fully hardened)"
+  }
+}

@@ -1,0 +1,125 @@
+{
+  "project": "ManuMind AI",
+  "institution": "Department of AI & Data Science, RMK Engineering College",
+  "milestone": "Phase 5 Step 6.1 — Independent StateGraph Orchestration, Verification Governance & Human Approval Security Audit",
+  "timestamp": "2026-11-20T14:40:00+05:30",
+  "audit_mode": "STRICTLY_READ_ONLY",
+  "verdict": "APPROVED FOR STEP7",
+  "verdict_justification": "Independent audit confirms that Phase 5 Step 6 multi-agent StateGraph orchestration in backend/app/agents/graph.py strictly enforces all architectural, governance, and security invariants. Worker agents (ANOMALY_DETECTION, ROOT_CAUSE_ANALYSIS) are completely barred from mutating workflow_status, verification_decisions, or human_approval via reducer-level permissions. Hypotheses cannot self-assert VERIFIED status, and the Verification Governance node correctly renders decision records with INSUFFICIENT_DATA and state status UNVERIFIED, preventing autonomous closure. The Human Approval Gate halts graph traversal on PENDING at END, maintaining strict isolation from the Phase 4 ticket-dispatch tool (create_maintenance_ticket), which remains behind an external HMAC approval token boundary. Acyclic routing guards prevent infinite re-execution loops. All 40 orchestration tests and the entire 185-test Phase 5 regression suite pass with a 100% pass rate (0 failures, 0 errors). Zero database mutations and zero Git modifications occurred.",
+  "git_baseline": {
+    "repository": "D:\\Desktop\\FInal year project\\manumind-ai",
+    "branch": "main",
+    "baseline_head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "audited_head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "staged_modifications": 0,
+    "tracked_modified_files": [
+      "backend/app/models/__init__.py"
+    ],
+    "untracked_paths_count": 31,
+    "git_preservation_verified": true
+  },
+  "environment_invariants": {
+    "python_version": "3.11.9",
+    "langgraph_version": "0.2.45",
+    "langchain_core_version": "0.3.15",
+    "pydantic_version": "2.13.4",
+    "pip_check_status": "No broken requirements found.",
+    "rag_lockfile_sha256": "778fde7658e8f5a0fd3cb039c6271fbbcce95ab967fbece6d29ca82e3f035ad2",
+    "chroma_collection": "manumind_bge_small_v1",
+    "chroma_document_count": 564,
+    "chroma_embedding_dim": 384,
+    "alembic_head": "f3a9082b1c42"
+  },
+  "model_artifact_hashes": {
+    "isolation_forest.joblib": "afdf397336f01cfe32c6d4660b3f0094bec01869ab3f8ec276a4d34ca8ac52a2",
+    "isolation_forest_metadata.json": "bbb05f4447d52c5ae0f4444649e2e59bf5f282aceb1cfd028e6309b86e8ed3d5",
+    "lstm_autoencoder.keras": "b1cae16de57b556f13b3f96e12a8c451d05f3bdd9887a65172817cd99e30e0b5",
+    "lstm_autoencoder_metadata.json": "d679e55a2b9935c2e8820d5b117a7c8fc8f84b94cd6565252255168f82fda0c1",
+    "resnet_defect_classifier.keras": "aac4b1c2d8c7ba47cef2e31b73d27ad6ff9b8be9352d6e3850c2e201e3195a98",
+    "resnet_defect_classifier_metadata.json": "e7e95b8037efceade0a8d19d0a14ecff86868d887e081ac306d1cb36573c8d73",
+    "sensor_scaler.joblib": "f21f0899cd3af4d807e54f98b4627d5512650f08cad35ba17a6cd80268398faf"
+  },
+  "critical_audit_sections": {
+    "audit_a_verification_authority": {
+      "status": "PASS",
+      "findings": "Authority is strictly separated from worker execution. CandidateRootCause schema prohibits self-assertion of VERIFIED status. Verification decisions are emitted under Supervisor authority with status INSUFFICIENT_DATA and method UNVERIFIED, preserving candidate hypotheses as UNVERIFIED. Multi-source diversity calculation is keyed on EvidenceSourceType set cardinality; multiple citations from one manual document count as 1 source, and multiple sensor channels count as 1 source. Synthetic evidence is capped at 0.70 and cannot satisfy independent verification."
+    },
+    "audit_b_human_approval_and_resumption": {
+      "status": "PASS_WITH_LIMITATIONS",
+      "findings": "Pending approval halts execution turn at END in WAITING_FOR_HUMAN_APPROVAL. State is preserved. Resumption continues via Supervisor evaluation of current_stage == HUMAN_APPROVAL_GATE. Checkpointer is optional and defaults to None, meaning default execution is in-memory and stateful resumption requires caller state re-supply or explicit Checkpointer injection. Approver identity rejects AI agent names at Pydantic level; full cryptographic verification is enforced at the Phase 4 MCP boundary."
+    },
+    "audit_c_workflow_status_authority": {
+      "status": "PASS",
+      "findings": "Worker nodes attempting to write workflow_status, human_approval, or verification_decisions raise PermissionError in validate_agent_state_update. Terminal workflow states (COMPLETED, FAILED, CANCELLED) cannot be restarted and route directly to END. WAITING_FOR_HUMAN_APPROVAL is a valid WorkflowStatus enum. Exceptions in supervisor or workers safely transition workflow to FAILED without unhandled process termination. Failed inference is never represented as normal equipment."
+    },
+    "audit_d_duplicate_execution_and_idempotency": {
+      "status": "PASS_WITH_LIMITATIONS",
+      "findings": "Within a single graph execution pass, acyclic edges and state guards guarantee bounded execution. However, external invocations with identical initial states re-query SQLite and ChromaDB because no idempotency cache exists in graph.py. Database-level proposal deduplication and ticket lock semantics are managed in Phase 4 rather than LangGraph state."
+    },
+    "audit_e_ticket_creation_security": {
+      "status": "PASS_WITH_PHASE4_NOTE",
+      "findings": "create_maintenance_ticket tool is completely absent from all graph nodes and worker agents. Neither Supervisor nor workers can mint HMAC approval tokens. Proposal staging and ticket dispatch remain separate. Note: Phase 4 Step 6.1 production blocker (ticket creation committed before consumed token insertion in tools.py:906-931) remains unresolved in Phase 4 MCP code, but does not compromise Phase 5 StateGraph integrity."
+    },
+    "audit_f_real_integration_test_quality": {
+      "status": "PASS",
+      "findings": "All 40 tests in test_agent_graph.py verified. Classification: 3 pure unit tests, 25 mock-based graph integration tests, 8 security regression tests, 2 real integration tests (test_37 loads real Isolation Forest, Scaler, and Kernel SHAP; test_38 executes real SQLite queries and .venv-rag subprocess Chroma retrieval), 1 serialization test, 1 database read-only invariant test. Zero persistent data mutation occurred."
+    },
+    "audit_g_graph_topology_and_failure_routing": {
+      "status": "PASS",
+      "findings": "Graph topology verified: START -> supervisor -> (anomaly_detection / rca / human_approval_gate / END). Normal telemetry bypasses RCA cleanly. Anomaly failure routes to FAILED. Degraded or zero-hypothesis RCA routes to human_approval_gate without infinite recursion. Acyclic guards in route_from_supervisor intercept repeated routing."
+    },
+    "audit_h_supervisor_regression": {
+      "status": "PASS",
+      "findings": "Step 6 modification in supervisor.py added an explicit rca_executed check for empty candidate hypotheses routing to ESCALATE_TO_HUMAN_GATE. All original Supervisor policies, confidence thresholds, and terminal state protections remain intact. All 28 tests in test_supervisor_agent.py pass with zero regressions."
+    }
+  },
+  "test_execution_summary": {
+    "total_tests_collected": 185,
+    "total_tests_executed": 185,
+    "total_tests_passed": 185,
+    "total_tests_failed": 0,
+    "total_tests_skipped": 0,
+    "pass_rate_percentage": 100.0,
+    "execution_duration_seconds": 53.88,
+    "warnings_count": 3,
+    "modules_tested": [
+      {"module": "backend/tests/test_agent_state.py", "count": 10, "passed": 10},
+      {"module": "backend/tests/test_agent_reducers.py", "count": 11, "passed": 11},
+      {"module": "backend/tests/test_agent_verification_governance.py", "count": 23, "passed": 23},
+      {"module": "backend/tests/test_supervisor_agent.py", "count": 28, "passed": 28},
+      {"module": "backend/tests/test_anomaly_agent.py", "count": 27, "passed": 27},
+      {"module": "backend/tests/test_anomaly_agent_integration.py", "count": 6, "passed": 6},
+      {"module": "backend/tests/test_rca_agent.py", "count": 40, "passed": 40},
+      {"module": "backend/tests/test_agent_graph.py", "count": 40, "passed": 40}
+    ]
+  },
+  "findings_classification": [
+    {
+      "id": "FINDING-P5-S6-01",
+      "severity": "MEDIUM",
+      "category": "Architecture & Persistence",
+      "description": "Stateless default execution: run_manumind_workflow does not configure a persistent LangGraph checkpointer by default, returning the paused state dictionary on PENDING. Resumption requires the caller to manage state persistence or inject an explicit checkpointer with thread_id.",
+      "remediation": "Document checkpointer integration requirements for production deployment in Phase 5 Step 7 / Phase 6."
+    },
+    {
+      "id": "FINDING-P5-S6-02",
+      "severity": "MEDIUM",
+      "category": "Phase 4 Upstream Blocker",
+      "description": "Non-atomic ticket creation in Phase 4 MCP server: create_ticket_with_approval_gate commits ticket to SQLite before consumed token is inserted in handle_create_maintenance_ticket. While isolated from Phase 5 graph, this remains a production blocker for Phase 4.",
+      "remediation": "Unify ticket creation, consumed token insertion, and proposal status update into a single database transaction in Phase 6 hardening."
+    },
+    {
+      "id": "FINDING-P5-S6-03",
+      "severity": "LOW",
+      "category": "Idempotency",
+      "description": "Lack of external query caching: Repeated external graph invocations with the same input state re-execute ML inference and RAG subprocess retrieval.",
+      "remediation": "Introduce an idempotency key and caching layer at the API / task-worker entry point in Phase 6."
+    }
+  ],
+  "conditions_for_step7": [
+    "Preserve all worker forbidden channel boundaries and acyclic routing guards.",
+    "Maintain the Human Approval Gate halting behavior for PENDING proposals.",
+    "Do not expose create_maintenance_ticket tool to LangGraph agent nodes.",
+    "Retain candidate hypothesis UNVERIFIED status until authorized external human verification."
+  ]
+}

@@ -1,0 +1,410 @@
+{
+  "audit_metadata": {
+    "project": "ManuMind AI",
+    "institution": "Department of AI & Data Science, RMK Engineering College",
+    "milestone": "Phase 5 Step 0 — Independent Multi-Agent Architecture Readiness Audit",
+    "audit_type": "Strictly Independent, Read-Only Architectural, Cryptographic, and Governance Readiness Verification",
+    "audit_date": "2026-11-17",
+    "repository": "D:\\Desktop\\FInal year project\\manumind-ai",
+    "branch": "main",
+    "baseline_head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "remote_sync": "ahead 0, behind 0 with origin/main"
+  },
+  "git_baseline_status": {
+    "branch": "main",
+    "head_commit": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "tracking": "origin/main",
+    "staged_files_count": 0,
+    "tracked_modifications": [
+      "backend/app/models/__init__.py"
+    ],
+    "untracked_additions_count": 14,
+    "untracked_additions": [
+      "backend/alembic/versions/c742f9a1e0b5_ticket_proposals.py",
+      "backend/app/mcp_server/",
+      "backend/app/ml/defect_runner.py",
+      "backend/app/models/ticket_proposal.py",
+      "backend/app/rag/bridge_runner.py",
+      "backend/requirements-mcp.txt",
+      "backend/tests/test_mcp_defect_image.py",
+      "backend/tests/test_mcp_maintenance_history.py",
+      "backend/tests/test_mcp_manufacturing_tools.py",
+      "backend/tests/test_mcp_rag_retrieval.py",
+      "backend/tests/test_mcp_server_skeleton.py",
+      "backend/tests/test_mcp_ticket_creation.py",
+      "reports/phase3/",
+      "reports/phase4/"
+    ],
+    "reconciliation_summary": "Pristine working tree adhering strictly to project governance. Only backend/app/models/__init__.py existed in baseline HEAD and is tracked. All Phase 4 MCP server modules and tests are preserved as untracked files. Zero Phase 5 files exist prior to Step 0."
+  },
+  "mcp_tool_contracts": [
+    {
+      "tool_id": 1,
+      "name": "ping",
+      "mode": "Read-Only",
+      "input_schema": "message: str = 'pong'",
+      "output_schema": "str ('pong: {message}')",
+      "db_access": "None",
+      "mechanism": "Direct synchronous in-process (<1ms)",
+      "safe_for_agents": true,
+      "assigned_agents": ["Supervisor Agent", "Diagnostic Tools"]
+    },
+    {
+      "tool_id": 2,
+      "name": "get_machine_data",
+      "mode": "Read-Only",
+      "input_schema": "machine_id: str (^M1(0[1-9]|10)$), window: Optional[str], limit: int (1-1000)",
+      "output_schema": "GetMachineDataResponse (profile + readings)",
+      "db_access": "machines, sensor_readings in manumind.db",
+      "mechanism": "Synchronous SQLite query (<50ms)",
+      "safe_for_agents": true,
+      "assigned_agents": ["Anomaly Detection Agent", "Supervisor Agent"]
+    },
+    {
+      "tool_id": 3,
+      "name": "detect_anomaly",
+      "mode": "Read-Only",
+      "input_schema": "machine_id: str, readings: Optional[list], window: Optional[str], include_explainability: bool",
+      "output_schema": "DetectAnomalyResponse (classification, IF score/threshold, LSTM error/threshold, SHAP/attribution)",
+      "db_access": "sensor_readings in manumind.db if readings omitted",
+      "mechanism": "In-process ML inference in Base Python (<500ms)",
+      "safe_for_agents": true,
+      "assigned_agents": ["Anomaly Detection Agent"]
+    },
+    {
+      "tool_id": 4,
+      "name": "predict_failure_risk",
+      "mode": "Read-Only (Capability Stub)",
+      "input_schema": "machine_id: str, horizon_hours: int = 288",
+      "output_schema": "PredictFailureRiskResponse (status='NOT_AVAILABLE', model_available=False)",
+      "db_access": "None",
+      "mechanism": "Direct synchronous return",
+      "safe_for_agents": true,
+      "special_governance_notice": "Formal NOT_AVAILABLE capability stub. Performs zero inference and outputs zero probabilities. Agents must NEVER treat as operational predictor or assume machine is safe.",
+      "assigned_agents": ["Supervisor Agent (Status disclosure only)"]
+    },
+    {
+      "tool_id": 5,
+      "name": "search_manuals",
+      "mode": "Read-Only",
+      "input_schema": "query: str (1-500 chars), k: int (1-20, default 5)",
+      "output_schema": "SearchManualsResponse (results: doc_id, chunk_id, content, cosine_sim, citations, is_synthetic)",
+      "db_access": "ChromaDB collection manumind_bge_small_v1",
+      "mechanism": "Subprocess bridge to .venv-rag (60.0s timeout)",
+      "safe_for_agents": true,
+      "assigned_agents": ["Root Cause Analysis Agent"]
+    },
+    {
+      "tool_id": 6,
+      "name": "get_maintenance_history",
+      "mode": "Read-Only",
+      "input_schema": "machine_id: str (^M1(0[1-9]|10)$), limit: int (1-100, default 10)",
+      "output_schema": "GetMaintenanceHistoryResponse (records: id, type, action, component, outcome, cost, disclaimer)",
+      "db_access": "maintenance_history in manumind.db",
+      "mechanism": "Synchronous SQLite query (<30ms)",
+      "safe_for_agents": true,
+      "assigned_agents": ["Root Cause Analysis Agent"]
+    },
+    {
+      "tool_id": 7,
+      "name": "check_defect_image",
+      "mode": "Read-Only",
+      "input_schema": "image_path: str (Sanitized path or manifest filename)",
+      "output_schema": "CheckDefectImageResponse (predicted_class, confidence, probabilities, is_defective, synthetic)",
+      "db_access": "Local image file in data/defect_images/",
+      "mechanism": "Subprocess bridge to Base Python TF runner (120.0s timeout)",
+      "safe_for_agents": true,
+      "assigned_agents": ["Anomaly Detection Agent (Conditional on image input)"]
+    },
+    {
+      "tool_id": 8,
+      "name": "propose_maintenance_ticket",
+      "mode": "Write (Staging)",
+      "input_schema": "machine_id: str, recommendation: str, evidence: dict, alert_id: Optional[str], confidence: float",
+      "output_schema": "ProposeMaintenanceTicketResponse (proposal_id, payload_hash, status='PENDING_APPROVAL', requires_human_approval=True)",
+      "db_access": "Inserts ticket_proposals in manumind.db",
+      "mechanism": "Synchronous SQLite transaction (<50ms)",
+      "safe_for_agents": true,
+      "assigned_agents": ["Supervisor Agent (Gated; requires confirmed root cause)"]
+    },
+    {
+      "tool_id": 9,
+      "name": "create_maintenance_ticket",
+      "mode": "Write (Authorized)",
+      "input_schema": "proposal_id: str, approval_token: str (HMAC-SHA256 signed)",
+      "output_schema": "CreateMaintenanceTicketResponse (ticket_id, approved_by, status='APPROVED')",
+      "db_access": "Inserts tickets, updates ticket_proposals, inserts consumed_tokens",
+      "mechanism": "Synchronous SQLite transaction with cryptographic verification",
+      "safe_for_agents": false,
+      "assigned_agents": ["Human Approval Gate Node ONLY (Never autonomously callable by AI agents)"]
+    }
+  ],
+  "dependency_readiness": {
+    "base_python_env": {
+      "executable": "C:\\Users\\PR BHAYA SREE\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+      "version": "3.11.9",
+      "pydantic": "2.13.4",
+      "mcp": "2.3.0",
+      "fastapi": "0.141.1",
+      "sqlalchemy": "2.0.52",
+      "alembic": "1.19.1",
+      "tensorflow": "2.21.0",
+      "scikit_learn": "1.9.0",
+      "shap": "0.51.0",
+      "httpx": "0.28.1",
+      "langgraph": "NOT INSTALLED",
+      "langchain_core": "NOT INSTALLED"
+    },
+    "venv_rag_env": {
+      "executable": "D:\\Desktop\\FInal year project\\manumind-ai\\.venv-rag\\Scripts\\python.exe",
+      "version": "3.11.9",
+      "chromadb": "0.5.23",
+      "transformers": "4.46.3",
+      "sentence_transformers": "3.4.1",
+      "torch": "2.5.1+cpu",
+      "pydantic": "2.14.3",
+      "mcp": "NOT INSTALLED",
+      "langgraph": "NOT INSTALLED"
+    },
+    "hosting_decision": "Base Python 3.11.9 must host LangGraph. .venv-rag must remain strictly isolated to preserve Phase 3 lockfile invariants.",
+    "pydantic_v2_compatibility": "Fully compatible. LangGraph >=0.2.0 and LangChain Core >=0.3.0 natively support Pydantic V2.",
+    "missing_dependencies_for_step1": [
+      "langgraph~=0.2.40",
+      "langchain-core~=0.3.15",
+      "langchain~=0.3.7",
+      "langchain-community"
+    ]
+  },
+  "proposed_multi_agent_architecture": {
+    "supervisor_agent": {
+      "role": "Coordinator, Request Validator, Router, and Explainable Synthesizer",
+      "permitted_tools": ["get_machine_data", "predict_failure_risk", "propose_maintenance_ticket"],
+      "forbidden_tools": ["create_maintenance_ticket"],
+      "safety_boundaries": "Cannot self-authorize tickets; cannot issue approval tokens; must escalate low confidence (<0.60) to human."
+    },
+    "anomaly_detection_agent": {
+      "role": "Telemetry Ingestion, IF/LSTM Scoring, and Defect Classification",
+      "permitted_tools": ["get_machine_data", "detect_anomaly", "check_defect_image"],
+      "forbidden_tools": ["search_manuals", "get_maintenance_history", "propose_maintenance_ticket", "create_maintenance_ticket"],
+      "safety_boundaries": "Read-only; distinguishes statistical anomaly from confirmed failure; cannot create tickets."
+    },
+    "root_cause_analysis_agent": {
+      "role": "SOP Manual Retrieval, Maintenance Correlation, and Hypothesis Generation",
+      "permitted_tools": ["search_manuals", "get_maintenance_history"],
+      "forbidden_tools": ["get_machine_data", "detect_anomaly", "check_defect_image", "propose_maintenance_ticket", "create_maintenance_ticket"],
+      "safety_boundaries": "Read-only; cannot claim correlation is proven causation; enforces [CIT-X] citations."
+    },
+    "human_approval_node": {
+      "role": "External Cryptographic Human Gate",
+      "permitted_tools": ["create_maintenance_ticket"],
+      "forbidden_tools": ["autonomous execution"],
+      "safety_boundaries": "Executes strictly when a human engineer supplies an authentic, unexpired, unconsumed HMAC token."
+    }
+  },
+  "shared_workflow_state_specification": {
+    "model_name": "ManuMindWorkflowState",
+    "pydantic_version": "V2",
+    "extra_fields_enforcement": "forbid",
+    "fields": [
+      "request_id: str (UUID4)",
+      "machine_id: str (^M1(0[1-9]|10)$)",
+      "user_query: str",
+      "image_path: Optional[str]",
+      "workflow_status: WorkflowStatusEnum",
+      "sensor_data: Optional[Dict[str, Any]]",
+      "anomaly_result: Optional[Dict[str, Any]]",
+      "defect_result: Optional[Dict[str, Any]]",
+      "maintenance_history: Optional[List[Dict[str, Any]]]",
+      "retrieved_documents: Optional[List[Dict[str, Any]]]",
+      "root_cause_hypotheses: Optional[List[Dict[str, Any]]]",
+      "evidence_references: Optional[Dict[str, Any]]",
+      "confidence_score: float (0.0 to 1.0)",
+      "requires_human_review: bool",
+      "ticket_proposal_id: Optional[str]",
+      "approval_status: ApprovalStatusEnum",
+      "final_response: Optional[str]",
+      "error_details: Annotated[List[Dict[str, Any]], operator.add]",
+      "execution_trace: Annotated[List[str], operator.add]"
+    ],
+    "anti_overwrite_rules": [
+      "Strict slice ownership: Anomaly agent writes anomaly/defect slices; RCA agent writes manual/hypothesis slices; Supervisor writes response/confidence slices.",
+      "Append-only reducers (operator.add) for error_details and execution_trace.",
+      "Agents are prohibited from nullifying other agents' output slices."
+    ]
+  },
+  "confidence_governance": {
+    "incommensurable_metrics": [
+      "Isolation Forest score: Contamination score [-0.5, 0.5]; not a probability.",
+      "LSTM Reconstruction error: MSE [0, inf); threshold 0.901464; not a failure likelihood.",
+      "ResNet Softmax: Class preference [0.0, 1.0]; uncalibrated for physical OOD.",
+      "RAG Cosine Similarity: Latent vector proximity [0.60, 1.0]; does not prove physical entailment.",
+      "Agent Reasoning Confidence: Epistemic synthesis [0.0, 1.0]; triggers human review."
+    ],
+    "tiered_rubric": {
+      "high_confidence_ge_0_80": "Anomaly confirmed by IF & LSTM + Defect confirmed + Matching SOP (>=0.70) + Maintenance record.",
+      "moderate_confidence_0_60_to_0_79": "Anomaly confirmed by at least 1 ML model + Matching SOP (>=0.60).",
+      "low_confidence_lt_0_60": "Borderline scores, divergent signals, or RAG similarity < 0.60. Triggers mandatory human review."
+    },
+    "escalation_triggers": [
+      "Overall confidence < 0.60.",
+      "Anomaly detected but zero RAG chunks retrieved above 0.60.",
+      "High-confidence visual defect present without any sensor drift.",
+      "Conflicting ML signals (IF anomalous while LSTM normal, or vice versa)."
+    ]
+  },
+  "human_approval_workflow": {
+    "two_stage_workflow": "Agent stages proposal via Tool 8 -> Human engineer reviews & signs HMAC token -> Tool 9 validates token & creates ticket.",
+    "critical_transaction_integrity_finding": {
+      "status": "PARTIALLY_ATOMIC (TWO-PHASE COMMIT DETECTED)",
+      "description": "create_ticket_with_approval_gate commits ticket at line 67 in ticket_service.py; handle_create_maintenance_ticket commits token consumption at line 931 in tools.py.",
+      "failure_scenario": "Crash between commits leaves ticket created while token remains unconsumed.",
+      "remediation_requirement": "Refactor in Step 7 to execute ticket creation, proposal update, and token consumption inside a single atomic transaction block (with db.begin(): ...)."
+    }
+  },
+  "rag_readiness": {
+    "corpus_metrics": {
+      "source_documents": 418,
+      "canonical_chunks": 564,
+      "chromadb_vectors": 564,
+      "embedding_dimensions": 384,
+      "collection_name": "manumind_bge_small_v1",
+      "synthetic_placeholders": 123
+    },
+    "retrieval_threshold": 0.60,
+    "max_retrieved_chunks": 5,
+    "citation_format": "[CIT-X] linking chunk_id, doc_id, section_title, cosine_similarity, and synthetic flag.",
+    "prompt_injection_defense": "Retrieved manuals quarantined inside <manufacturing_manual_context> XML tags; LLM explicitly instructed that context contains untrusted passive data."
+  },
+  "failure_handling_matrix": {
+    "mcp_server_disconnection": "Fail closed; abort workflow with MCP_UNAVAILABLE; zero tickets created.",
+    "tool_timeout": "Catch TimeoutError; proceed with degraded evidence; apply confidence penalty.",
+    "database_unavailability": "Catch OperationalError; abort with DATABASE_UNAVAILABLE; zero partial writes.",
+    "rag_bridge_failure": "Catch RAGBridgeProcessError; set retrieved_documents=[]; RCA proceeds with confidence <= 0.45.",
+    "llm_api_outage": "Exponential backoff retry (3 attempts); fallback to deterministic rule-based summary.",
+    "malformed_llm_json": "Pydantic validation failure triggers 1 formatted retry; fallback to raw text without ticket proposal.",
+    "low_confidence_lt_0_60": "System sets requires_human_review=True; refuses autonomous proposal.",
+    "expired_or_replayed_token": "Tool 9 rejects with TokenExpiredError or ValueError; zero tickets created."
+  },
+  "testing_strategy": {
+    "total_test_dimensions": 14,
+    "dimensions": [
+      "Typed State Validation Tests",
+      "State Slice Isolation Tests",
+      "MCP Adapter Unit Tests",
+      "Anomaly Detection Agent Contract Tests",
+      "RCA Agent Contract Tests",
+      "Supervisor Routing Tests",
+      "Confidence Governance Tests",
+      "Prompt Injection Resistance Tests",
+      "RAG Citation Preservation Tests",
+      "Synthetic Disclosure Tests",
+      "Anti-Self-Authorization Tests",
+      "Unified Transaction Atomicity Tests",
+      "Subprocess Bridge Failure Recovery Tests",
+      "End-to-End Multi-Agent RCA Benchmark (M101-M110)"
+    ]
+  },
+  "identified_blockers_and_risks": [
+    {
+      "id": "RISK-01",
+      "topic": "Missing LangGraph Dependencies",
+      "severity": "HIGH",
+      "description": "langgraph and langchain_core are not installed in Base Python 3.11.",
+      "mitigation": "Install pinned dependencies in Base Python during Step 1; verify zero conflicts with mcp==2.3.0.",
+      "blocks_step1": true
+    },
+    {
+      "id": "RISK-02",
+      "topic": "Two-Phase Commit in Ticket Creation",
+      "severity": "MEDIUM",
+      "description": "Non-atomic commit between ticket_service and tools.py could leave unconsumed token records.",
+      "mitigation": "Unify ticket creation and token consumption inside a single with db.begin() block in Step 7.",
+      "blocks_step1": false
+    },
+    {
+      "id": "RISK-03",
+      "topic": "Mock Human Authentication Adapter",
+      "severity": "MEDIUM",
+      "description": "DevelopmentHumanApprovalAdapter uses plaintext PIN dictionary; not integrated with Enterprise SSO.",
+      "mitigation": "Documented as Production Deployment Blocker; acceptable for Phase 5 development.",
+      "blocks_step1": false
+    },
+    {
+      "id": "RISK-04",
+      "topic": "LLM API Availability and Quota",
+      "severity": "MEDIUM",
+      "description": "External LLM API rate limits or network issues could interrupt graph execution.",
+      "mitigation": "Implement a deterministic mock LLM adapter for offline unit/regression testing.",
+      "blocks_step1": false
+    }
+  ],
+  "recommended_implementation_roadmap": [
+    {
+      "step": 0,
+      "name": "Multi-Agent Architecture Readiness Audit",
+      "status": "COMPLETED (CURRENT STEP)",
+      "prerequisites": "Phase 4 Step 6.1 Approval"
+    },
+    {
+      "step": 1,
+      "name": "Dependency and Environment Preparation",
+      "description": "Install pinned langgraph and langchain-core in Base Python; verify mcp and pydantic compatibility.",
+      "prerequisites": "Step 0 Approval"
+    },
+    {
+      "step": 2,
+      "name": "Typed Shared State and Domain Schemas",
+      "description": "Implement ManuMindWorkflowState, enums, evidence models, slice reducers, and immutability rules.",
+      "prerequisites": "Step 1"
+    },
+    {
+      "step": 3,
+      "name": "MCP Client Adapter Layer",
+      "description": "Implement typed MCP client adapter wrapping all 9 MCP tools for LangGraph nodes.",
+      "prerequisites": "Step 2"
+    },
+    {
+      "step": 4,
+      "name": "Anomaly Detection Agent Implementation",
+      "description": "Implement Anomaly Detection Agent node using get_machine_data, detect_anomaly, and check_defect_image.",
+      "prerequisites": "Step 3"
+    },
+    {
+      "step": 5,
+      "name": "Root Cause Analysis Agent Implementation",
+      "description": "Implement RCA Agent node using search_manuals and get_maintenance_history with citations and injection defense.",
+      "prerequisites": "Step 3"
+    },
+    {
+      "step": 6,
+      "name": "Supervisor Agent and Graph Orchestration",
+      "description": "Implement Supervisor Agent node, StateGraph compilation, conditional routing, and explainable report synthesis.",
+      "prerequisites": "Step 4, Step 5"
+    },
+    {
+      "step": 7,
+      "name": "Human Approval and Ticket Workflow Integration",
+      "description": "Integrate two-stage approval gate into graph; remediate database transaction atomicity.",
+      "prerequisites": "Step 6"
+    },
+    {
+      "step": 8,
+      "name": "Confidence Governance, Escalation, and Safety Controls",
+      "description": "Implement Tiered Evidence Rubric, low-confidence escalation (<0.60), and safety filters.",
+      "prerequisites": "Step 7"
+    },
+    {
+      "step": 9,
+      "name": "Comprehensive End-to-End Testing & Benchmark",
+      "description": "Execute full diagnostic suites across machines M101-M110, fault injection, and multi-modal edge cases.",
+      "prerequisites": "Step 8"
+    },
+    {
+      "step": 10,
+      "name": "Independent Phase 5 Security and Architecture Audit",
+      "description": "Independent read-only audit of multi-agent implementation and production release authorization.",
+      "prerequisites": "Step 9"
+    }
+  ],
+  "final_readiness_verdict": "READY WITH CONDITIONS"
+}

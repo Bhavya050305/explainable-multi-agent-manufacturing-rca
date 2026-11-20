@@ -1,0 +1,226 @@
+{
+  "audit_metadata": {
+    "project": "ManuMind AI — Explainable Multi-Agent AI System for Manufacturing Anomaly Detection and Root Cause Analysis",
+    "institution": "Department of AI & Data Science, RMK Engineering College",
+    "milestone": "Phase 4 Step 4.1 — Independent Maintenance History MCP Tool Audit",
+    "audit_type": "INDEPENDENT_READ_ONLY_AUDIT",
+    "audit_target": "Phase 4 Step 4 (get_maintenance_history Read-Only Maintenance History MCP Tool)",
+    "repository": "D:\\Desktop\\FInal year project\\manumind-ai",
+    "branch": "main",
+    "head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "remote_origin": "https://github.com/Bhavya050305/explainable-multi-agent-manufacturing-rca.git",
+    "synchronization_status": "synchronized (ahead 0, behind 0)",
+    "timestamp": "2026-11-15T21:42:00+05:30",
+    "verdict": "APPROVED FOR STEP 5"
+  },
+  "git_baseline": {
+    "branch": "main",
+    "head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "is_head_valid": true,
+    "ahead_count": 0,
+    "behind_count": 0,
+    "staged_count": 0,
+    "unstaged_count": 0,
+    "tracked_modifications": 0
+  },
+  "database_audit": {
+    "engine": "SQLite",
+    "file": "manumind.db",
+    "access_mode": "read_only (file:///...manumind.db?mode=ro)",
+    "table_name": "maintenance_history",
+    "total_rows": 400,
+    "row_counts": {
+      "machines": 10,
+      "sensor_readings": 40000,
+      "maintenance_history": 400,
+      "alerts": 5,
+      "tickets": 1
+    },
+    "machine_distribution": {
+      "M101": 35,
+      "M102": 42,
+      "M103": 36,
+      "M104": 35,
+      "M105": 46,
+      "M106": 39,
+      "M107": 28,
+      "M108": 48,
+      "M109": 49,
+      "M110": 42
+    },
+    "date_boundaries": {
+      "min_date": "2024-11-11 15:58:00.000000",
+      "max_date": "2026-11-01 01:01:00.000000"
+    },
+    "outcomes_distribution": {
+      "Resolved": 373,
+      "Monitoring": 27
+    },
+    "null_counts": {
+      "id": 0,
+      "machine_id": 0,
+      "date": 0,
+      "issue": 0,
+      "action": 0,
+      "outcome": 0
+    },
+    "schema_columns": [
+      {"name": "id", "type": "INTEGER", "nullable": false, "primary_key": true},
+      {"name": "machine_id", "type": "VARCHAR(50)", "nullable": false, "primary_key": false},
+      {"name": "date", "type": "DATETIME", "nullable": false, "primary_key": false},
+      {"name": "issue", "type": "TEXT", "nullable": false, "primary_key": false},
+      {"name": "action", "type": "TEXT", "nullable": false, "primary_key": false},
+      {"name": "outcome", "type": "VARCHAR(50)", "nullable": false, "primary_key": false}
+    ]
+  },
+  "implementation_audit": {
+    "tool_name": "get_maintenance_history",
+    "entrypoint": "backend/app/mcp_server/tools.py::handle_get_maintenance_history",
+    "registration": "backend/app/mcp_server/server.py::get_maintenance_history",
+    "schemas": "backend/app/mcp_server/schemas.py::GetMaintenanceHistoryResponse, MaintenanceRecordItem",
+    "validation_rules": {
+      "machine_id_pattern": "^M1(0[1-9]|10)$",
+      "limit_bounds": [1, 500],
+      "boolean_limit_rejected": true,
+      "float_limit_rejected": true,
+      "non_integer_rejected": true
+    },
+    "ordering_guarantees": {
+      "primary_sort": "MaintenanceHistory.date.asc()",
+      "secondary_tie_breaker": "MaintenanceHistory.id.asc()",
+      "status": "DETERMINISTIC_CHRONOLOGICAL"
+    },
+    "session_lifecycle": {
+      "provider": "get_mcp_db_session()",
+      "engine_target": "local manumind.db",
+      "thread_safe": true,
+      "proper_finally_close": true,
+      "mutation_operations_present": false
+    },
+    "disclaimer_audit": {
+      "field_present": true,
+      "text": "Historical maintenance records represent past interventions and reported resolutions. Past maintenance outcomes do not guarantee current physical asset health, absence of new degradation, or remaining useful life (RUL).",
+      "prevents_unwarranted_attribution": true
+    }
+  },
+  "mcp_server_audit": {
+    "server_name": "ManuMind AI MCP Server",
+    "server_version": "0.1.0",
+    "active_tools_count": 6,
+    "registered_tools": [
+      "ping",
+      "get_machine_data",
+      "detect_anomaly",
+      "predict_failure_risk",
+      "search_manuals",
+      "get_maintenance_history"
+    ],
+    "duplicate_tools": false,
+    "secondary_servers": false,
+    "transport": "stdio",
+    "stdout_reserved_for_jsonrpc": true,
+    "stderr_used_for_diagnostics": true,
+    "real_stdio_subprocess_test_passed": true
+  },
+  "test_execution_audit": {
+    "phase4_mcp_suites": [
+      {
+        "suite": "backend/tests/test_mcp_maintenance_history.py",
+        "passed": 14,
+        "failed": 0,
+        "total": 14,
+        "duration_seconds": 7.77
+      },
+      {
+        "suite": "backend/tests/test_mcp_manufacturing_tools.py",
+        "passed": 20,
+        "failed": 0,
+        "total": 20,
+        "duration_seconds": 110.56
+      },
+      {
+        "suite": "backend/tests/test_mcp_rag_retrieval.py",
+        "passed": 15,
+        "failed": 0,
+        "total": 15,
+        "duration_seconds": 130.07
+      },
+      {
+        "suite": "backend/tests/test_mcp_server_skeleton.py",
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "duration_seconds": 6.48
+      }
+    ],
+    "regression_suites": [
+      {
+        "suite": "backend/tests/test_sensor_preprocessing.py",
+        "passed": 8,
+        "failed": 0,
+        "total": 8,
+        "duration_seconds": 13.83
+      },
+      {
+        "suite": "backend/tests/test_rag_source_resolver.py",
+        "passed": 9,
+        "failed": 0,
+        "total": 9,
+        "duration_seconds": 0.011
+      },
+      {
+        "suite": "backend/tests/test_rag_retrieval.py",
+        "passed": 14,
+        "failed": 0,
+        "total": 14,
+        "duration_seconds": 2.346
+      }
+    ],
+    "summary": {
+      "phase4_mcp_tests": 53,
+      "regression_tests": 31,
+      "grand_total_tests": 84,
+      "passed": 84,
+      "failed": 0,
+      "pass_rate_pct": 100.0
+    }
+  },
+  "protected_invariants_audit": {
+    "machines": {"expected": 10, "actual": 10, "status": "PASS"},
+    "sensor_readings": {"expected": 40000, "actual": 40000, "status": "PASS"},
+    "maintenance_records": {"expected": 400, "actual": 400, "status": "PASS"},
+    "alerts": {"expected": 5, "actual": 5, "status": "PASS"},
+    "tickets": {"expected": 1, "actual": 1, "status": "PASS"},
+    "chromadb_vectors": {"expected": 564, "actual": 564, "status": "PASS"},
+    "embedding_dimensions": {"expected": 384, "actual": 384, "status": "PASS"},
+    "source_documents": {"expected": 418, "actual": 418, "status": "PASS"},
+    "canonical_chunks": {"expected": 564, "actual": 564, "status": "PASS"},
+    "specification_placeholders": {"expected": 123, "actual": 123, "status": "PASS"},
+    "isolation_forest_threshold": {"expected": 0.0269, "actual": 0.0269, "status": "PASS"},
+    "lstm_autoencoder_threshold": {"expected": 0.901464, "actual": 0.901464, "status": "PASS"},
+    "rag_lockfile_sha256": {
+      "expected": "778fde7658e8f5a0fd3cb039c6271fbbcce95ab967fbece6d29ca82e3f035ad2",
+      "actual": "778fde7658e8f5a0fd3cb039c6271fbbcce95ab967fbece6d29ca82e3f035ad2",
+      "status": "PASS"
+    },
+    "pip_check_base": {"status": "PASS", "output": "No broken requirements found."},
+    "pip_check_venv_rag": {"status": "PASS", "output": "No broken requirements found."}
+  },
+  "findings": [
+    {
+      "id": "FINDING-P4S4-01",
+      "severity": "INFO",
+      "location": "backend/tests/test_mcp_manufacturing_tools.py:355",
+      "description": "anyio.fail_after timeout was tuned from 60s to 120s to accommodate Windows cold-start TensorFlow/Keras initialization without false test failure.",
+      "blocks_step5": false
+    },
+    {
+      "id": "FINDING-P4S4-02",
+      "severity": "INFO",
+      "location": "backend/app/mcp_server/tools.py:172",
+      "description": "get_mcp_db_session() connects to SQLite without explicit URI ?mode=ro. Pure read-only behavior is enforced at application layer and verified by zero row mutations across all test executions.",
+      "blocks_step5": false
+    }
+  ],
+  "final_verdict": "APPROVED FOR STEP 5"
+}

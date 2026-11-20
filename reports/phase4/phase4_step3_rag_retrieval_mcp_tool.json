@@ -1,0 +1,213 @@
+{
+  "audit_metadata": {
+    "project": "ManuMind AI — Explainable Multi-Agent AI System for Manufacturing Anomaly Detection and Root Cause Analysis",
+    "institution": "Department of AI & Data Science, RMK Engineering College",
+    "milestone": "Phase 4 Step 3 — Read-Only RAG Retrieval MCP Tool Implementation via Process Bridge",
+    "mode": "CONTROLLED_TOOL_IMPLEMENTATION_AND_VERIFICATION",
+    "repository": "D:\\Desktop\\FInal year project\\manumind-ai",
+    "branch": "main",
+    "head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "remote_origin": "https://github.com/Bhavya050305/explainable-multi-agent-manufacturing-rca.git",
+    "synchronization_status": "synchronized (ahead 0, behind 0)",
+    "timestamp": "2026-11-15T18:00:00+05:30",
+    "verdict": "READY FOR STEP 4"
+  },
+  "git_baseline": {
+    "branch": "main",
+    "head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "is_head_valid": true,
+    "ahead_count": 0,
+    "behind_count": 0,
+    "staged_count": 0,
+    "unstaged_count": 0,
+    "untracked_count": 22,
+    "untracked_files": [
+      "backend/app/mcp_server/__init__.py",
+      "backend/app/mcp_server/__main__.py",
+      "backend/app/mcp_server/rag_bridge.py",
+      "backend/app/mcp_server/schemas.py",
+      "backend/app/mcp_server/server.py",
+      "backend/app/mcp_server/tools.py",
+      "backend/app/rag/bridge_runner.py",
+      "backend/requirements-mcp.txt",
+      "backend/tests/test_mcp_manufacturing_tools.py",
+      "backend/tests/test_mcp_rag_retrieval.py",
+      "backend/tests/test_mcp_server_skeleton.py",
+      "reports/phase3/phase3_step9_independent_staged_release_audit.json",
+      "reports/phase3/phase3_step9_independent_staged_release_audit_report.md",
+      "reports/phase4/phase4_step0_mcp_readiness_audit.json",
+      "reports/phase4/phase4_step0_mcp_readiness_audit_report.md",
+      "reports/phase4/phase4_step1a_mcp_architecture_reconciliation.json",
+      "reports/phase4/phase4_step1a_mcp_architecture_reconciliation_report.md",
+      "reports/phase4/phase4_step1b_mcp_dependency_installation.json",
+      "reports/phase4/phase4_step1b_mcp_dependency_installation_report.md",
+      "reports/phase4/phase4_step1c_mcp_server_skeleton.json",
+      "reports/phase4/phase4_step1c_mcp_server_skeleton_report.md",
+      "reports/phase4/phase4_step2_read_only_tools_implementation.json",
+      "reports/phase4/phase4_step2_read_only_tools_implementation_report.md"
+    ]
+  },
+  "tool_implemented": {
+    "name": "search_manuals",
+    "tool_number": 5,
+    "purpose": "Execute read-only semantic vector retrieval across manufacturing SOPs, troubleshooting manuals, and safety documentation indexed in ChromaDB via isolated subprocess bridge",
+    "input_schema": {
+      "query": {
+        "type": "string",
+        "min_length": 1,
+        "max_length": 500,
+        "required": true,
+        "description": "Semantic search query describing machine symptoms, maintenance procedures, or safety standards"
+      },
+      "k": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 20,
+        "default": 5,
+        "required": false,
+        "description": "Number of top-k ranked knowledge excerpts to retrieve (1 to 20, default 5)"
+      }
+    },
+    "output_schema": {
+      "status": "string (SUCCESS, NO_RESULTS, ERROR)",
+      "query": "string",
+      "requested_k": "integer",
+      "returned_count": "integer",
+      "results": [
+        {
+          "rank": "integer (1-indexed)",
+          "document_id": "string",
+          "category": "string (SOP, TROUBLESHOOTING, SAFETY, INCIDENT)",
+          "section_heading": "string",
+          "parent_heading": "string or null",
+          "similarity_score": "float [0.0, 1.0]",
+          "content": "string",
+          "source_path": "string",
+          "is_synthetic": "boolean",
+          "is_safety_related": "boolean",
+          "source_type": "string",
+          "segment_id": "string",
+          "parent_chunk_id": "string",
+          "content_hash": "string (SHA-256)",
+          "provenance_validated": "boolean"
+        }
+      ],
+      "disclaimer": "string",
+      "collection_name": "string (manumind_bge_small_v1)",
+      "embedding_model": "string (BAAI/bge-small-en-v1.5)"
+    },
+    "bridge_architecture": {
+      "pattern": "short_lived_subprocess",
+      "host_environment": "Base Python 3.11.9",
+      "target_environment": ".venv-rag Python 3.11.9",
+      "runner_module": "backend.app.rag.bridge_runner",
+      "bridge_module": "backend.app.mcp_server.rag_bridge",
+      "transport": "stdio pipes (stdin JSON payload -> stdout single JSON line)",
+      "diagnostic_stream": "sys.stderr strictly",
+      "execution_timeout_seconds": 30.0,
+      "stream_isolation": "Verified: stdout 100% clean JSON, stderr captures telemetry and diagnostics"
+    }
+  },
+  "verification_results": {
+    "test_suite_rag": {
+      "path": "backend/tests/test_mcp_rag_retrieval.py",
+      "total_tests": 15,
+      "passed": 15,
+      "failed": 0,
+      "execution_time_seconds": 32.63,
+      "tests_breakdown": {
+        "test_rag_input_validation_valid": "PASSED",
+        "test_rag_input_validation_invalid_query": "PASSED",
+        "test_rag_input_validation_invalid_k": "PASSED",
+        "test_rag_venv_python_discovery": "PASSED",
+        "test_search_manuals_live_retrieval_ranked_results": "PASSED",
+        "test_search_manuals_safety_procedure_retrieval": "PASSED",
+        "test_search_manuals_synthetic_provenance": "PASSED",
+        "test_search_manuals_schemas_forbid_extra": "PASSED",
+        "test_rag_bridge_timeout_error": "PASSED",
+        "test_rag_bridge_nonzero_exit_code": "PASSED",
+        "test_rag_bridge_malformed_json_output": "PASSED",
+        "test_rag_bridge_empty_stdout": "PASSED",
+        "test_rag_bridge_error_status_in_json": "PASSED",
+        "test_mcp_server_registers_all_five_tools": "PASSED",
+        "test_mcp_server_real_stdio_search_manuals_lifecycle": "PASSED"
+      }
+    },
+    "regression_test_manufacturing": {
+      "path": "backend/tests/test_mcp_manufacturing_tools.py",
+      "total_tests": 20,
+      "passed": 20,
+      "failed": 0,
+      "execution_time_seconds": 73.09
+    },
+    "regression_test_skeleton": {
+      "path": "backend/tests/test_mcp_server_skeleton.py",
+      "total_tests": 4,
+      "passed": 4,
+      "failed": 0,
+      "execution_time_seconds": 6.34
+    },
+    "environment_checks": {
+      "base_python_pip_check": "PASSED (No broken requirements found)",
+      "venv_rag_pip_check": "PASSED (No broken requirements found)"
+    }
+  },
+  "invariant_verification": {
+    "database_row_counts": {
+      "machines": 10,
+      "sensor_readings": 40000,
+      "alerts": 5,
+      "tickets": 1,
+      "status": "PRESERVED_IMMUTABLE"
+    },
+    "chromadb_collection": {
+      "name": "manumind_bge_small_v1",
+      "record_count": 564,
+      "embedding_dimension": 384,
+      "status": "PRESERVED_IMMUTABLE"
+    },
+    "lockfile_integrity": {
+      "path": "backend/requirements-rag.lock",
+      "sha256": "778fde7658e8f5a0fd3cb039c6271fbbcce95ab967fbece6d29ca82e3f035ad2",
+      "status": "IDENTICAL_TO_PHASE3_BASELINE"
+    },
+    "zero_langgraph_agents": true,
+    "zero_generative_llm_calls": true,
+    "zero_database_mutations": true,
+    "tools_4_6_7_status": "EXCLUDED_AS_SPECIFIED"
+  },
+  "file_checksums": {
+    "backend/app/rag/bridge_runner.py": {
+      "sha256": "7efdb74db2226d19001fcca1fb1712889ca6469c93d528f5b0d6e96c62f47c44",
+      "size_bytes": 4585
+    },
+    "backend/app/mcp_server/rag_bridge.py": {
+      "sha256": "e1b5427e3d247cd54447a1e91c5b36f5570733f0cbf541cbd0ad3391e083a32a",
+      "size_bytes": 7641
+    },
+    "backend/app/mcp_server/schemas.py": {
+      "sha256": "73dded037189a82aa6338c6fe60716b1e35f9600565d446054a06d381abc8911",
+      "size_bytes": 10154
+    },
+    "backend/app/mcp_server/tools.py": {
+      "sha256": "80c85da58e4d20f5bb1740b7c0450edab117fc0235dff251e8fa39d2ec8beb2c",
+      "size_bytes": 19723
+    },
+    "backend/app/mcp_server/server.py": {
+      "sha256": "9db8c4655f92c3d82d0b476b7ba67f569225ad997341504c4baab7eed77c9689",
+      "size_bytes": 9746
+    },
+    "backend/app/mcp_server/__init__.py": {
+      "sha256": "92707bf04dab3f93c8e5c411e519cea0810640dd62a4ca016d09b69298058808",
+      "size_bytes": 1647
+    },
+    "backend/tests/test_mcp_rag_retrieval.py": {
+      "sha256": "204ba04eaa37797644704a67ae920b4f68543489cb8b81f575e413c08402bbc2",
+      "size_bytes": 16514
+    },
+    "backend/tests/test_mcp_manufacturing_tools.py": {
+      "sha256": "1faa8db25f8b96f1e57aab3c805a4b78d3a421ef939af8f870af36e430a49682",
+      "size_bytes": 16532
+    }
+  }
+}

@@ -1,0 +1,131 @@
+{
+  "project": "ManuMind AI",
+  "phase": "Phase 5",
+  "step": "Step 1",
+  "timestamp": "2026-11-17T17:30:00+05:30",
+  "verdict": "BLOCKED",
+  "verdict_reason": "Mandatory Stop Gate triggered during dependency resolution dry run. Pinned dependency langchain==0.3.7 requires numpy<2 on Python 3.11, which conflicts with protected package shap==0.51.0 (requires numpy>=2) and tensorflow==2.21.0 subdependency ml_dtypes==0.6.0 (requires numpy>=2.0.0). Installation was safely halted without modifying host environment.",
+  "git_state": {
+    "repository_path": "D:\\Desktop\\FInal year project\\manumind-ai",
+    "branch": "main",
+    "head_commit": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "remote_sync": "ahead 0, behind 0",
+    "tracked_modifications": [
+      "backend/app/models/__init__.py"
+    ],
+    "untracked_phase4_phase5_artifacts": [
+      "backend/alembic/versions/c742f9a1e0b5_ticket_proposals.py",
+      "backend/app/mcp_server/",
+      "backend/app/ml/defect_runner.py",
+      "backend/app/models/ticket_proposal.py",
+      "backend/app/rag/bridge_runner.py",
+      "backend/requirements-mcp.txt",
+      "backend/requirements-phase5.txt",
+      "backend/tests/test_mcp_defect_image.py",
+      "backend/tests/test_mcp_maintenance_history.py",
+      "backend/tests/test_mcp_manufacturing_tools.py",
+      "backend/tests/test_mcp_rag_retrieval.py",
+      "backend/tests/test_mcp_server_skeleton.py",
+      "backend/tests/test_mcp_ticket_creation.py",
+      "phase5_step1_pip_dry_run.json",
+      "reports/phase4/",
+      "reports/phase5/"
+    ]
+  },
+  "environments": {
+    "base_python": {
+      "executable": "C:\\Users\\PR BHAYA SREE\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+      "version": "3.11.9",
+      "pip_check_preflight": "No broken requirements found.",
+      "pip_check_postflight": "No broken requirements found.",
+      "protected_packages": {
+        "pydantic": "2.13.4",
+        "pydantic_core": "2.46.4",
+        "mcp": "2.3.0",
+        "sqlalchemy": "2.0.52",
+        "alembic": "1.19.1",
+        "fastapi": "0.141.1",
+        "tensorflow": "2.21.0",
+        "scikit-learn": "1.9.0",
+        "shap": "0.51.0",
+        "keras": "3.15.1",
+        "ml_dtypes": "0.6.0",
+        "numpy": "2.4.6",
+        "anyio": "4.14.2",
+        "httpx": "0.28.1"
+      }
+    },
+    "venv_rag": {
+      "executable": "D:\\Desktop\\FInal year project\\manumind-ai\\.venv-rag\\Scripts\\python.exe",
+      "version": "3.11.9",
+      "lockfile_path": "backend/requirements-rag.lock",
+      "lockfile_sha256": "778fde7658e8f5a0fd3cb039c6271fbbcce95ab967fbece6d29ca82e3f035ad2",
+      "lockfile_matches_baseline": true,
+      "chromadb_path": "knowledge_base/index/chroma_bge_small_v1",
+      "chromadb_collection": "manumind_bge_small_v1",
+      "chromadb_vector_count": 564,
+      "chromadb_embedding_dim": 384,
+      "pip_check": "No broken requirements found."
+    }
+  },
+  "dry_run_analysis": {
+    "requirements_file": "backend/requirements-phase5.txt",
+    "requested_dependencies": [
+      "langgraph==0.2.45",
+      "langchain-core==0.3.15",
+      "langchain==0.3.7"
+    ],
+    "dry_run_report_file": "phase5_step1_pip_dry_run.json",
+    "proposed_install_count": 20,
+    "conflict_detected": true,
+    "conflict_details": {
+      "triggering_package": "langchain==0.3.7",
+      "constraint": "numpy<2,>=1 (for python_version < '3.12')",
+      "proposed_action": "Downgrade numpy from 2.4.6 to 1.26.4",
+      "impacted_protected_packages": [
+        {
+          "package": "shap",
+          "current_version": "0.51.0",
+          "requirement": "numpy>=2",
+          "impact": "Violated if numpy is downgraded to 1.26.4; pip check fails. Alternatively downgraded to 0.49.1."
+        },
+        {
+          "package": "ml_dtypes",
+          "current_version": "0.6.0",
+          "parent_package": "tensorflow==2.21.0",
+          "requirement": "numpy>=2.0.0",
+          "impact": "Violated if numpy is downgraded to 1.26.4; breaks tensorflow internal float types."
+        }
+      ]
+    },
+    "stop_gate_triggered": true,
+    "stop_gate_reasons": [
+      "Downgrade of numpy would break protected package shap==0.51.0 and tensorflow subdependency ml_dtypes==0.6.0",
+      "Dependency resolution produces conflicts with existing ML environment",
+      "Mandatory stop gate rule requires halting before installation"
+    ]
+  },
+  "recommendations": {
+    "recommended_solution": "Alternative 1: Install langgraph==0.2.45 and langchain-core==0.3.15 strictly, omitting langchain==0.3.7.",
+    "alternatives": [
+      {
+        "name": "Alternative 1 (Recommended)",
+        "action": "Modify backend/requirements-phase5.txt to include only langgraph==0.2.45 and langchain-core==0.3.15.",
+        "rationale": "LangGraph multi-agent orchestration (StateGraph, Command, Send, TypedDict state) and tool adapters depend strictly on langgraph and langchain-core. The monolithic langchain package is not required. langgraph and langchain-core have zero numpy dependencies, leaving numpy==2.4.6, shap==0.51.0, and tensorflow==2.21.0 100% clean and compatible.",
+        "pip_check_status": "Clean"
+      },
+      {
+        "name": "Alternative 2",
+        "action": "Upgrade langchain to 0.3.20+ and langchain-core to 0.3.41.",
+        "rationale": "LangChain dropped the numpy<2 constraint in version 0.3.20. Compatible with numpy 2.x, but requires bumping langchain-core beyond 0.3.15.",
+        "pip_check_status": "Clean"
+      },
+      {
+        "name": "Alternative 3",
+        "action": "Downgrade numpy to 1.26.4, shap to 0.49.1, and ml_dtypes to <0.6.0.",
+        "rationale": "Allows langchain==0.3.7 but mutates protected ML packages. High regression risk.",
+        "pip_check_status": "Clean with downgraded ML packages"
+      }
+    ]
+  }
+}

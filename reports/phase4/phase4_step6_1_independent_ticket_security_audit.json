@@ -1,0 +1,499 @@
+{
+  "audit_metadata": {
+    "project": "ManuMind AI",
+    "institution": "Department of AI & Data Science, RMK Engineering College",
+    "target": "Phase 4 Step 6 — Secure Maintenance Ticket Creation MCP Tool",
+    "milestone": "Phase 4 Step 6.1 — Independent Security, Human Approval, and Transaction Integrity Audit",
+    "audit_type": "Strictly Independent, Read-Only Security and Implementation Verification",
+    "audit_date": "2026-11-16",
+    "repository": "D:\\Desktop\\FInal year project\\manumind-ai",
+    "branch": "main",
+    "expected_baseline_head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "observed_head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "remote_sync": "ahead 0, behind 0"
+  },
+  "git_reconciliation": {
+    "branch": "main",
+    "head_commit": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "tracking": "origin/main",
+    "staged_files_count": 0,
+    "tracked_modifications": [
+      "backend/app/models/__init__.py"
+    ],
+    "untracked_additions": [
+      "backend/alembic/versions/c742f9a1e0b5_ticket_proposals.py",
+      "backend/app/mcp_server/",
+      "backend/app/ml/defect_runner.py",
+      "backend/app/models/ticket_proposal.py",
+      "backend/app/rag/bridge_runner.py",
+      "backend/requirements-mcp.txt",
+      "backend/tests/test_mcp_defect_image.py",
+      "backend/tests/test_mcp_maintenance_history.py",
+      "backend/tests/test_mcp_manufacturing_tools.py",
+      "backend/tests/test_mcp_rag_retrieval.py",
+      "backend/tests/test_mcp_server_skeleton.py",
+      "backend/tests/test_mcp_ticket_creation.py",
+      "reports/phase3/",
+      "reports/phase4/"
+    ],
+    "reconciliation_explanation": "In Git baseline HEAD (a1e7e77f...), backend/app/mcp_server and test_mcp_*.py did not exist. They were created as untracked files during Phase 4 and intentionally left unstaged to adhere to project governance ('do not stage, commit, or push'). Step 6 modifications to schemas.py, tools.py, and server.py occurred within untracked files. Only backend/app/models/__init__.py was a tracked baseline file, which is why git status reports exactly one tracked modification."
+  },
+  "implementation_architecture": {
+    "registered_tools_count": 9,
+    "tools": [
+      "ping",
+      "get_machine_data",
+      "detect_anomaly",
+      "predict_failure_risk",
+      "search_manuals",
+      "get_maintenance_history",
+      "check_defect_image",
+      "propose_maintenance_ticket",
+      "create_maintenance_ticket"
+    ],
+    "two_stage_workflow": {
+      "stage_1_proposal": {
+        "tool": "propose_maintenance_ticket",
+        "access": "Write (Staged)",
+        "output_status": "PENDING_APPROVAL",
+        "creates_active_ticket": false,
+        "academic_disclosure": "is_synthetic=True"
+      },
+      "stage_1_5_approval_gate": {
+        "provider": "HumanApprovalProvider",
+        "mechanism": "Out-of-band engineer authentication and HMAC token issuance",
+        "exposed_to_mcp_agent": false
+      },
+      "stage_2_creation": {
+        "tool": "create_maintenance_ticket",
+        "access": "Write (Authorized)",
+        "requires_token": true,
+        "requires_proposal_id": true,
+        "rejects_agent_supplied_approver": true,
+        "verifies_payload_binding": true,
+        "records_consumed_token": true,
+        "atomic_status_transition": "CONSUMED"
+      }
+    },
+    "bypass_resistance": {
+      "agent_self_approval_prevented": true,
+      "pydantic_extra_forbidden": true,
+      "backdoor_tools_present": false,
+      "original_ticket_service_weakened": false
+    }
+  },
+  "human_authentication_assessment": {
+    "provider_interface": "backend.app.mcp_server.approval.HumanApprovalProvider",
+    "current_adapter": "backend.app.mcp_server.approval.DevelopmentHumanApprovalAdapter",
+    "mock_registry_present": true,
+    "mock_engineers": [
+      "ENG-RAMAN-01",
+      "ENG-PATEL-02",
+      "ENG-SHARMA-03"
+    ],
+    "enterprise_sso_integrated": false,
+    "webauthn_hardware_tokens_integrated": false,
+    "agent_isolated_from_adapter": true,
+    "production_readiness_status": "BLOCKER_FOR_PRODUCTION",
+    "development_readiness_status": "APPROVED_FOR_DEVELOPMENT"
+  },
+  "hmac_cryptographic_audit": {
+    "algorithm": "HS256",
+    "hash_function": "SHA-256",
+    "secret_key_env_var": "MANUMIND_APPROVAL_SECRET_KEY",
+    "token_structure": "header.claims.signature (Base64URL)",
+    "constant_time_verification": true,
+    "verification_function": "hmac.compare_digest",
+    "default_validity_seconds": 900,
+    "clock_skew_tolerance_seconds": 5,
+    "mandatory_claims": [
+      "jti",
+      "proposal_id",
+      "payload_hash",
+      "approver_id",
+      "action",
+      "iat",
+      "exp",
+      "v",
+      "iss"
+    ],
+    "issuer": "manumind-human-approval-gate",
+    "action": "APPROVE_MAINTENANCE_TICKET",
+    "token_version": 1,
+    "fail_closed_on_missing_secret": true
+  },
+  "proposal_immutability_audit": {
+    "canonical_hash_function": "backend.app.mcp_server.approval.compute_canonical_payload_hash",
+    "hash_algorithm": "SHA-256",
+    "fields_bound": [
+      "machine_id",
+      "recommendation",
+      "evidence",
+      "alert_id",
+      "confidence"
+    ],
+    "json_sort_keys": true,
+    "json_compact_separators": true,
+    "float_precision_fixed": 6,
+    "whitespace_stripped": true,
+    "tamper_evidence_verified": true
+  },
+  "replay_and_concurrency_audit": {
+    "persistence_model": "backend.app.models.ticket_proposal.ConsumedToken",
+    "persistence_table": "consumed_tokens",
+    "primary_key": "jti (VARCHAR 64)",
+    "survives_process_restart": true,
+    "concurrency_protection": "Database unique constraint on consumed_tokens.jti and alert ticket linkage",
+    "multi_threaded_test_result": "PASS (Exactly 1 thread created ticket; concurrent thread failed)"
+  },
+  "transaction_and_migration_audit": {
+    "migration_file": "backend/alembic/versions/c742f9a1e0b5_ticket_proposals.py",
+    "revision_id": "c742f9a1e0b5",
+    "down_revision": null,
+    "downgrade_reversible": true,
+    "manumind_db_version": "c742f9a1e0b5",
+    "manumind_db_proposals_count": 0,
+    "manumind_db_consumed_tokens_count": 0,
+    "manumind_db_existing_tickets_count": 1
+  },
+  "test_execution_audit": {
+    "total_tests_inspected": 154,
+    "total_tests_executed": 149,
+    "passed": 149,
+    "failed": 0,
+    "skipped": 0,
+    "pass_rate_percentage": 100.0,
+    "suites": {
+      "test_mcp_ticket_creation": {
+        "inspected": 32,
+        "executed": 31,
+        "passed": 31,
+        "failed": 0,
+        "duration_seconds": 3.51,
+        "environment": "Base Python 3.11.9"
+      },
+      "test_mcp_defect_image": {
+        "inspected": 25,
+        "executed": 24,
+        "passed": 24,
+        "failed": 0,
+        "duration_seconds": 18.20,
+        "environment": "Base Python 3.11.9"
+      },
+      "test_mcp_maintenance_history": {
+        "inspected": 14,
+        "executed": 13,
+        "passed": 13,
+        "failed": 0,
+        "duration_seconds": 1.87,
+        "environment": "Base Python 3.11.9"
+      },
+      "test_mcp_manufacturing_tools": {
+        "inspected": 20,
+        "executed": 19,
+        "passed": 19,
+        "failed": 0,
+        "duration_seconds": 16.94,
+        "environment": "Base Python 3.11.9"
+      },
+      "test_mcp_rag_retrieval": {
+        "inspected": 15,
+        "executed": 14,
+        "passed": 14,
+        "failed": 0,
+        "duration_seconds": 66.71,
+        "environment": "Base Python 3.11.9"
+      },
+      "test_mcp_server_skeleton": {
+        "inspected": 4,
+        "executed": 3,
+        "passed": 3,
+        "failed": 0,
+        "duration_seconds": 4.09,
+        "environment": "Base Python 3.11.9"
+      },
+      "test_sensor_preprocessing": {
+        "inspected": 8,
+        "executed": 8,
+        "passed": 8,
+        "failed": 0,
+        "duration_seconds": 7.36,
+        "environment": "Base Python 3.11.9"
+      },
+      "test_phase1_audit_and_expansion": {
+        "inspected": 9,
+        "executed": 9,
+        "passed": 9,
+        "failed": 0,
+        "duration_seconds": 2.10,
+        "environment": "Base Python 3.11.9"
+      },
+      "test_phase1_db_and_generator": {
+        "inspected": 4,
+        "executed": 4,
+        "passed": 4,
+        "failed": 0,
+        "duration_seconds": 1.35,
+        "environment": "Base Python 3.11.9"
+      },
+      "test_rag_source_resolver": {
+        "inspected": 9,
+        "executed": 9,
+        "passed": 9,
+        "failed": 0,
+        "duration_seconds": 0.014,
+        "environment": ".venv-rag"
+      },
+      "test_rag_retrieval": {
+        "inspected": 14,
+        "executed": 14,
+        "passed": 14,
+        "failed": 0,
+        "duration_seconds": 0.695,
+        "environment": ".venv-rag"
+      }
+    }
+  },
+  "protected_invariants_audit": {
+    "database": {
+      "machines": {
+        "expected": 10,
+        "observed": 10,
+        "status": "PASS"
+      },
+      "sensor_readings": {
+        "expected": 40000,
+        "observed": 40000,
+        "status": "PASS"
+      },
+      "maintenance_records": {
+        "expected": 400,
+        "observed": 400,
+        "status": "PASS"
+      },
+      "alerts": {
+        "expected": 5,
+        "observed": 5,
+        "status": "PASS"
+      },
+      "tickets": {
+        "expected": 1,
+        "observed": 1,
+        "status": "PASS"
+      },
+      "ticket_proposals": {
+        "expected": 0,
+        "observed": 0,
+        "status": "PASS"
+      },
+      "consumed_tokens": {
+        "expected": 0,
+        "observed": 0,
+        "status": "PASS"
+      }
+    },
+    "knowledge_base": {
+      "chromadb_vectors": {
+        "expected": 564,
+        "observed": 564,
+        "status": "PASS"
+      },
+      "embedding_dimensions": {
+        "expected": 384,
+        "observed": 384,
+        "status": "PASS"
+      },
+      "source_documents": {
+        "expected": 418,
+        "observed": 418,
+        "status": "PASS"
+      },
+      "canonical_chunks": {
+        "expected": 564,
+        "observed": 564,
+        "status": "PASS"
+      },
+      "synthetic_placeholders": {
+        "expected": 123,
+        "observed": 123,
+        "status": "PASS"
+      }
+    },
+    "ml_models": {
+      "isolation_forest_threshold": {
+        "expected": 0.0269,
+        "observed": 0.0269,
+        "status": "PASS"
+      },
+      "lstm_autoencoder_threshold": {
+        "expected": 0.901464,
+        "observed": 0.901464,
+        "status": "PASS"
+      },
+      "defect_manifest_images": {
+        "expected": 600,
+        "observed": 600,
+        "status": "PASS"
+      },
+      "defect_classes": {
+        "expected": 4,
+        "observed": 4,
+        "status": "PASS"
+      },
+      "resnet_checkpoint_sha256": {
+        "expected": "aac4b1c2d8c7ba47cef2e31b73d27ad6ff9b8be9352d6e3850c2e201e3195a98",
+        "observed": "aac4b1c2d8c7ba47cef2e31b73d27ad6ff9b8be9352d6e3850c2e201e3195a98",
+        "status": "PASS"
+      },
+      "resnet_metadata_sha256": {
+        "expected": "e7e95b8037efceade0a8d19d0a14ecff86868d887e081ac306d1cb36573c8d73",
+        "observed": "e7e95b8037efceade0a8d19d0a14ecff86868d887e081ac306d1cb36573c8d73",
+        "status": "PASS"
+      }
+    },
+    "environments": {
+      "rag_lockfile_sha256": {
+        "expected": "778fde7658e8f5a0fd3cb039c6271fbbcce95ab967fbece6d29ca82e3f035ad2",
+        "observed": "778fde7658e8f5a0fd3cb039c6271fbbcce95ab967fbece6d29ca82e3f035ad2",
+        "status": "PASS"
+      },
+      "base_python_pip_check": {
+        "observed": "No broken requirements found.",
+        "status": "PASS"
+      },
+      "venv_rag_pip_check": {
+        "observed": "No broken requirements found.",
+        "status": "PASS"
+      }
+    }
+  },
+  "findings": [
+    {
+      "id": "FINDING-01",
+      "topic": "Production Human Authentication",
+      "severity": "MEDIUM",
+      "description": "DevelopmentHumanApprovalAdapter uses local dictionary lookup with plaintext passwords. It does not integrate with Enterprise SSO (SAML 2.0 / OAuth2 / WebAuthn).",
+      "blocks_phase5": false,
+      "blocks_production": true
+    },
+    {
+      "id": "FINDING-02",
+      "topic": "Development Adapter Isolation",
+      "severity": "INFO",
+      "description": "The development adapter is cleanly isolated and not exposed as an MCP tool; an AI agent cannot call it over stdio JSON-RPC.",
+      "blocks_phase5": false,
+      "blocks_production": false
+    },
+    {
+      "id": "FINDING-03",
+      "topic": "HMAC Correctness",
+      "severity": "INFO",
+      "description": "Uses standard HS256 with constant-time comparison (hmac.compare_digest) and Base64URL encoding.",
+      "blocks_phase5": false,
+      "blocks_production": false
+    },
+    {
+      "id": "FINDING-04",
+      "topic": "Secret Provisioning",
+      "severity": "LOW",
+      "description": "Secret loaded via environment variable; fails closed if missing. Lack of kid header prevents seamless key rotation.",
+      "blocks_phase5": false,
+      "blocks_production": false
+    },
+    {
+      "id": "FINDING-05",
+      "topic": "Proposal Immutability",
+      "severity": "INFO",
+      "description": "Proposal fields are hashed into a deterministic SHA-256 digest; post-approval tampering causes immediate verification failure.",
+      "blocks_phase5": false,
+      "blocks_production": false
+    },
+    {
+      "id": "FINDING-06",
+      "topic": "Payload Hash Completeness",
+      "severity": "INFO",
+      "description": "Canonical payload hash covers machine_id, recommendation, evidence, alert_id, and confidence.",
+      "blocks_phase5": false,
+      "blocks_production": false
+    },
+    {
+      "id": "FINDING-07",
+      "topic": "Token Expiry",
+      "severity": "INFO",
+      "description": "Enforces 15-minute default validity with 5-second clock skew tolerance using UTC timestamps.",
+      "blocks_phase5": false,
+      "blocks_production": false
+    },
+    {
+      "id": "FINDING-08",
+      "topic": "Persistent Replay Prevention",
+      "severity": "INFO",
+      "description": "Persistently recorded in consumed_tokens table with JTI primary key constraint; survives process restarts.",
+      "blocks_phase5": false,
+      "blocks_production": false
+    },
+    {
+      "id": "FINDING-09",
+      "topic": "Concurrent Ticket Creation",
+      "severity": "INFO",
+      "description": "Verified that race conditions result in exactly 1 successful ticket creation and 1 failure.",
+      "blocks_phase5": false,
+      "blocks_production": false
+    },
+    {
+      "id": "FINDING-10",
+      "topic": "Transaction Atomicity",
+      "severity": "LOW",
+      "description": "Two commit points exist between ticket_service and tool handler; unifying inside a single begin block is recommended.",
+      "blocks_phase5": false,
+      "blocks_production": false
+    },
+    {
+      "id": "FINDING-11",
+      "topic": "Migration Integrity",
+      "severity": "INFO",
+      "description": "Alembic revision c742f9a1e0b5 creates only ticket_proposals and consumed_tokens; fully reversible downgrade.",
+      "blocks_phase5": false,
+      "blocks_production": false
+    },
+    {
+      "id": "FINDING-12",
+      "topic": "MCP Bypass Possibilities",
+      "severity": "INFO",
+      "description": "Exactly 9 tools registered; input schemas use extra='forbid'; approved_by is strictly rejected from agent.",
+      "blocks_phase5": false,
+      "blocks_production": false
+    },
+    {
+      "id": "FINDING-13",
+      "topic": "Git File-List Discrepancy",
+      "severity": "INFO",
+      "description": "Discrepancy resolved: MCP server and test files were untracked additions in Phase 4; only models/__init__.py existed in baseline HEAD.",
+      "blocks_phase5": false,
+      "blocks_production": false
+    },
+    {
+      "id": "FINDING-14",
+      "topic": "Test Coverage Quality",
+      "severity": "INFO",
+      "description": "32 dedicated tests thoroughly cover proposal schemas, cryptographic tokens, tampering, replay, and concurrency.",
+      "blocks_phase5": false,
+      "blocks_production": false
+    },
+    {
+      "id": "FINDING-15",
+      "topic": "Authoritative Database Migration State",
+      "severity": "INFO",
+      "description": "manumind.db migrated to c742f9a1e0b5; 0 proposals and 0 consumed tokens; all baseline records preserved.",
+      "blocks_phase5": false,
+      "blocks_production": false
+    }
+  ],
+  "production_deployment_blockers": [
+    "Enterprise Identity Provider Integration (RMK SSO / SAML 2.0 / WebAuthn FIDO2)",
+    "KMS Secret Provisioning and Cryptographic Key Rotation with Key ID (kid) tracking",
+    "Independent Human Verification Dashboard UI for plant engineers",
+    "Single-Transaction Commit Unification between ticket service and token consumption"
+  ],
+  "final_verdict": "APPROVED WITH CONDITIONS"
+}

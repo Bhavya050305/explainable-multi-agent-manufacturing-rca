@@ -1,0 +1,194 @@
+{
+  "project": "ManuMind AI",
+  "milestone": "Phase 5 — Supabase Security Remediation",
+  "step": "Step 3C.3 — Authorized Live Migration Execution",
+  "execution_timestamp": "2026-11-18T21:35:10+05:30",
+  "verdict": "SUCCESS — ALL MIGRATIONS AND VERIFICATIONS PASSED",
+  "verdict_justification": "All three authorized migrations (c742f9a1e0b5, e4b19082a5c1, and f3a9082b1c42) executed cleanly in a single atomic transaction without error. The live database revision advanced from 1273f18b72a2 to f3a9082b1c42. Standard Row Level Security is active across all eight public tables. API roles anon and authenticated have zero table privileges and zero sequence privileges. Future default privileges for creator role postgres in schema public exclude API roles. All ten post-migration catalog checks passed. All 40,416 rows across domain tables remain completely intact with 100% data fidelity.",
+  "authorization": {
+    "granted_by": "Project Owner",
+    "scope": [
+      "Executing live Supabase migration using alembic upgrade head",
+      "Applying three reviewed migrations: c742f9a1e0b5, e4b19082a5c1, f3a9082b1c42",
+      "Executing ten read-only post-migration catalog checks",
+      "Authoring execution reports in Markdown and JSON"
+    ]
+  },
+  "baseline": {
+    "git_branch": "main",
+    "git_head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "pre_execution_live_revision": "1273f18b72a2",
+    "connecting_role": "postgres",
+    "rolbypassrls": true,
+    "migration_file_hashes": {
+      "c742f9a1e0b5": "55661883B8D870CB44AD84F398C4D653FBDE8A8F798CC5F90C23BF18676A7BB7",
+      "e4b19082a5c1": "D360F941071FFDFCBA04CC40D5553E69274C4FB5EA70C76CC08CE1A0E1BD4EC6",
+      "f3a9082b1c42": "C1A06ABCBA932106C8C7A1402E728B9CF5AAAE28980C676F825898E9569D07F7"
+    }
+  },
+  "execution": {
+    "python_binary": "C:\\Users\\PR BHAYA SREE\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+    "command": "python -m alembic -c backend/alembic.ini upgrade head",
+    "exit_code": 0,
+    "transaction_model": "SINGLE_POSTGRESQL_TRANSACTION",
+    "sequence": [
+      {
+        "transition": "1273f18b72a2 -> c742f9a1e0b5",
+        "description": "ticket_proposals and consumed_tokens tables",
+        "status": "APPLIED"
+      },
+      {
+        "transition": "c742f9a1e0b5 -> e4b19082a5c1",
+        "description": "enable standard rls on eight public tables",
+        "status": "APPLIED"
+      },
+      {
+        "transition": "e4b19082a5c1 -> f3a9082b1c42",
+        "description": "harden least privilege grants on public tables and sequences",
+        "status": "APPLIED"
+      }
+    ],
+    "post_execution_live_revision": "f3a9082b1c42"
+  },
+  "verification_results": {
+    "check_1_alembic_version": {
+      "status": "PASS",
+      "expected": ["f3a9082b1c42"],
+      "actual": ["f3a9082b1c42"],
+      "query": "SELECT version_num FROM public.alembic_version;"
+    },
+    "check_2_table_existence": {
+      "status": "PASS",
+      "expected": ["consumed_tokens", "ticket_proposals"],
+      "actual": ["consumed_tokens", "ticket_proposals"],
+      "query": "SELECT tablename FROM pg_tables WHERE schemaname = 'public' AND tablename IN ('ticket_proposals', 'consumed_tokens') ORDER BY tablename;"
+    },
+    "check_3_rls_activation": {
+      "status": "PASS",
+      "expected": {
+        "alembic_version": true,
+        "alerts": true,
+        "consumed_tokens": true,
+        "machines": true,
+        "maintenance_history": true,
+        "sensor_readings": true,
+        "ticket_proposals": true,
+        "tickets": true
+      },
+      "actual": {
+        "alembic_version": true,
+        "alerts": true,
+        "consumed_tokens": true,
+        "machines": true,
+        "maintenance_history": true,
+        "sensor_readings": true,
+        "ticket_proposals": true,
+        "tickets": true
+      },
+      "query": "SELECT c.relname, c.relrowsecurity FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace WHERE n.nspname = 'public' AND c.relname IN ('machines', 'sensor_readings', 'alembic_version', 'maintenance_history', 'alerts', 'tickets', 'ticket_proposals', 'consumed_tokens') ORDER BY c.relname;"
+    },
+    "check_4_force_rls_invariance": {
+      "status": "PASS",
+      "expected": {
+        "alembic_version": false,
+        "alerts": false,
+        "consumed_tokens": false,
+        "machines": false,
+        "maintenance_history": false,
+        "sensor_readings": false,
+        "ticket_proposals": false,
+        "tickets": false
+      },
+      "actual": {
+        "alembic_version": false,
+        "alerts": false,
+        "consumed_tokens": false,
+        "machines": false,
+        "maintenance_history": false,
+        "sensor_readings": false,
+        "ticket_proposals": false,
+        "tickets": false
+      },
+      "query": "SELECT c.relname, c.relforcerowsecurity FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace WHERE n.nspname = 'public' AND c.relname IN ('machines', 'sensor_readings', 'alembic_version', 'maintenance_history', 'alerts', 'tickets', 'ticket_proposals', 'consumed_tokens') ORDER BY c.relname;"
+    },
+    "check_5_zero_policies": {
+      "status": "PASS",
+      "expected": 0,
+      "actual": 0,
+      "query": "SELECT count(*) FROM pg_policy p JOIN pg_class c ON c.oid = p.polrelid JOIN pg_namespace n ON n.oid = c.relnamespace WHERE n.nspname = 'public' AND c.relname IN ('machines', 'sensor_readings', 'alembic_version', 'maintenance_history', 'alerts', 'tickets', 'ticket_proposals', 'consumed_tokens');"
+    },
+    "check_6_table_grants_revocation": {
+      "status": "PASS",
+      "expected": [],
+      "actual": [],
+      "query": "SELECT grantee, table_name, privilege_type FROM information_schema.role_table_grants WHERE table_schema = 'public' AND table_name IN ('machines', 'sensor_readings', 'alembic_version', 'maintenance_history', 'alerts', 'tickets', 'ticket_proposals', 'consumed_tokens') AND grantee IN ('anon', 'authenticated');"
+    },
+    "check_7_sequence_grants_revocation": {
+      "status": "PASS",
+      "expected": [],
+      "actual": [],
+      "query": "SELECT grantee, object_name, privilege_type FROM information_schema.role_usage_grants WHERE object_schema = 'public' AND object_name IN ('sensor_readings_id_seq', 'maintenance_history_id_seq') AND grantee IN ('anon', 'authenticated');"
+    },
+    "check_8_retained_privileges": {
+      "status": "PASS",
+      "expected": "postgres and service_role retain full table privileges across all 8 tables",
+      "actual_retained_tables_count": 8,
+      "actual_retained_grantees": ["postgres", "service_role"],
+      "privileges_per_table": 7,
+      "query": "SELECT grantee, table_name, count(privilege_type) as priv_count FROM information_schema.role_table_grants WHERE table_schema = 'public' AND table_name IN ('machines', 'sensor_readings', 'alembic_version', 'maintenance_history', 'alerts', 'tickets', 'ticket_proposals', 'consumed_tokens') AND grantee IN ('postgres', 'service_role') GROUP BY grantee, table_name ORDER BY table_name, grantee;"
+    },
+    "check_9_default_privileges": {
+      "status": "PASS",
+      "expected": "Default ACLs exist for 'r' and 'S' for postgres in public with zero anon/authenticated grants",
+      "actual": [
+        {
+          "obj_type": "r",
+          "acl": "{postgres=arwdDxtm/postgres,service_role=arwdDxtm/postgres}"
+        },
+        {
+          "obj_type": "S",
+          "acl": "{postgres=rwU/postgres,service_role=rwU/postgres}"
+        }
+      ],
+      "query": "SELECT d.defaclobjtype, d.defaclacl::text FROM pg_default_acl d JOIN pg_namespace n ON n.oid = d.defaclnamespace WHERE pg_get_userbyid(d.defaclrole) = 'postgres' AND n.nspname = 'public' AND d.defaclobjtype IN ('r', 'S');"
+    },
+    "check_10_ownership_invariance": {
+      "status": "PASS",
+      "expected": "All 10 tables and sequences owned by postgres",
+      "actual_count": 10,
+      "owner": "postgres",
+      "query": "SELECT c.relname, r.rolname as owner, c.relkind FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace JOIN pg_roles r ON r.oid = c.relowner WHERE n.nspname = 'public' AND c.relname IN ('machines', 'sensor_readings', 'alembic_version', 'maintenance_history', 'alerts', 'tickets', 'ticket_proposals', 'consumed_tokens', 'sensor_readings_id_seq', 'maintenance_history_id_seq') ORDER BY c.relname;"
+    }
+  },
+  "cross_database_parity": {
+    "script": "backend/verify_migration.py",
+    "result": "ALL CHECKS PASSED (100% data fidelity)",
+    "domain_table_counts": {
+      "machines": 10,
+      "sensor_readings": 40000,
+      "maintenance_history": 400,
+      "alerts": 5,
+      "tickets": 1,
+      "ticket_proposals": 0,
+      "consumed_tokens": 0
+    },
+    "orphan_records": 0,
+    "sensor_aggregates_match": true,
+    "sequence_state": {
+      "sensor_readings_id_seq_last_value": 40000,
+      "maintenance_history_id_seq_last_value": 400
+    }
+  },
+  "git_preservation": {
+    "branch": "main",
+    "head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "staged_files_count": 0,
+    "modified_tracked_files_count": 1,
+    "untracked_historical_work_preserved": true
+  },
+  "architectural_notes": {
+    "supabase_admin_limitation": "Default privileges hardened for role postgres only. All future schema objects must be deployed via Alembic executing as postgres.",
+    "service_role_usage": "service_role preserves administrative access (arwdDxtm) for trusted backend server-to-server operations.",
+    "downgrade_policy": "Alembic downgrade fails closed via NotImplementedError by design."
+  }
+}

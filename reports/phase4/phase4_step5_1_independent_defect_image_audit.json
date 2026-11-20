@@ -1,0 +1,312 @@
+{
+  "audit_metadata": {
+    "project": "ManuMind AI — Explainable Multi-Agent AI System for Manufacturing Anomaly Detection and Root Cause Analysis",
+    "institution": "Department of AI & Data Science, RMK Engineering College",
+    "milestone": "Phase 4 Step 5.1 — Independent Defect Image MCP Tool and Process Bridge Audit",
+    "audit_type": "INDEPENDENT_READ_ONLY_AUDIT",
+    "audit_target": "Phase 4 Step 5 (check_defect_image Read-Only ResNet-18 Defect Classification MCP Tool)",
+    "repository": "D:\\Desktop\\FInal year project\\manumind-ai",
+    "branch": "main",
+    "head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "remote_origin": "https://github.com/Bhavya050305/explainable-multi-agent-manufacturing-rca.git",
+    "synchronization_status": "synchronized (ahead 0, behind 0)",
+    "timestamp": "2026-11-16T21:45:00+05:30",
+    "verdict": "APPROVED FOR STEP 6"
+  },
+  "git_baseline": {
+    "branch": "main",
+    "head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "is_head_valid": true,
+    "ahead_count": 0,
+    "behind_count": 0,
+    "staged_count": 0,
+    "unstaged_count": 0,
+    "tracked_modifications": 0
+  },
+  "model_identity_audit": {
+    "model_name": "Compact ResNet-18",
+    "model_checkpoint_path": "ml/models_store/resnet_defect_classifier.keras",
+    "model_checkpoint_sha256": "aac4b1c2d8c7ba47cef2e31b73d27ad6ff9b8be9352d6e3850c2e201e3195a98",
+    "metadata_checkpoint_path": "ml/models_store/resnet_defect_classifier_metadata.json",
+    "metadata_checkpoint_sha256": "e7e95b8037efceade0a8d19d0a14ecff86868d887e081ac306d1cb36573c8d73",
+    "total_parameters": 2804708,
+    "trainable_parameters": 2799908,
+    "non_trainable_parameters": 4800,
+    "input_shape": [1, 128, 128, 3],
+    "color_format": "RGB",
+    "normalization": "(pixel / 127.5) - 1.0 (range [-1.0, 1.0])",
+    "resampling": "Bilinear to (128, 128)",
+    "class_mapping": {
+      "0": "surface_crack",
+      "1": "spalling",
+      "2": "dent",
+      "3": "normal_surface"
+    },
+    "candidate_machine_associations": {
+      "surface_crack": {"machine_id": "M104", "batch": "B-8821"},
+      "spalling": {"machine_id": "M104", "batch": "B-8821"},
+      "dent": {"machine_id": "M102", "batch": "B-7740"},
+      "normal_surface": {"machine_id": "M101", "batch": "B-9910"}
+    },
+    "dataset_manifest_path": "data/defect_images/defect_manifest.json",
+    "total_workpieces": 600,
+    "partitioning": {
+      "train": 420,
+      "val": 88,
+      "test": 92
+    },
+    "service_reuse_fidelity": "CONFIRMED_IDENTICAL"
+  },
+  "process_bridge_security_audit": {
+    "bridge_module": "backend.app.mcp_server.defect_bridge",
+    "runner_module": "backend.app.ml.defect_runner",
+    "interpreter_resolution": "sys.executable (deterministic Base Python 3.11.9)",
+    "shell_invocation": false,
+    "argument_vector": [
+      "sys.executable",
+      "-u",
+      "-m",
+      "backend.app.ml.defect_runner"
+    ],
+    "stream_isolation": {
+      "stdout": "STRICTLY_RESERVED_FOR_JSON_RPC",
+      "stderr": "DIAGNOSTICS_AND_TF_WARNINGS_ONLY"
+    },
+    "timeout_seconds": 120.0,
+    "timeout_handling": "Terminates child process, closes streams, raises DefectBridgeTimeoutError",
+    "error_propagation": "Structured JSON error status wrapped in DefectBridgeProcessError without exposing internal stack traces"
+  },
+  "image_security_audit": {
+    "approved_directory": "data/defect_images",
+    "path_containment_enforcement": "Path.resolve().relative_to(approved_dir)",
+    "traversal_prevention": "Strictly enforced, rejects '..' and external paths",
+    "symlink_escape_prevention": "Path.resolve() resolves physical target",
+    "blank_path_handling": "Rejected with ValueError",
+    "non_string_handling": "Rejected with TypeError",
+    "directory_handling": "Rejected with ValueError",
+    "missing_file_handling": "Rejected with FileNotFoundError",
+    "extension_whitelist": [".bmp", ".png", ".jpg", ".jpeg"],
+    "file_size_limits": {
+      "min_bytes": 1,
+      "max_bytes": 5242880
+    },
+    "dimension_limits": {
+      "max_width": 2048,
+      "max_height": 2048,
+      "max_pixels": 4194304
+    },
+    "magic_bytes_check": "b'BM' verified for BMP format",
+    "raster_integrity_verification": "Pillow img.verify() and img.load() executed without writing to disk",
+    "read_only_guarantee": "Zero disk mutations, binary read mode"
+  },
+  "response_schema_audit": {
+    "response_model": "CheckDefectImageResponse",
+    "extra_forbidden": true,
+    "fields": [
+      "status",
+      "image_name",
+      "image_path",
+      "predicted_class",
+      "defect_type",
+      "confidence",
+      "confidence_interpretation",
+      "is_defective",
+      "affected_machine_id",
+      "batch_number",
+      "recommendation",
+      "class_probabilities",
+      "is_synthetic",
+      "disclaimer",
+      "message"
+    ],
+    "confidence_semantics": "Uncalibrated Softmax output probability in [0.0, 1.0]",
+    "metadata_provenance": "Candidate advisory association (MACHINE_BATCH_LOOKUP), not certified ground truth",
+    "synthetic_disclaimer_enforced": true
+  },
+  "mcp_server_integration_audit": {
+    "server_name": "manumind-mcp-server",
+    "server_version": "1.0.0",
+    "tool_count": 7,
+    "registered_tools": [
+      "ping",
+      "get_machine_data",
+      "detect_anomaly",
+      "predict_failure_risk",
+      "search_manuals",
+      "get_maintenance_history",
+      "check_defect_image"
+    ],
+    "duplicate_servers": false,
+    "stdio_transport_verified": true,
+    "real_stdio_lifecycle_passed": true
+  },
+  "test_execution_audit": {
+    "suites": [
+      {
+        "suite_path": "backend/tests/test_mcp_defect_image.py",
+        "environment": "Base Python 3.11.9",
+        "tests_run": 25,
+        "passed": 25,
+        "failed": 0,
+        "skipped": 0,
+        "duration_seconds": 132.72,
+        "status": "PASS"
+      },
+      {
+        "suite_path": "backend/tests/test_mcp_maintenance_history.py",
+        "environment": "Base Python 3.11.9",
+        "tests_run": 14,
+        "passed": 14,
+        "failed": 0,
+        "skipped": 0,
+        "duration_seconds": 5.07,
+        "status": "PASS"
+      },
+      {
+        "suite_path": "backend/tests/test_mcp_manufacturing_tools.py",
+        "environment": "Base Python 3.11.9",
+        "tests_run": 20,
+        "passed": 20,
+        "failed": 0,
+        "skipped": 0,
+        "duration_seconds": 36.27,
+        "status": "PASS"
+      },
+      {
+        "suite_path": "backend/tests/test_mcp_rag_retrieval.py",
+        "environment": "Base Python 3.11.9 + .venv-rag bridge",
+        "tests_run": 15,
+        "passed": 15,
+        "failed": 0,
+        "skipped": 0,
+        "duration_seconds": 78.15,
+        "status": "PASS"
+      },
+      {
+        "suite_path": "backend/tests/test_mcp_server_skeleton.py",
+        "environment": "Base Python 3.11.9",
+        "tests_run": 4,
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0,
+        "duration_seconds": 3.17,
+        "status": "PASS"
+      },
+      {
+        "suite_path": "backend/tests/test_sensor_preprocessing.py",
+        "environment": "Base Python 3.11.9",
+        "tests_run": 8,
+        "passed": 8,
+        "failed": 0,
+        "skipped": 0,
+        "duration_seconds": 7.45,
+        "status": "PASS"
+      },
+      {
+        "suite_path": "backend/tests/test_rag_source_resolver.py",
+        "environment": ".venv-rag (unittest)",
+        "tests_run": 9,
+        "passed": 9,
+        "failed": 0,
+        "skipped": 0,
+        "duration_seconds": 0.011,
+        "status": "PASS"
+      },
+      {
+        "suite_path": "backend/tests/test_rag_retrieval.py",
+        "environment": ".venv-rag (unittest)",
+        "tests_run": 14,
+        "passed": 14,
+        "failed": 0,
+        "skipped": 0,
+        "duration_seconds": 1.218,
+        "status": "PASS"
+      }
+    ],
+    "total_tests_run": 109,
+    "total_passed": 109,
+    "total_failed": 0,
+    "total_skipped": 0,
+    "pass_rate_percent": 100.0,
+    "total_duration_seconds": 264.06
+  },
+  "protected_invariants_audit": {
+    "database": {
+      "machines": {"expected": 10, "observed": 10, "status": "PASS"},
+      "sensor_readings": {"expected": 40000, "observed": 40000, "status": "PASS"},
+      "maintenance_records": {"expected": 400, "observed": 400, "status": "PASS"},
+      "alerts": {"expected": 5, "observed": 5, "status": "PASS"},
+      "tickets": {"expected": 1, "observed": 1, "status": "PASS"}
+    },
+    "knowledge_base": {
+      "chromadb_vectors": {"expected": 564, "observed": 564, "status": "PASS"},
+      "embedding_dimensions": {"expected": 384, "observed": 384, "status": "PASS"},
+      "source_documents": {"expected": 418, "observed": 418, "status": "PASS"},
+      "canonical_chunks": {"expected": 564, "observed": 564, "status": "PASS"},
+      "synthetic_placeholders": {"expected": 123, "observed": 123, "status": "PASS"}
+    },
+    "ml_models": {
+      "isolation_forest_threshold": {"expected": 0.0269, "observed": 0.0269, "status": "PASS"},
+      "lstm_autoencoder_threshold": {"expected": 0.901464, "observed": 0.901464, "status": "PASS"},
+      "defect_image_classes": {"expected": 4, "observed": 4, "status": "PASS"},
+      "defect_manifest_images": {"expected": 600, "observed": 600, "status": "PASS"},
+      "resnet_checkpoint_sha256": {"expected": "aac4b1c2d8c7ba47cef2e31b73d27ad6ff9b8be9352d6e3850c2e201e3195a98", "observed": "aac4b1c2d8c7ba47cef2e31b73d27ad6ff9b8be9352d6e3850c2e201e3195a98", "status": "PASS"},
+      "resnet_metadata_sha256": {"expected": "e7e95b8037efceade0a8d19d0a14ecff86868d887e081ac306d1cb36573c8d73", "observed": "e7e95b8037efceade0a8d19d0a14ecff86868d887e081ac306d1cb36573c8d73", "status": "PASS"}
+    },
+    "environments": {
+      "rag_lockfile_sha256": {"expected": "778fde7658e8f5a0fd3cb039c6271fbbcce95ab967fbece6d29ca82e3f035ad2", "observed": "778fde7658e8f5a0fd3cb039c6271fbbcce95ab967fbece6d29ca82e3f035ad2", "status": "PASS"},
+      "base_python_pip_check": {"observed": "No broken requirements found.", "status": "PASS"},
+      "venv_rag_pip_check": {"observed": "No broken requirements found.", "status": "PASS"}
+    }
+  },
+  "findings": [
+    {
+      "id": "FINDING-P4S5-01",
+      "severity": "INFO",
+      "component": "backend/app/mcp_server/defect_bridge.py:run_defect_bridge",
+      "evidence": "Windows CPU cold-start for TensorFlow module imports takes ~30-35s on first invocation under high CPU load. The bridge timeout is configured to 120.0s (DEFAULT_TIMEOUT_SECONDS = 120.0).",
+      "impact": "Accommodates Windows CPU cold starts cleanly without false timeouts.",
+      "blocks_step_6": false,
+      "recommended_remediation": "No action required. Sizing is appropriate. In production, a persistent warm worker or containerized endpoint can eliminate cold-start delay."
+    },
+    {
+      "id": "FINDING-P4S5-02",
+      "severity": "INFO",
+      "component": "backend/app/ml/defect_runner.py:main",
+      "evidence": "TensorFlow 2.18 / Keras on Windows attempts to access Matplotlib font cache under user home directory. defect_runner.py pre-configures MPLCONFIGDIR = tempfile.gettempdir() and TF_ENABLE_ONEDNN_OPTS = 0 before TensorFlow imports.",
+      "impact": "Runner executes cleanly without font-cache rebuild delays or warnings polluting stdout/stderr.",
+      "blocks_step_6": false,
+      "recommended_remediation": "Already properly mitigated by runner configuration."
+    },
+    {
+      "id": "FINDING-P4S5-03",
+      "severity": "INFO",
+      "component": "backend/app/mcp_server/schemas.py:CheckDefectImageResponse",
+      "evidence": "affected_machine_id and batch_number are candidate domain metadata derived from synthetic association lookups (MACHINE_BATCH_LOOKUP), not physical ground-truth confirmation.",
+      "impact": "Transparent supervisory agent guidance without misleading callers into treating candidate metadata as certified physical inspection data.",
+      "blocks_step_6": false,
+      "recommended_remediation": "Maintained as designed. Mandated disclaimers clarify the candidate nature of metadata."
+    },
+    {
+      "id": "FINDING-P4S5-04",
+      "severity": "LOW",
+      "component": "backend/app/mcp_server/defect_bridge.py:validate_defect_image_input",
+      "evidence": "Image validation inspects file headers and dimensions, followed by subprocess reading. A theoretical TOCTOU gap exists between validation and opening.",
+      "impact": "Negligible in single-node read-only operational architecture with zero file-write endpoints.",
+      "blocks_step_6": false,
+      "recommended_remediation": "For enterprise multi-tenant deployments, passing an open file descriptor or SHA-256 digest could eliminate the theoretical window."
+    }
+  ],
+  "changed_files_audited": [
+    "backend/app/ml/defect_runner.py",
+    "backend/app/mcp_server/defect_bridge.py",
+    "backend/app/mcp_server/schemas.py",
+    "backend/app/mcp_server/tools.py",
+    "backend/app/mcp_server/server.py",
+    "backend/app/mcp_server/__init__.py",
+    "backend/tests/test_mcp_defect_image.py",
+    "reports/phase4/phase4_step5_defect_image_mcp_tool.json",
+    "reports/phase4/phase4_step5_defect_image_mcp_tool_report.md"
+  ],
+  "final_verdict": "APPROVED FOR STEP 6"
+}

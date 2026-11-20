@@ -1,0 +1,212 @@
+{
+  "project": "ManuMind AI",
+  "institution": "Department of AI & Data Science, RMK Engineering College",
+  "phase": "Phase 4",
+  "step": "Step 5",
+  "milestone": "Read-Only Defect Image Classification MCP Tool Implementation via Process Bridge",
+  "timestamp": "2026-11-16T21:18:00+05:30",
+  "repository": {
+    "path": "D:\\Desktop\\FInal year project\\manumind-ai",
+    "branch": "main",
+    "head_commit": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "remote_sync": "up to date with origin/main",
+    "git_status": {
+      "staged": 0,
+      "tracked_modified": 0,
+      "untracked_preserved": true
+    }
+  },
+  "tool_implementation": {
+    "tool_name": "check_defect_image",
+    "tool_index": 7,
+    "total_registered_tools": 7,
+    "registered_tools_list": [
+      "ping",
+      "get_machine_data",
+      "detect_anomaly",
+      "predict_failure_risk",
+      "search_manuals",
+      "get_maintenance_history",
+      "check_defect_image"
+    ],
+    "model_metadata": {
+      "model_type": "Compact ResNet-18",
+      "total_parameters": 2804708,
+      "trainable_parameters": 2799908,
+      "checkpoint_path": "ml/models_store/resnet_defect_classifier.keras",
+      "checkpoint_sha256": "aac4b1c2d8c7ba47cef2e31b73d27ad6ff9b8be9352d6e3850c2e201e3195a98",
+      "metadata_path": "ml/models_store/resnet_defect_classifier_metadata.json",
+      "metadata_sha256": "e7e95b8037efceade0a8d19d0a14ecff86868d887e081ac306d1cb36573c8d73",
+      "input_shape": [1, 128, 128, 3],
+      "input_normalization": "[-1.0, 1.0]",
+      "num_classes": 4,
+      "classes": [
+        "surface_crack",
+        "spalling",
+        "dent",
+        "normal_surface"
+      ],
+      "dataset_manifest_path": "data/defect_images/defect_manifest.json",
+      "dataset_samples_count": 600,
+      "is_synthetic": true
+    },
+    "process_bridge": {
+      "runner_module": "backend.app.ml.defect_runner",
+      "bridge_client": "backend.app.mcp_server.defect_bridge",
+      "interpreter": "Base Python 3.11.9",
+      "shell": false,
+      "stream_isolation": "stdout reserved for single-line JSON; stderr for diagnostics",
+      "timeout_seconds": 120.0,
+      "error_classes": [
+        "DefectBridgeError",
+        "DefectBridgeTimeoutError",
+        "DefectBridgeProcessError",
+        "DefectBridgeValidationError"
+      ]
+    },
+    "security_and_validation": {
+      "approved_directory": "data/defect_images",
+      "traversal_protection": "Canonical resolve containment verification (relative_to)",
+      "file_size_limit_bytes": 5242880,
+      "max_dimensions": "2048x2048",
+      "max_pixels": 4194304,
+      "magic_bytes_check": "BMP header b'BM' verified",
+      "integrity_check": "PIL verify() and load() verification"
+    },
+    "schema_contract": {
+      "response_model": "CheckDefectImageResponse",
+      "extra_fields_policy": "forbid",
+      "confidence_range": "[0.0, 1.0]",
+      "confidence_nature": "uncalibrated Softmax likelihood",
+      "disclaimer_present": true
+    }
+  },
+  "test_execution_summary": {
+    "step5_suite": {
+      "file": "backend/tests/test_mcp_defect_image.py",
+      "total": 25,
+      "passed": 25,
+      "failed": 0,
+      "duration_seconds": 132.72,
+      "categories": {
+        "A_input_validation": 14,
+        "B_model_behavior": 3,
+        "C_process_bridge": 5,
+        "D_mcp_integration": 2,
+        "E_read_only_guarantees": 1
+      }
+    },
+    "regression_suites": [
+      {
+        "file": "backend/tests/test_mcp_maintenance_history.py",
+        "total": 14,
+        "passed": 14,
+        "failed": 0
+      },
+      {
+        "file": "backend/tests/test_mcp_manufacturing_tools.py",
+        "total": 20,
+        "passed": 20,
+        "failed": 0
+      },
+      {
+        "file": "backend/tests/test_mcp_rag_retrieval.py",
+        "total": 15,
+        "passed": 15,
+        "failed": 0
+      },
+      {
+        "file": "backend/tests/test_mcp_server_skeleton.py",
+        "total": 4,
+        "passed": 4,
+        "failed": 0
+      },
+      {
+        "file": "backend/tests/test_sensor_preprocessing.py",
+        "total": 8,
+        "passed": 8,
+        "failed": 0
+      },
+      {
+        "file": "backend/tests/test_rag_source_resolver.py",
+        "total": 9,
+        "passed": 9,
+        "failed": 0
+      },
+      {
+        "file": "backend/tests/test_rag_retrieval.py",
+        "total": 14,
+        "passed": 14,
+        "failed": 0
+      }
+    ],
+    "grand_total_tests": 109,
+    "grand_total_passed": 109,
+    "grand_total_failed": 0,
+    "pass_rate_percentage": 100.0
+  },
+  "protected_invariants": {
+    "sqlite_machines": 10,
+    "sqlite_sensor_readings": 40000,
+    "sqlite_maintenance_records": 400,
+    "sqlite_alerts": 5,
+    "sqlite_tickets": 1,
+    "chromadb_vectors": 564,
+    "chromadb_embedding_dimensions": 384,
+    "source_documents_count": 418,
+    "canonical_chunks_count": 564,
+    "synthetic_placeholders_count": 123,
+    "isolation_forest_threshold": 0.0269,
+    "lstm_autoencoder_threshold": 0.901464,
+    "defect_image_classes_count": 4,
+    "defect_images_count": 600,
+    "rag_lockfile_sha256": "778fde7658e8f5a0fd3cb039c6271fbbcce95ab967fbece6d29ca82e3f035ad2",
+    "resnet_model_sha256": "aac4b1c2d8c7ba47cef2e31b73d27ad6ff9b8be9352d6e3850c2e201e3195a98",
+    "resnet_metadata_sha256": "e7e95b8037efceade0a8d19d0a14ecff86868d887e081ac306d1cb36573c8d73",
+    "base_python_pip_check": "No broken requirements found.",
+    "venv_rag_pip_check": "No broken requirements found."
+  },
+  "created_and_modified_files": {
+    "created": [
+      "backend/app/ml/defect_runner.py",
+      "backend/app/mcp_server/defect_bridge.py",
+      "backend/tests/test_mcp_defect_image.py",
+      "reports/phase4/phase4_step5_defect_image_mcp_tool_report.md",
+      "reports/phase4/phase4_step5_defect_image_mcp_tool.json"
+    ],
+    "modified": [
+      "backend/app/mcp_server/schemas.py",
+      "backend/app/mcp_server/tools.py",
+      "backend/app/mcp_server/server.py",
+      "backend/app/mcp_server/__init__.py",
+      "backend/tests/test_mcp_manufacturing_tools.py",
+      "backend/tests/test_mcp_rag_retrieval.py",
+      "backend/tests/test_mcp_maintenance_history.py",
+      "backend/tests/test_mcp_server_skeleton.py"
+    ]
+  },
+  "findings": [
+    {
+      "id": "FINDING-P4S5-01",
+      "severity": "INFO",
+      "component": "defect_bridge.py",
+      "description": "TensorFlow CPU cold-start on Windows requires ~35s for initial module import; bridge timeout set to 120.0s.",
+      "action_required": false
+    },
+    {
+      "id": "FINDING-P4S5-02",
+      "severity": "INFO",
+      "component": "defect_runner.py",
+      "description": "Matplotlib font cache rebuild was avoided by pre-setting MPLCONFIGDIR and TF_ENABLE_ONEDNN_OPTS=0.",
+      "action_required": false
+    },
+    {
+      "id": "FINDING-P4S5-03",
+      "severity": "INFO",
+      "component": "schemas.py",
+      "description": "extra='forbid' is enforced on CheckDefectImageResponse to guard against undeclared attributes.",
+      "action_required": false
+    }
+  ],
+  "verdict": "READY FOR STEP 6"
+}

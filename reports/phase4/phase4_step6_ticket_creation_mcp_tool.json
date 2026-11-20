@@ -1,0 +1,257 @@
+{
+  "project_metadata": {
+    "project": "ManuMind AI — Explainable Multi-Agent AI System for Manufacturing Anomaly Detection and Root Cause Analysis",
+    "institution": "Department of AI & Data Science, RMK Engineering College",
+    "milestone": "Phase 4 Step 6 — Secure Maintenance Ticket Creation MCP Tool Implementation",
+    "mode": "CONTROLLED_IMPLEMENTATION_AND_TESTING",
+    "timestamp": "2026-11-16T22:42:00+05:30",
+    "verdict": "READY FOR STEP 6.1 INDEPENDENT AUDIT"
+  },
+  "git_state": {
+    "branch": "main",
+    "head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "ahead_count": 0,
+    "behind_count": 0,
+    "staged_count": 0,
+    "unstaged_count": 14,
+    "tracked_modifications": 1
+  },
+  "implemented_tools": {
+    "total_registered_tools": 9,
+    "registered_tool_inventory": [
+      "ping",
+      "get_machine_data",
+      "detect_anomaly",
+      "predict_failure_risk",
+      "search_manuals",
+      "get_maintenance_history",
+      "check_defect_image",
+      "propose_maintenance_ticket",
+      "create_maintenance_ticket"
+    ],
+    "new_tools_in_step_6": [
+      {
+        "name": "propose_maintenance_ticket",
+        "description": "Stage a maintenance ticket proposal for human engineer review and authorization. Requires machine_id, recommendation, and structured evidence. Computes canonical SHA-256 payload hash and sets status to PENDING_APPROVAL without creating an active ticket.",
+        "input_fields": ["machine_id", "recommendation", "evidence", "alert_id", "confidence"],
+        "read_only_respecting_active_tickets": true
+      },
+      {
+        "name": "create_maintenance_ticket",
+        "description": "Authorize and create a maintenance ticket using a valid cryptographic human approval token. Requires proposal_id and approval_token. Forbids arbitrary agent-supplied approver strings.",
+        "input_fields": ["proposal_id", "approval_token"],
+        "enforces_human_in_the_loop": true
+      }
+    ]
+  },
+  "security_controls": {
+    "agent_self_approval_prevented": true,
+    "arbitrary_approved_by_rejected": true,
+    "token_signing_algorithm": "HS256",
+    "token_signing_secret_env": "MANUMIND_APPROVAL_SECRET_KEY",
+    "missing_secret_fails_closed": true,
+    "constant_time_signature_verification": true,
+    "payload_hash_algorithm": "SHA-256 (canonical key-sorted JSON)",
+    "tamper_evident_payload_binding": true,
+    "token_expiration_seconds": 900,
+    "persistent_replay_prevention": "consumed_tokens table with primary key on jti",
+    "atomic_transaction_guarantee": "Atomic commit across Ticket creation, proposal CONSUMED transition, and consumed_tokens insert",
+    "concurrency_protection": "Database uniqueness constraints on consumed_tokens.jti and tickets.alert_id"
+  },
+  "database_migration": {
+    "revision": "c742f9a1e0b5",
+    "down_revision": "1273f18b72a2",
+    "migration_file": "backend/alembic/versions/c742f9a1e0b5_ticket_proposals.py",
+    "tables_created": ["ticket_proposals", "consumed_tokens"],
+    "reversibility_tested_on_isolated_db": true,
+    "applied_to_manumind_db": true,
+    "zero_existing_rows_modified": true
+  },
+  "test_results": {
+    "total_tests_executed": 154,
+    "total_passed": 154,
+    "total_failed": 0,
+    "total_skipped": 0,
+    "pass_rate_percent": 100.0,
+    "total_duration_seconds": 406.12,
+    "suites": [
+      {
+        "suite_name": "Step 6 Dedicated Ticket Creation Suite",
+        "file": "backend/tests/test_mcp_ticket_creation.py",
+        "environment": "Base Python 3.11.9",
+        "tests_run": 32,
+        "passed": 32,
+        "failed": 0,
+        "duration_seconds": 5.58,
+        "status": "PASS"
+      },
+      {
+        "suite_name": "Step 5 Defect Image Classifier Suite",
+        "file": "backend/tests/test_mcp_defect_image.py",
+        "environment": "Base Python 3.11.9",
+        "tests_run": 25,
+        "passed": 25,
+        "failed": 0,
+        "duration_seconds": 185.97,
+        "status": "PASS"
+      },
+      {
+        "suite_name": "Step 4 Maintenance History Suite",
+        "file": "backend/tests/test_mcp_maintenance_history.py",
+        "environment": "Base Python 3.11.9",
+        "tests_run": 14,
+        "passed": 14,
+        "failed": 0,
+        "duration_seconds": 12.61,
+        "status": "PASS"
+      },
+      {
+        "suite_name": "Step 2 Manufacturing Tools Suite",
+        "file": "backend/tests/test_mcp_manufacturing_tools.py",
+        "environment": "Base Python 3.11.9",
+        "tests_run": 20,
+        "passed": 20,
+        "failed": 0,
+        "duration_seconds": 80.61,
+        "status": "PASS"
+      },
+      {
+        "suite_name": "Step 3 RAG Retrieval Suite",
+        "file": "backend/tests/test_mcp_rag_retrieval.py",
+        "environment": "Base Python 3.11.9 + .venv-rag bridge",
+        "tests_run": 15,
+        "passed": 15,
+        "failed": 0,
+        "duration_seconds": 88.96,
+        "status": "PASS"
+      },
+      {
+        "suite_name": "Step 1C Server Skeleton Suite",
+        "file": "backend/tests/test_mcp_server_skeleton.py",
+        "environment": "Base Python 3.11.9",
+        "tests_run": 4,
+        "passed": 4,
+        "failed": 0,
+        "duration_seconds": 8.91,
+        "status": "PASS"
+      },
+      {
+        "suite_name": "Phase 2 Sensor Preprocessing Suite",
+        "file": "backend/tests/test_sensor_preprocessing.py",
+        "environment": "Base Python 3.11.9",
+        "tests_run": 8,
+        "passed": 8,
+        "failed": 0,
+        "duration_seconds": 7.61,
+        "status": "PASS"
+      },
+      {
+        "suite_name": "Phase 3 RAG Source Resolver Suite",
+        "file": "backend/tests/test_rag_source_resolver.py",
+        "environment": ".venv-rag (unittest)",
+        "tests_run": 9,
+        "passed": 9,
+        "failed": 0,
+        "duration_seconds": 0.004,
+        "status": "PASS"
+      },
+      {
+        "suite_name": "Phase 3 RAG Retrieval Suite",
+        "file": "backend/tests/test_rag_retrieval.py",
+        "environment": ".venv-rag (unittest)",
+        "tests_run": 14,
+        "passed": 14,
+        "failed": 0,
+        "duration_seconds": 1.741,
+        "status": "PASS"
+      },
+      {
+        "suite_name": "Phase 1 Expansion & Approval Gate Suite",
+        "file": "backend/tests/test_phase1_audit_and_expansion.py",
+        "environment": "Base Python 3.11.9",
+        "tests_run": 9,
+        "passed": 9,
+        "failed": 0,
+        "duration_seconds": 8.39,
+        "status": "PASS"
+      },
+      {
+        "suite_name": "Phase 1 Models & Generator Suite",
+        "file": "backend/tests/test_phase1_db_and_generator.py",
+        "environment": "Base Python 3.11.9",
+        "tests_run": 4,
+        "passed": 4,
+        "failed": 0,
+        "duration_seconds": 5.74,
+        "status": "PASS"
+      }
+    ]
+  },
+  "protected_invariants": {
+    "machines": {"expected": 10, "observed": 10, "status": "PASS"},
+    "sensor_readings": {"expected": 40000, "observed": 40000, "status": "PASS"},
+    "maintenance_records": {"expected": 400, "observed": 400, "status": "PASS"},
+    "alerts": {"expected": 5, "observed": 5, "status": "PASS"},
+    "tickets": {"expected": 1, "observed": 1, "status": "PASS"},
+    "ticket_proposals": {"expected": 0, "observed": 0, "status": "PASS"},
+    "consumed_tokens": {"expected": 0, "observed": 0, "status": "PASS"},
+    "chromadb_vectors": {"expected": 564, "observed": 564, "status": "PASS"},
+    "embedding_dimensions": {"expected": 384, "observed": 384, "status": "PASS"},
+    "source_documents": {"expected": 418, "observed": 418, "status": "PASS"},
+    "canonical_chunks": {"expected": 564, "observed": 564, "status": "PASS"},
+    "synthetic_placeholders": {"expected": 123, "observed": 123, "status": "PASS"},
+    "isolation_forest_threshold": {"expected": 0.0269, "observed": 0.0269, "status": "PASS"},
+    "lstm_autoencoder_threshold": {"expected": 0.901464, "observed": 0.901464, "status": "PASS"},
+    "defect_images_in_manifest": {"expected": 600, "observed": 600, "status": "PASS"},
+    "defect_classes": {"expected": 4, "observed": 4, "status": "PASS"},
+    "rag_lockfile_sha256": {
+      "expected": "778fde7658e8f5a0fd3cb039c6271fbbcce95ab967fbece6d29ca82e3f035ad2",
+      "observed": "778fde7658e8f5a0fd3cb039c6271fbbcce95ab967fbece6d29ca82e3f035ad2",
+      "status": "PASS"
+    },
+    "resnet_checkpoint_sha256": {
+      "expected": "aac4b1c2d8c7ba47cef2e31b73d27ad6ff9b8be9352d6e3850c2e201e3195a98",
+      "observed": "aac4b1c2d8c7ba47cef2e31b73d27ad6ff9b8be9352d6e3850c2e201e3195a98",
+      "status": "PASS"
+    },
+    "resnet_metadata_sha256": {
+      "expected": "e7e95b8037efceade0a8d19d0a14ecff86868d887e081ac306d1cb36573c8d73",
+      "observed": "e7e95b8037efceade0a8d19d0a14ecff86868d887e081ac306d1cb36573c8d73",
+      "status": "PASS"
+    },
+    "base_python_pip_check": {"observed": "No broken requirements found.", "status": "PASS"},
+    "venv_rag_pip_check": {"observed": "No broken requirements found.", "status": "PASS"}
+  },
+  "findings": [
+    {
+      "id": "FINDING-P4S6-01",
+      "severity": "INFO",
+      "component": "backend/app/mcp_server/approval.py:DevelopmentHumanApprovalAdapter",
+      "summary": "Human approval interface currently uses a local mock registry with PIN authentication for development and testing.",
+      "impact": "Must be upgraded to RMK College SSO / WebAuthn / OAuth2 before production manufacturing deployment.",
+      "blocks_step_6_1_audit": false
+    },
+    {
+      "id": "FINDING-P4S6-02",
+      "severity": "INFO",
+      "component": "backend/app/mcp_server/tools.py:get_mcp_db_session",
+      "summary": "Local database session provider checks DATABASE_URL before falling back to manumind.db.",
+      "impact": "Allows automated tests to run against isolated SQLite databases while preserving authoritative database isolation.",
+      "blocks_step_6_1_audit": false
+    },
+    {
+      "id": "FINDING-P4S6-03",
+      "severity": "INFO",
+      "component": "backend/app/mcp_server/schemas.py:CreateMaintenanceTicketResponse",
+      "summary": "Schema enforces is_synthetic: bool = True and advisory disclaimers.",
+      "impact": "Transparent governance preventing misleading operators into treating AI advice as certified engineering directives.",
+      "blocks_step_6_1_audit": false
+    }
+  ],
+  "production_deployment_prerequisites": [
+    "Integrate HumanApprovalProvider with enterprise SSO (RMK College ID, OAuth2/OIDC, or WebAuthn/FIDO2 hardware keys).",
+    "Provision and rotate MANUMIND_APPROVAL_SECRET_KEY within a dedicated Key Management Service (KMS / Vault).",
+    "Stream consumed_tokens and ticket_proposals audit logs to an immutable append-only SIEM / compliance log."
+  ],
+  "final_verdict": "READY FOR STEP 6.1 INDEPENDENT AUDIT"
+}

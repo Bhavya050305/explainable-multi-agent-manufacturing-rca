@@ -1,0 +1,4 @@
+# ManuMind AI — Phase 4 Dedicated MCP Server Dependencies
+# Pinned for reproducibility and environment stability (Base Python 3.11)
+# Preserves backend/requirements-rag.lock without modification
+mcp==2.3.0

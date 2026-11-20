@@ -1,0 +1,317 @@
+{
+  "audit_metadata": {
+    "project": "ManuMind AI — Explainable Multi-Agent AI System for Manufacturing Anomaly Detection and Root Cause Analysis",
+    "institution": "Department of AI & Data Science, RMK Engineering College",
+    "milestone": "Phase 4 Step 1A — Architecture and Environment Reconciliation",
+    "mode": "STRONGLY_READ_ONLY_RECONCILIATION_AUDIT",
+    "repository": "D:\\Desktop\\FInal year project\\manumind-ai",
+    "branch": "main",
+    "head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "remote_origin": "https://github.com/Bhavya050305/explainable-multi-agent-manufacturing-rca.git",
+    "synchronization_status": "synchronized (ahead 0, behind 0)",
+    "audit_timestamp": "2026-11-15T15:28:00+05:30",
+    "verdict": "READY WITH CONDITIONS"
+  },
+  "git_baseline": {
+    "branch": "main",
+    "head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "is_head_valid": true,
+    "ahead_count": 0,
+    "behind_count": 0,
+    "staged_count": 0,
+    "unstaged_count": 0,
+    "untracked_count": 4,
+    "untracked_files": [
+      "reports/phase3/phase3_step9_independent_staged_release_audit.json",
+      "reports/phase3/phase3_step9_independent_staged_release_audit_report.md",
+      "reports/phase4/phase4_step0_mcp_readiness_audit.json",
+      "reports/phase4/phase4_step0_mcp_readiness_audit_report.md"
+    ],
+    "working_tree_clean_except_known_reports": true
+  },
+  "reconciliations": {
+    "reconciliation_a_chromadb_embedding_dimensions": {
+      "status": "RECONCILED",
+      "reported_in_step0": 512,
+      "actual_embedding_dimension": 384,
+      "model_identifier": "BAAI/bge-small-en-v1.5",
+      "revision_commit_hash": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+      "collection_name": "manumind_bge_small_v1",
+      "total_vectors": 564,
+      "root_cause_of_discrepancy": "Conflation of tokenizer nominal max context length (NOMINAL_MAX_LENGTH = 512) with output dense embedding dimensionality (EMBEDDING_DIM = 384)",
+      "live_query_verification": {
+        "command_executed": "coll.get(limit=1, include=['embeddings'])",
+        "observed_vector_length": 384,
+        "sample_values_prefix": [-0.00142063, 0.04043046, 0.01143499, -0.01399789, 0.04579601]
+      },
+      "evidence_paths": [
+        "backend/app/rag/embedding_model.py#L24",
+        "backend/app/rag/tokenizer_service.py#L20",
+        "reports/phase3/phase3_step4_1_independent_embedding_vector_audit_report.md",
+        "reports/phase3/phase3_step4_final_reconciliation.json"
+      ]
+    },
+    "reconciliation_b_defect_classification_count": {
+      "status": "RECONCILED",
+      "reported_in_step0": 6,
+      "actual_class_count": 4,
+      "classes": [
+        "normal_surface",
+        "dent",
+        "surface_crack",
+        "spalling"
+      ],
+      "input_shape": [128, 128, 3],
+      "model_architecture": "Compact ResNet-18 (from scratch)",
+      "total_dataset_images": 600,
+      "dataset_split": {
+        "train_samples": 420,
+        "val_samples": 88,
+        "test_samples_frozen": 92
+      },
+      "root_cause_of_discrepancy": "Erroneous reference in Step 0 text to standard 6-class NEU benchmark instead of ManuMind AI's 4-class scratch-trained model",
+      "evidence_paths": [
+        "ml/models_store/resnet_defect_classifier_metadata.json#L23",
+        "backend/app/ml/inference/config.py#L45-L50",
+        "backend/app/ml/inference/schemas.py#L43"
+      ]
+    },
+    "reconciliation_c_ticket_approval_security": {
+      "status": "RECONCILED_VULNERABILITY_IDENTIFIED",
+      "tool_security_classification": "NOT_SAFE_FOR_AUTONOMOUS_EXPOSURE",
+      "evaluation_questions": {
+        "q1_rejects_blank_approved_by": {
+          "answer": "YES",
+          "details": "backend/app/services/ticket_service.py checks 'if not approved_by or not str(approved_by).strip(): raise TicketApprovalError()'"
+        },
+        "q2_checks_verified_engineer_identity": {
+          "answer": "NO",
+          "details": "No engineer table, user directory, or authentication lookup exists in the database"
+        },
+        "q3_agent_can_supply_arbitrary_string": {
+          "answer": "YES",
+          "details": "An autonomous agent can pass any non-empty string (e.g. 'Lead Engineer S. Raman') to self-authorize a ticket"
+        },
+        "q4_tied_to_authenticated_user_context": {
+          "answer": "NO",
+          "details": "No JWT, session token, or authenticated context is required or validated"
+        },
+        "q5_approval_decision_persisted": {
+          "answer": "YES",
+          "details": "Persisted directly to tickets.approved_by, and alert.status transitions to 'APPROVED'"
+        },
+        "q6_mcp_distinguishes_human_from_agent": {
+          "answer": "NO",
+          "details": "In stdio/JSON-RPC tool invocation, agent-generated arguments cannot be distinguished from human input"
+        },
+        "q7_additional_authorization_boundary_required": {
+          "answer": "YES",
+          "details": "Must require an HMAC-signed token or interactive human confirmation barrier before executing ticket creation"
+        }
+      },
+      "recommended_security_design": {
+        "pattern": "Two-Phase Human-in-the-Loop Approval",
+        "draft_phase": "Agent proposes ticket in PENDING_HUMAN_REVIEW status",
+        "authorization_phase": "Human supervisor reviews and generates signed HMAC authorization_token",
+        "tool_guard": "create_ticket refuses execution unless valid authorization_token is provided"
+      }
+    },
+    "reconciliation_d_python_environment_architecture": {
+      "status": "RECONCILED",
+      "base_python_inventory": {
+        "path": "C:\\Users\\PR BHAYA SREE\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+        "version": "3.11.9",
+        "packages": {
+          "tensorflow": "2.21.0",
+          "shap": "0.51.0",
+          "scikit-learn": "1.9.0",
+          "sqlalchemy": "2.0.52",
+          "fastapi": "0.141.1",
+          "pydantic": "2.13.4"
+        },
+        "missing_dependencies": ["torch", "chromadb", "transformers", "mcp"]
+      },
+      "rag_venv_inventory": {
+        "path": "D:\\Desktop\\FInal year project\\manumind-ai\\.venv-rag\\Scripts\\python.exe",
+        "version": "3.11.9",
+        "packages": {
+          "torch": "2.5.1+cpu",
+          "chromadb": "0.5.23",
+          "transformers": "4.46.3",
+          "sentence-transformers": "3.4.1",
+          "pydantic": "2.14.3"
+        },
+        "missing_dependencies": ["tensorflow", "shap", "sqlalchemy", "mcp"]
+      },
+      "architecture_evaluation": {
+        "option_a_single_unified_venv": {
+          "verdict": "REJECTED",
+          "rationale": "High risk of OpenMP runtime collision (libiomp5md.dll) between PyTorch and TensorFlow on Windows; memory bloat (>4GB); invalidates frozen backend/requirements-rag.lock"
+        },
+        "option_b_mcp_server_in_base_with_rag_bridge": {
+          "verdict": "SELECTED",
+          "rationale": "Fast in-process execution for DB and ML; clean process isolation for RAG; zero OpenMP collisions; 100% preservation of frozen RAG lockfile SHA-256; <15ms IPC latency"
+        },
+        "option_c_separate_dual_mcp_servers": {
+          "verdict": "REJECTED_AS_PRIMARY",
+          "rationale": "Forces external client harnesses to configure, spawn, and orchestrate two separate stdio processes"
+        }
+      }
+    }
+  },
+  "mcp_sdk_compatibility": {
+    "package_name": "mcp",
+    "version_range": ">=1.2.0,<2.0.0",
+    "supported_python_versions": ["3.10", "3.11", "3.12"],
+    "target_python_version": "3.11.9",
+    "high_level_framework": "FastMCP (mcp.server.fastmcp)",
+    "default_transport": "stdio (Standard I/O JSON-RPC 2.0)",
+    "pydantic_v2_compatible": true,
+    "proposed_specification_file": "backend/requirements-mcp.txt",
+    "rag_lockfile_sha256_unmodified": "778fde7658e8f5a0fd3cb039c6271fbbcce95ab967fbece6d29ca82e3f035ad2"
+  },
+  "seven_tool_contracts": [
+    {
+      "id": 1,
+      "name": "get_machine_data",
+      "purpose": "Query asset metadata, criticality, and recent 5-channel telemetry",
+      "inputs": {
+        "machine_id": {"type": "string", "required": true, "pattern": "^M1(0[1-9]|10)$"},
+        "start_time": {"type": "string", "required": false, "format": "iso8601"},
+        "end_time": {"type": "string", "required": false, "format": "iso8601"},
+        "limit": {"type": "integer", "required": false, "default": 100, "maximum": 500}
+      },
+      "entry_point": "backend.app.models.machine.Machine & backend.app.models.sensor_reading.SensorReading via SessionLocal",
+      "timeout_seconds": 5.0,
+      "authorization": "READ_ONLY_AUTONOMOUS_SAFE"
+    },
+    {
+      "id": 2,
+      "name": "detect_anomaly",
+      "purpose": "Execute real-time tabular (IF) or sequence (LSTM) anomaly detection with explainability",
+      "inputs": {
+        "machine_id": {"type": "string", "required": true},
+        "mode": {"type": "string", "required": true, "enum": ["point", "sequence"]},
+        "readings": {"type": "union[dict, list]", "required": true},
+        "include_explanation": {"type": "boolean", "required": false, "default": false}
+      },
+      "entry_point": "backend.app.ml.inference.service.UnifiedInferenceService (predict_sensor_anomaly, predict_sequence_anomaly)",
+      "frozen_thresholds": {
+        "isolation_forest": 0.0269,
+        "lstm_autoencoder": 0.901464
+      },
+      "timeout_seconds": 10.0,
+      "authorization": "READ_ONLY_AUTONOMOUS_SAFE"
+    },
+    {
+      "id": 3,
+      "name": "predict_failure_risk",
+      "purpose": "Query machine failure probability / RUL (FORMAL STUB)",
+      "mandatory_constraint": "PHASE_2_STEP_5_NO_GO_PRESERVED",
+      "behavior": "Returns status NOT_AVAILABLE with zero fabricated risk scores",
+      "inputs": {
+        "machine_id": {"type": "string", "required": true},
+        "horizon_steps": {"type": "integer", "required": false, "default": 288}
+      },
+      "entry_point": "Hard-coded formal unsupported capability stub",
+      "timeout_seconds": 1.0,
+      "authorization": "READ_ONLY_AUTONOMOUS_SAFE"
+    },
+    {
+      "id": 4,
+      "name": "get_maintenance_history",
+      "purpose": "Query past maintenance logs, technician actions, and outcomes",
+      "inputs": {
+        "machine_id": {"type": "string", "required": false},
+        "outcome": {"type": "string", "required": false},
+        "limit": {"type": "integer", "required": false, "default": 50, "maximum": 100}
+      },
+      "entry_point": "backend.app.models.maintenance_history.MaintenanceHistory via SessionLocal",
+      "timeout_seconds": 5.0,
+      "authorization": "READ_ONLY_AUTONOMOUS_SAFE"
+    },
+    {
+      "id": 5,
+      "name": "search_manuals",
+      "purpose": "Semantic vector retrieval across 418 SOPs/incidents with citations and safety intent gating",
+      "inputs": {
+        "query": {"type": "string", "required": true, "maxLength": 500},
+        "machine_id": {"type": "string", "required": false},
+        "category": {"type": "string", "required": false, "enum": ["SOP", "TROUBLESHOOTING", "SAFETY", "INCIDENT"]},
+        "top_k": {"type": "integer", "required": false, "default": 5, "maximum": 20},
+        "grounded_answer": {"type": "boolean", "required": false, "default": false}
+      },
+      "entry_point": "Subprocess IPC Client calling .venv-rag (RetrievalService & GroundedGenerationService)",
+      "timeout_seconds": 15.0,
+      "authorization": "READ_ONLY_AUTONOMOUS_SAFE"
+    },
+    {
+      "id": 6,
+      "name": "check_defect_image",
+      "purpose": "Classify optical workpiece surface defects using Compact ResNet-18 (4 classes)",
+      "inputs": {
+        "image_path": {"type": "string", "required": false},
+        "image_bytes_base64": {"type": "string", "required": false},
+        "image_name": {"type": "string", "required": false}
+      },
+      "security_guards": {
+        "path_traversal_restriction": "Path must resolve strictly within data/defect_images/",
+        "buffer_cap_bytes": 5242880
+      },
+      "entry_point": "backend.app.ml.inference.service.UnifiedInferenceService (predict_defect_image)",
+      "timeout_seconds": 10.0,
+      "authorization": "READ_ONLY_AUTONOMOUS_SAFE"
+    },
+    {
+      "id": 7,
+      "name": "create_ticket",
+      "purpose": "Create maintenance work order linked to an alert with mandatory human authorization",
+      "security_classification": "NOT_SAFE_FOR_AUTONOMOUS_EXPOSURE",
+      "inputs": {
+        "alert_id": {"type": "string", "required": true},
+        "recommendation": {"type": "string", "required": true},
+        "evidence": {"type": "object", "required": true},
+        "confidence": {"type": "number", "required": true, "minimum": 0.0, "maximum": 1.0},
+        "approved_by": {"type": "string", "required": true},
+        "authorization_token": {"type": "string", "required": true, "description": "HMAC token signed by verified supervisor"}
+      },
+      "entry_point": "backend.app.services.ticket_service.create_ticket_with_approval_gate",
+      "timeout_seconds": 5.0,
+      "authorization": "REQUIRES_VERIFIED_HUMAN_SIGNATURE"
+    }
+  ],
+  "implementation_readiness_matrix": {
+    "git_baseline_clean": {"status": "SATISFIED", "blocks_step1b": false, "blocks_tool_exposure": false},
+    "vector_dimensions_reconciled": {"status": "SATISFIED", "blocks_step1b": false, "blocks_tool_exposure": false},
+    "defect_classes_reconciled": {"status": "SATISFIED", "blocks_step1b": false, "blocks_tool_exposure": false},
+    "environment_strategy_selected": {"status": "SATISFIED", "blocks_step1b": false, "blocks_tool_exposure": false},
+    "mcp_dependency_spec_defined": {"status": "SATISFIED", "blocks_step1b": false, "blocks_tool_exposure": false},
+    "read_only_tools_1_2_4_5_6": {"status": "SATISFIED", "blocks_step1b": false, "blocks_tool_exposure": false},
+    "failure_risk_stub_contract": {"status": "SATISFIED", "blocks_step1b": false, "blocks_tool_exposure": false},
+    "ticket_tool_7_human_authorization": {"status": "PARTIALLY_SATISFIED", "blocks_step1b": false, "blocks_tool_exposure": true}
+  },
+  "phase3_baseline_preservation": {
+    "corpus_documents_count": 418,
+    "historical_incidents_count": 400,
+    "canonical_chunks_count": 564,
+    "chromadb_vectors_count": 564,
+    "vector_dimensions": 384,
+    "specification_placeholders_count": 123,
+    "serialized_ml_models_count": 7,
+    "isolation_forest_threshold": 0.0269,
+    "lstm_autoencoder_threshold": 0.901464,
+    "bge_revision_commit": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+    "rag_lockfile_sha256": "778fde7658e8f5a0fd3cb039c6271fbbcce95ab967fbece6d29ca82e3f035ad2",
+    "phase3_limitations_retained": [
+      "LIMITATION-P3-01",
+      "LIMITATION-P3-02",
+      "LIMITATION-P3-03",
+      "LIMITATION-P3-04",
+      "LIMITATION-P3-05",
+      "LIMITATION-P3-06",
+      "LIMITATION-P3-07"
+    ],
+    "untracked_prior_reports_preserved": true
+  },
+  "final_verdict": "READY WITH CONDITIONS"
+}

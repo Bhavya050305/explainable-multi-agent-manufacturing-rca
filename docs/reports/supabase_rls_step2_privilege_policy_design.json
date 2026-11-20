@@ -1,0 +1,221 @@
+{
+  "audit_target": "ManuMind AI Supabase PostgreSQL Privilege and RLS Policy Design",
+  "audit_step": "Step 2",
+  "timestamp": "2026-11-18T19:40:00+05:30",
+  "verdict": "READY FOR CONTROLLED RLS MIGRATION",
+  "verdict_justification": "Independent read-only PostgreSQL catalog queries confirmed that the connection role 'postgres' possesses rolbypassrls=True and is the explicit table owner (tableowner=postgres) of all six affected tables. Standard ENABLE ROW LEVEL SECURITY will immediately neutralize the critical PostgREST data exposure for unauthenticated 'anon' and 'authenticated' roles without causing any query failure or performance degradation to the backend direct SQLAlchemy connection. Zero changes were made during this audit.",
+  "task1_role_verification": {
+    "current_user": "postgres",
+    "session_user": "postgres",
+    "is_superuser": false,
+    "has_bypassrls": true,
+    "has_createrole": true,
+    "has_createdb": true,
+    "can_login": true,
+    "connection_port": 5432,
+    "connection_type": "Direct PostgreSQL Session Pooler (Supabase port 5432 with sslmode=require)",
+    "table_ownership": {
+      "machines": "postgres",
+      "sensor_readings": "postgres",
+      "alembic_version": "postgres",
+      "maintenance_history": "postgres",
+      "alerts": "postgres",
+      "tickets": "postgres"
+    }
+  },
+  "task2_table_privilege_matrix": [
+    {
+      "table_name": "machines",
+      "owner": "postgres",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false,
+      "policy_count": 0,
+      "grants": {
+        "anon": ["DELETE", "INSERT", "REFERENCES", "SELECT", "TRIGGER", "TRUNCATE", "UPDATE"],
+        "authenticated": ["DELETE", "INSERT", "REFERENCES", "SELECT", "TRIGGER", "TRUNCATE", "UPDATE"],
+        "service_role": ["DELETE", "INSERT", "REFERENCES", "SELECT", "TRIGGER", "TRUNCATE", "UPDATE"],
+        "postgres": ["DELETE", "INSERT", "REFERENCES", "SELECT", "TRIGGER", "TRUNCATE", "UPDATE"]
+      }
+    },
+    {
+      "table_name": "sensor_readings",
+      "owner": "postgres",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false,
+      "policy_count": 0,
+      "grants": {
+        "anon": ["DELETE", "INSERT", "REFERENCES", "SELECT", "TRIGGER", "TRUNCATE", "UPDATE"],
+        "authenticated": ["DELETE", "INSERT", "REFERENCES", "SELECT", "TRIGGER", "TRUNCATE", "UPDATE"],
+        "service_role": ["DELETE", "INSERT", "REFERENCES", "SELECT", "TRIGGER", "TRUNCATE", "UPDATE"],
+        "postgres": ["DELETE", "INSERT", "REFERENCES", "SELECT", "TRIGGER", "TRUNCATE", "UPDATE"]
+      }
+    },
+    {
+      "table_name": "alembic_version",
+      "owner": "postgres",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false,
+      "policy_count": 0,
+      "grants": {
+        "anon": ["DELETE", "INSERT", "REFERENCES", "SELECT", "TRIGGER", "TRUNCATE", "UPDATE"],
+        "authenticated": ["DELETE", "INSERT", "REFERENCES", "SELECT", "TRIGGER", "TRUNCATE", "UPDATE"],
+        "service_role": ["DELETE", "INSERT", "REFERENCES", "SELECT", "TRIGGER", "TRUNCATE", "UPDATE"],
+        "postgres": ["DELETE", "INSERT", "REFERENCES", "SELECT", "TRIGGER", "TRUNCATE", "UPDATE"]
+      }
+    },
+    {
+      "table_name": "maintenance_history",
+      "owner": "postgres",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false,
+      "policy_count": 0,
+      "grants": {
+        "anon": ["DELETE", "INSERT", "REFERENCES", "SELECT", "TRIGGER", "TRUNCATE", "UPDATE"],
+        "authenticated": ["DELETE", "INSERT", "REFERENCES", "SELECT", "TRIGGER", "TRUNCATE", "UPDATE"],
+        "service_role": ["DELETE", "INSERT", "REFERENCES", "SELECT", "TRIGGER", "TRUNCATE", "UPDATE"],
+        "postgres": ["DELETE", "INSERT", "REFERENCES", "SELECT", "TRIGGER", "TRUNCATE", "UPDATE"]
+      }
+    },
+    {
+      "table_name": "alerts",
+      "owner": "postgres",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false,
+      "policy_count": 0,
+      "grants": {
+        "anon": ["DELETE", "INSERT", "REFERENCES", "SELECT", "TRIGGER", "TRUNCATE", "UPDATE"],
+        "authenticated": ["DELETE", "INSERT", "REFERENCES", "SELECT", "TRIGGER", "TRUNCATE", "UPDATE"],
+        "service_role": ["DELETE", "INSERT", "REFERENCES", "SELECT", "TRIGGER", "TRUNCATE", "UPDATE"],
+        "postgres": ["DELETE", "INSERT", "REFERENCES", "SELECT", "TRIGGER", "TRUNCATE", "UPDATE"]
+      }
+    },
+    {
+      "table_name": "tickets",
+      "owner": "postgres",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false,
+      "policy_count": 0,
+      "grants": {
+        "anon": ["DELETE", "INSERT", "REFERENCES", "SELECT", "TRIGGER", "TRUNCATE", "UPDATE"],
+        "authenticated": ["DELETE", "INSERT", "REFERENCES", "SELECT", "TRIGGER", "TRUNCATE", "UPDATE"],
+        "service_role": ["DELETE", "INSERT", "REFERENCES", "SELECT", "TRIGGER", "TRUNCATE", "UPDATE"],
+        "postgres": ["DELETE", "INSERT", "REFERENCES", "SELECT", "TRIGGER", "TRUNCATE", "UPDATE"]
+      }
+    }
+  ],
+  "task3_data_api_exposure": {
+    "exposed_schema": "public",
+    "authenticator_role_membership": ["anon", "authenticated", "service_role"],
+    "vulnerability_root_cause": "In Supabase default privileges (pg_default_acl), the postgres role grants ALL PRIVILEGES (arwdDxtm) to anon, authenticated, and service_role upon table creation in public schema. Because RLS was not enabled, PostgREST has unrestricted CRUD access to all six tables under the anon public key.",
+    "effective_access_anon": "Full CRUD over PostgREST Data API (Critical Vulnerability until RLS is enabled)",
+    "effective_access_authenticated": "Full CRUD over PostgREST Data API (Critical Vulnerability until RLS is enabled)"
+  },
+  "task4_conceptual_rls_behavior": {
+    "standard_enable_rls_behavior": {
+      "postgres_backend": "Bypasses RLS completely because postgres has rolbypassrls=True and is table owner. Zero query degradation or failure.",
+      "anon_role": "Subject to RLS. Because policy count is 0, default-deny applies. PostgREST returns 0 rows on SELECT and 403/error on mutations.",
+      "authenticated_role": "Subject to RLS. Default-deny applies (0 rows on SELECT, error on mutations).",
+      "service_role": "Bypasses RLS because service_role has rolbypassrls=True in Supabase."
+    },
+    "force_rls_distinction": {
+      "warning": "FORCE ROW LEVEL SECURITY applies RLS even to table owners. It must NEVER be used on these tables, as it would risk breaking backend queries if policy evaluation fails."
+    },
+    "grant_vs_rls_distinction": {
+      "grant_level": "Controls whether a role has permission to execute an operation at the table level.",
+      "rls_level": "Controls which rows a role is permitted to view or mutate. Evaluated after SQL GRANT check succeeds."
+    }
+  },
+  "task5_target_state_design": {
+    "machines": {
+      "enable_rls": true,
+      "force_rls": false,
+      "anon_access": false,
+      "authenticated_access": false,
+      "service_role_access": true,
+      "postgres_access": true,
+      "policies_needed_now": []
+    },
+    "sensor_readings": {
+      "enable_rls": true,
+      "force_rls": false,
+      "anon_access": false,
+      "authenticated_access": false,
+      "service_role_access": true,
+      "postgres_access": true,
+      "policies_needed_now": []
+    },
+    "alembic_version": {
+      "enable_rls": true,
+      "force_rls": false,
+      "anon_access": false,
+      "authenticated_access": false,
+      "service_role_access": true,
+      "postgres_access": true,
+      "revoke_table_grants_from_anon_auth": true,
+      "policies_needed_now": []
+    },
+    "maintenance_history": {
+      "enable_rls": true,
+      "force_rls": false,
+      "anon_access": false,
+      "authenticated_access": false,
+      "service_role_access": true,
+      "postgres_access": true,
+      "policies_needed_now": []
+    },
+    "alerts": {
+      "enable_rls": true,
+      "force_rls": false,
+      "anon_access": false,
+      "authenticated_access": false,
+      "service_role_access": true,
+      "postgres_access": true,
+      "policies_needed_now": []
+    },
+    "tickets": {
+      "enable_rls": true,
+      "force_rls": false,
+      "anon_access": false,
+      "authenticated_access": false,
+      "service_role_access": true,
+      "postgres_access": true,
+      "policies_needed_now": []
+    }
+  },
+  "task6_migration_plan_design": {
+    "migration_tool": "Alembic (in backend/alembic/versions)",
+    "proposed_upgrade_sql": [
+      "ALTER TABLE public.machines ENABLE ROW LEVEL SECURITY;",
+      "ALTER TABLE public.sensor_readings ENABLE ROW LEVEL SECURITY;",
+      "ALTER TABLE public.alembic_version ENABLE ROW LEVEL SECURITY;",
+      "ALTER TABLE public.maintenance_history ENABLE ROW LEVEL SECURITY;",
+      "ALTER TABLE public.alerts ENABLE ROW LEVEL SECURITY;",
+      "ALTER TABLE public.tickets ENABLE ROW LEVEL SECURITY;",
+      "REVOKE ALL ON public.alembic_version FROM anon, authenticated;"
+    ],
+    "proposed_downgrade_sql": [
+      "GRANT ALL ON public.alembic_version TO anon, authenticated;",
+      "ALTER TABLE public.tickets DISABLE ROW LEVEL SECURITY;",
+      "ALTER TABLE public.alerts DISABLE ROW LEVEL SECURITY;",
+      "ALTER TABLE public.maintenance_history DISABLE ROW LEVEL SECURITY;",
+      "ALTER TABLE public.alembic_version DISABLE ROW LEVEL SECURITY;",
+      "ALTER TABLE public.sensor_readings DISABLE ROW LEVEL SECURITY;",
+      "ALTER TABLE public.machines DISABLE ROW LEVEL SECURITY;"
+    ],
+    "pre_migration_verification": "SELECT tablename, rowsecurity FROM pg_tables WHERE schemaname = 'public';",
+    "post_migration_verification": "SELECT c.relname, c.relrowsecurity, c.relforcerowsecurity FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace WHERE n.nspname = 'public';"
+  },
+  "catalogs_inspected": [
+    "pg_roles",
+    "pg_auth_members",
+    "pg_class",
+    "pg_namespace",
+    "pg_tables",
+    "pg_policies",
+    "pg_default_acl",
+    "information_schema.role_table_grants",
+    "information_schema.role_column_grants",
+    "information_schema.schemata"
+  ],
+  "confirmation_no_changes_made": true
+}

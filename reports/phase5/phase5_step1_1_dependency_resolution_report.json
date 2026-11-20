@@ -1,0 +1,104 @@
+{
+  "project": "ManuMind AI",
+  "phase": "Phase 5",
+  "step": "Step 1.1",
+  "timestamp": "2026-11-17T17:36:00+05:30",
+  "verdict": "SUCCESS",
+  "verdict_reason": "Alternative 1 dependency configuration (langgraph==0.2.45, langchain-core==0.3.15) successfully resolved and installed into Base Python 3.11.9 without modifying any protected packages. Pip check passed cleanly. All core LangGraph symbols and Pydantic V2 state compatibility verified. RAG isolated environment and ChromaDB collection remain 100% intact.",
+  "original_conflict_summary": {
+    "problematic_dependency": "langchain==0.3.7",
+    "cause": "Declared numpy<2 on Python 3.11, conflicting with Base Python numpy==2.4.6, shap==0.51.0 (requires numpy>=2), and tensorflow==2.21.0 subdependency ml_dtypes==0.6.0 (requires numpy>=2.0.0).",
+    "resolution": "Authorized Alternative 1: Removed monolithic langchain==0.3.7 from backend/requirements-phase5.txt. Installed only langgraph==0.2.45 and langchain-core==0.3.15."
+  },
+  "git_state": {
+    "repository_path": "D:\\Desktop\\FInal year project\\manumind-ai",
+    "branch": "main",
+    "head_commit": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "remote_sync": "ahead 0, behind 0",
+    "tracked_modifications": [
+      "backend/app/models/__init__.py"
+    ]
+  },
+  "environments": {
+    "base_python": {
+      "executable": "C:\\Users\\PR BHAYA SREE\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+      "version": "3.11.9",
+      "pip_check_result": "No broken requirements found.",
+      "installed_target_packages": {
+        "langgraph": {
+          "version": "0.2.45",
+          "expected": "0.2.45",
+          "match": true,
+          "import_success": true
+        },
+        "langchain_core": {
+          "version": "0.3.15",
+          "expected": "0.3.15",
+          "match": true,
+          "import_success": true
+        }
+      },
+      "installed_transitive_packages": [
+        "jsonpatch==1.47",
+        "jsonpointer==3.12",
+        "langgraph-checkpoint==2.1.2",
+        "langgraph-sdk==0.1.74",
+        "langsmith==0.1.147",
+        "orjson==3.13.0",
+        "ormsgpack==1.13.1",
+        "packaging==24.2",
+        "requests-toolbelt==1.0.0",
+        "tenacity==9.2.1"
+      ],
+      "langgraph_symbols": {
+        "StateGraph": "<class 'langgraph.graph.state.StateGraph'>",
+        "START": "'__start__'",
+        "END": "'__end__'",
+        "verified": true
+      },
+      "pydantic_v2_compatibility": {
+        "version": "2.13.4",
+        "model_dump_success": true,
+        "verified": true
+      },
+      "protected_packages_comparison": {
+        "numpy": { "baseline": "2.4.6", "current": "2.4.6", "match": true },
+        "pydantic": { "baseline": "2.13.4", "current": "2.13.4", "match": true },
+        "pydantic_core": { "baseline": "2.46.4", "current": "2.46.4", "match": true },
+        "mcp": { "baseline": "2.3.0", "current": "2.3.0", "match": true },
+        "sqlalchemy": { "baseline": "2.0.52", "current": "2.0.52", "match": true },
+        "alembic": { "baseline": "1.19.1", "current": "1.19.1", "match": true },
+        "fastapi": { "baseline": "0.141.1", "current": "0.141.1", "match": true },
+        "tensorflow": { "baseline": "2.21.0", "current": "2.21.0", "match": true },
+        "scikit_learn": { "baseline": "1.9.0", "current": "1.9.0", "match": true },
+        "shap": { "baseline": "0.51.0", "current": "0.51.0", "match": true },
+        "ml_dtypes": { "baseline": "0.6.0", "current": "0.6.0", "match": true }
+      }
+    },
+    "venv_rag": {
+      "executable": "D:\\Desktop\\FInal year project\\manumind-ai\\.venv-rag\\Scripts\\python.exe",
+      "version": "3.11.9",
+      "lockfile_path": "backend/requirements-rag.lock",
+      "lockfile_sha256": "778fde7658e8f5a0fd3cb039c6271fbbcce95ab967fbece6d29ca82e3f035ad2",
+      "lockfile_matches_baseline": true,
+      "chromadb_path": "knowledge_base/index/chroma_bge_small_v1",
+      "chromadb_collection": "manumind_bge_small_v1",
+      "chromadb_vector_count": 564,
+      "chromadb_embedding_dim": 384,
+      "pip_check_result": "No broken requirements found."
+    }
+  },
+  "dry_run_findings": {
+    "report_file": "phase5_step1_1_pip_dry_run.json",
+    "total_packages_to_install": 12,
+    "numpy_touched": false,
+    "protected_packages_touched": false,
+    "exit_code": 0
+  },
+  "installation_summary": {
+    "exit_code": 0,
+    "packages_installed_count": 12,
+    "downgrades": "packaging uninstalled 26.3 and installed 24.2 per langsmith/langchain-core constraint (<25,>=23.2)"
+  },
+  "unresolved_issues": []
+}

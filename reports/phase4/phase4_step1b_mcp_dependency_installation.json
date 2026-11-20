@@ -1,0 +1,133 @@
+{
+  "audit_metadata": {
+    "project": "ManuMind AI — Explainable Multi-Agent AI System for Manufacturing Anomaly Detection and Root Cause Analysis",
+    "institution": "Department of AI & Data Science, RMK Engineering College",
+    "milestone": "Phase 4 Step 1B — Dedicated MCP Dependency Installation and Environment Verification",
+    "mode": "CONTROLLED_DEPENDENCY_INSTALLATION_AND_VERIFICATION",
+    "repository": "D:\\Desktop\\FInal year project\\manumind-ai",
+    "branch": "main",
+    "head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "remote_origin": "https://github.com/Bhavya050305/explainable-multi-agent-manufacturing-rca.git",
+    "synchronization_status": "synchronized (ahead 0, behind 0)",
+    "timestamp": "2026-11-15T15:48:00+05:30",
+    "verdict": "READY FOR STEP 1C"
+  },
+  "git_baseline": {
+    "branch": "main",
+    "head": "a1e7e77fa550724f812cc2a1024a6ff7d194bc20",
+    "is_head_valid": true,
+    "ahead_count": 0,
+    "behind_count": 0,
+    "staged_count": 0,
+    "unstaged_count": 0,
+    "untracked_count": 5,
+    "untracked_files": [
+      "backend/requirements-mcp.txt",
+      "reports/phase3/phase3_step9_independent_staged_release_audit.json",
+      "reports/phase3/phase3_step9_independent_staged_release_audit_report.md",
+      "reports/phase4/phase4_step0_mcp_readiness_audit.json",
+      "reports/phase4/phase4_step0_mcp_readiness_audit_report.md",
+      "reports/phase4/phase4_step1a_mcp_architecture_reconciliation.json",
+      "reports/phase4/phase4_step1a_mcp_architecture_reconciliation_report.md"
+    ]
+  },
+  "preflight_environment_inventory": {
+    "base_python": {
+      "executable": "C:\\Users\\PR BHAYA SREE\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+      "version": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+      "protected_packages_pre": {
+        "fastapi": "0.141.1",
+        "pydantic": "2.13.4",
+        "sqlalchemy": "2.0.52",
+        "tensorflow": "2.21.0",
+        "shap": "0.51.0",
+        "scikit-learn": "1.9.0"
+      }
+    },
+    "rag_venv": {
+      "executable": "D:\\Desktop\\FInal year project\\manumind-ai\\.venv-rag\\Scripts\\python.exe",
+      "version": "3.11.9",
+      "lockfile_path": "backend/requirements-rag.lock",
+      "lockfile_sha256_pre": "778fde7658e8f5a0fd3cb039c6271fbbcce95ab967fbece6d29ca82e3f035ad2"
+    }
+  },
+  "dependency_specification": {
+    "file_path": "backend/requirements-mcp.txt",
+    "pinned_dependencies": [
+      "mcp==2.3.0"
+    ],
+    "compatibility_justification": "mcp==2.3.0 requires pydantic>=2.12.0, anyio>=4.9, and starlette>=0.27, all of which are cleanly satisfied by the pre-existing Base Python environment without upgrades or downgrades."
+  },
+  "installation_execution": {
+    "command": "python -m pip install -r backend\\requirements-mcp.txt",
+    "exit_code": 0,
+    "packages_installed": [
+      "attrs==26.1.0",
+      "httpcore2==2.16.0",
+      "httpx2==2.16.0",
+      "jsonschema==4.26.0",
+      "jsonschema-specifications==2025.9.1",
+      "mcp==2.3.0",
+      "mcp-types==2.3.0",
+      "opentelemetry-api==1.45.2",
+      "python-multipart==0.0.33",
+      "pywin32==312",
+      "referencing==0.37.0",
+      "rpds-py==2026.9.1",
+      "sse-starlette==3.7.0",
+      "truststore==0.10.5"
+    ],
+    "packages_modified": []
+  },
+  "post_installation_verification": {
+    "python_version": "3.11.9",
+    "mcp_version": "2.3.0",
+    "pip_check_status": "PASS",
+    "pip_check_output": "No broken requirements found.",
+    "protected_packages_comparison": {
+      "fastapi": {"pre": "0.141.1", "post": "0.141.1", "status": "UNCHANGED"},
+      "pydantic": {"pre": "2.13.4", "post": "2.13.4", "status": "UNCHANGED"},
+      "sqlalchemy": {"pre": "2.0.52", "post": "2.0.52", "status": "UNCHANGED"},
+      "tensorflow": {"pre": "2.21.0", "post": "2.21.0", "status": "UNCHANGED"},
+      "shap": {"pre": "0.51.0", "post": "0.51.0", "status": "UNCHANGED"},
+      "scikit-learn": {"pre": "1.9.0", "post": "1.9.0", "status": "UNCHANGED"}
+    },
+    "mcp_sdk_imports_verified": {
+      "mcp": true,
+      "mcp.server.mcpserver.MCPServer": true,
+      "mcp.server.stdio.stdio_server": true
+    },
+    "smoke_test": {
+      "test_name": "In-Memory MCPServer Tool Registration & Execution",
+      "result": "PASSED",
+      "tool_name": "ping",
+      "execution_output": "pong: hello"
+    },
+    "rag_lockfile_sha256_post": "778fde7658e8f5a0fd3cb039c6271fbbcce95ab967fbece6d29ca82e3f035ad2",
+    "rag_lockfile_identical": true,
+    "venv_rag_untouched": true
+  },
+  "baseline_invariants_preserved": {
+    "corpus_documents_count": 418,
+    "historical_incidents_count": 400,
+    "canonical_chunks_count": 564,
+    "chromadb_vectors_count": 564,
+    "vector_dimensions": 384,
+    "specification_placeholders_count": 123,
+    "serialized_ml_models_count": 7,
+    "isolation_forest_threshold": 0.0269,
+    "lstm_autoencoder_threshold": 0.901464,
+    "bge_revision_commit": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+    "rag_lockfile_sha256": "778fde7658e8f5a0fd3cb039c6271fbbcce95ab967fbece6d29ca82e3f035ad2",
+    "phase3_limitations_retained": [
+      "LIMITATION-P3-01",
+      "LIMITATION-P3-02",
+      "LIMITATION-P3-03",
+      "LIMITATION-P3-04",
+      "LIMITATION-P3-05",
+      "LIMITATION-P3-06",
+      "LIMITATION-P3-07"
+    ]
+  },
+  "final_verdict": "READY FOR STEP 1C"
+}
